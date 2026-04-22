@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
+/* =====================================================
+   Tailwind v4 dark mode via class-based custom variant
+   ===================================================== */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =====================================================
+   Brand color tokens (Tailwind v4 @theme)
+   Makes bg-kt-blue, text-kt-dark, etc. available.
+   ===================================================== */
+@theme {
+  --color-kt-blue:       #008df2;
+  --color-kt-dark:       #262626;
+  --color-kt-gray-light: #f4f6f9;
+  --color-kt-purple:     #7b51aa;
+}
+
+/* =====================================================
+   Design tokens — light mode
+   ===================================================== */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+
+  --card-bg:       #ffffff;
+  --card-border:   #e2e8f0;
+  --muted:         #f4f6f9;
+  --muted-fg:      #64748b;
+  --primary:       #008df2;
+  --primary-hover: #0078d4;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* =====================================================
+   Dark mode token overrides
+   ===================================================== */
+html.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --card-bg:       #1e293b;
+  --card-border:   #334155;
+  --muted:         #1e293b;
+  --muted-fg:      #94a3b8;
+  --primary:       #008df2;
+  --primary-hover: #0078d4;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Smooth transitions on all interactive elements */
+a, button, [role="button"] {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+html.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+/* Carousel dots */
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.4);
+  transition: all 300ms ease-in-out;
+}
+.carousel-dot.active {
+  width: 24px;
+  background: #ffffff;
 }

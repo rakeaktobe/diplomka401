@@ -1,0 +1,90 @@
+import Link from "next/link";
+import { Phone, MessageCircle, Send, Briefcase, Search } from "lucide-react";
+
+interface QuickLinkItem {
+  icon: React.ElementType;
+  label: string;
+  sublabel: string;
+  bg: string;
+  href: string;
+}
+
+const ITEMS: QuickLinkItem[] = [
+  {
+    icon: Phone,
+    label: "160",
+    sublabel: "Колл-центр",
+    bg: "bg-kt-blue",
+    href: "tel:160",
+  },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    sublabel: "Написать нам",
+    bg: "bg-[#25D366]",
+    href: "https://wa.me/77771234567",
+  },
+  {
+    icon: Send,
+    label: "Telegram",
+    sublabel: "Наш бот",
+    bg: "bg-[#229ED9]",
+    href: "https://t.me/telecom_kz_bot",
+  },
+  {
+    icon: Briefcase,
+    label: "Бизнес",
+    sublabel: "Корп. клиентам",
+    bg: "bg-slate-800",
+    href: "/",
+  },
+  {
+    icon: Search,
+    label: "Проверка",
+    sublabel: "Статус заявки",
+    bg: "bg-kt-blue",
+    href: "/",
+  },
+];
+
+export function QuickLinks() {
+  return (
+    <section className="bg-white dark:bg-slate-900 py-12 border-b border-slate-100 dark:border-slate-800">
+      <div className="max-w-screen-xl mx-auto px-4">
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-8">
+          Онлайн-каналы связи
+        </h2>
+
+        {/* Items grid */}
+        <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+          {ITEMS.map(({ icon: Icon, label, sublabel, bg, href }) => (
+            <Link
+              key={label}
+              href={href}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="group flex flex-col items-center gap-3 w-24 transition-transform duration-300 hover:-translate-y-1"
+            >
+              {/* Circle icon */}
+              <div
+                className={`w-16 h-16 ${bg} rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300`}
+              >
+                <Icon className="w-7 h-7 text-white" />
+              </div>
+              {/* Text */}
+              <div className="text-center">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">
+                  {label}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+                  {sublabel}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
