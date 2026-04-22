@@ -2,16 +2,28 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### 1. Configuration (Required)
+
+This project requires a Supabase project. Since environment variables are not stored in the repository, you must set them up manually:
+
+1. Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Open `.env.local` and fill in your **Supabase URL** and **Anon Key**.
+   > **Note:** Ensure the URL does *not* end with `/rest/v1/`.
+
+### 2. Development Server
+
+First, install dependencies:
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
