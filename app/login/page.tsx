@@ -26,21 +26,27 @@ export default function LoginPage() {
     setLoading(true);
     setErrorMsg("");
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      if (error.message.includes("Invalid login credentials")) {
-        setErrorMsg("Неверный email или пароль.");
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          setErrorMsg("Неверный email или пароль.");
+        } else {
+          setErrorMsg("Ошибка авторизации. Попробуйте снова.");
+        }
+        setLoading(false);
       } else {
-        setErrorMsg("Ошибка авторизации. Попробуйте снова.");
+        router.push("/dashboard");
+        router.refresh();
       }
+    } catch (e) {
+      console.error("Login Network Error:", e);
+      setErrorMsg("Ошибка сети. Проверьте подключение к базе данных.");
       setLoading(false);
-    } else {
-      router.push("/dashboard");
-      router.refresh();
     }
   };
 

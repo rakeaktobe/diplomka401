@@ -3,12 +3,16 @@ import { cookies } from "next/headers";
 
 export async function createClient() {
   const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  let url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!url || !key) {
     console.error("Supabase Error: Missing environment variables in server client.")
   }
+
+  // ── URL Sanitization ───────────────────────────────────────────
+  if (url?.endsWith('/rest/v1/')) url = url.replace('/rest/v1/', '');
+  if (url?.endsWith('/rest/v1'))  url = url.replace('/rest/v1', '');
 
   return createServerClient(
     url || "https://missing.supabase.co",

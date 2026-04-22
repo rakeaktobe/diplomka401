@@ -26,30 +26,35 @@ export default function RegisterPage() {
     setLoading(true);
     setErrorMsg("");
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          phone: phone,
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            phone: phone,
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      if (error.message.includes("User already registered") || error.message.includes("already exists")) {
-        setErrorMsg("Пользователь с таким email уже существует.");
-      } else if (error.message.includes("Password should be at least 6 characters")) {
-        setErrorMsg("Пароль должен содержать минимум 6 символов.");
+      if (error) {
+        if (error.message.includes("User already registered") || error.message.includes("already exists")) {
+          setErrorMsg("Пользователь с таким email уже существует.");
+        } else if (error.message.includes("Password should be at least 6 characters")) {
+          setErrorMsg("Пароль должен содержать минимум 6 символов.");
+        } else {
+          setErrorMsg("Ошибка регистрации. " + error.message);
+        }
+        setLoading(false);
       } else {
-        setErrorMsg("Ошибка регистрации. " + error.message);
+        router.push("/dashboard");
+        router.refresh();
       }
+    } catch (e) {
+      console.error("Registration Network Error:", e);
+      setErrorMsg("Ошибка сети. Проверьте подключение к базе данных или настройки VPN.");
       setLoading(false);
-    } else {
-      // Typically implies successful registration payload, routing inwards or to verification page
-      router.push("/dashboard");
-      router.refresh();
     }
   };
 
