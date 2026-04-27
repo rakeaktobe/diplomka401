@@ -5,6 +5,7 @@ import { QuickLinks } from "@/components/QuickLinks";
 import { AddressChecker } from "@/components/AddressChecker";
 import { TariffCatalog } from "@/components/TariffCatalog";
 import { TechnologyTabs } from "@/components/TechnologyTabs";
+import { NewsRibbon } from "@/components/NewsRibbon";
 import { Wifi, Tv, Smartphone, Bell } from "lucide-react";
 
 export default async function Home() {
@@ -98,6 +99,9 @@ export default async function Home() {
           <TariffCatalog tariffs={tariffs ?? []} dict={t.catalog} />
         </div>
       </section>
+
+      {/* ── 6. Corporate News Section ──────────────────────────── */}
+      <NewsRibbon />
 
     </div>
   );

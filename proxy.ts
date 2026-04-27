@@ -61,6 +61,7 @@ export default async function proxy(request: NextRequest) {
 
   const isAuthPage  = pathname.startsWith("/login") || pathname.startsWith("/register");
   const isDashboard = pathname.startsWith("/dashboard");
+  const isAdmin     = pathname.startsWith("/admin");
 
   // Helper: copy refreshed session cookies onto a redirect response
   function withSessionCookies(redirect: NextResponse) {
@@ -82,6 +83,27 @@ export default async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return withSessionCookies(NextResponse.redirect(url));
+  }
+
+  // ── 7. Guard /admin/* — only users with role="admin" ────────
+  if (isAdmin) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      return withSessionCookies(NextResponse.redirect(url));
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return withSessionCookies(NextResponse.redirect(url));
+    }
   }
 
   // ── 7. Return the mutated supabaseResponse ───────────────────

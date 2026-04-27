@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getLocaleFromCookie, getDictionary } from "@/lib/i18n-server";
+import { Chatbot } from "@/components/Chatbot";
 
 // ── Typography: Inter with full Cyrillic + Latin subsets ─────────
 // `display: swap` prevents FOIT; weight range covers all weights we use.
@@ -81,6 +82,7 @@ export default async function RootLayout({
           </main>
 
           <Footer />
+          <Chatbot />
         </ThemeProvider>
       </body>
     </html>

@@ -82,3 +82,11 @@ html.dark .glass {
   width: 24px;
   background: #ffffff;
 }
+
+/* =====================================================
+   Image rendering optimizations for sharpness
+   ===================================================== */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}

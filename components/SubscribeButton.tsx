@@ -33,20 +33,21 @@ export function SubscribeButton({ tariffId, dict }: SubscribeButtonProps) {
       return;
     }
 
-    // Compute next billing date (+30 days)
-    const nextBillingDate = new Date();
-    nextBillingDate.setDate(nextBillingDate.getDate() + 30);
-
-    const { error } = await supabase.from("subscriptions").insert({
-      user_id: session.user.id,
-      tariff_id: tariffId,
-      status: "active",
-      next_billing_date: nextBillingDate.toISOString(),
+    // Call the RPC function for secure atomic transaction
+    const { error } = await supabase.rpc("subscribe_to_tariff", {
+      p_user_id: session.user.id,
+      p_tariff_id: tariffId,
     });
 
     if (error) {
-      console.error(error);
-      alert("Ошибка: " + error.message);
+      console.error("Supabase RPC Error:", error);
+      const errorMessage = error.message || "";
+      if (errorMessage.includes("INSUFFICIENT_FUNDS")) {
+        alert("Недостаточно средств. Пожалуйста, пополните баланс.");
+        router.push("/dashboard/payments");
+      } else {
+        alert("Ошибка: " + (errorMessage || "Произошла неизвестная ошибка при подписке"));
+      }
       setLoading(false);
     } else {
       setSuccess(true);
