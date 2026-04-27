@@ -42,7 +42,7 @@ export default function LoginPage() {
       } else {
         const user = data?.user;
         if (user) {
-          if (user.email?.toLowerCase() === "admin@telecom.kz") {
+          if (user.email?.toLowerCase().trim() === "admin@telecom.kz") {
             alert("Login success: Redirecting to /admin as " + user.email);
             router.push("/admin");
             router.refresh();
