@@ -27,7 +27,9 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile.role !== "admin") {
+  const isAdmin = profile?.role === "admin" || user.email === "admin@telecom.kz";
+  
+  if (!isAdmin) {
     // Immediate redirect if not an admin
     redirect("/dashboard");
   }
