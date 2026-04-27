@@ -27,7 +27,7 @@ export default function LoginPage() {
     setErrorMsg("");
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -40,10 +40,10 @@ export default function LoginPage() {
         }
         setLoading(false);
       } else {
-        // Automatically redirect admins to the admin panel
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = data?.user;
         if (user) {
           if (user.email?.toLowerCase() === "admin@telecom.kz") {
+            alert("Login success: Redirecting to /admin as " + user.email);
             router.push("/admin");
             router.refresh();
             return;
@@ -55,12 +55,14 @@ export default function LoginPage() {
             .single();
           
           if (profile?.role === "admin") {
+            alert("Login success: Redirecting to /admin (Role Match)");
             router.push("/admin");
             router.refresh();
             return;
           }
         }
         
+        alert("Login success: Redirecting to /dashboard");
         router.push("/dashboard");
         router.refresh();
       }
