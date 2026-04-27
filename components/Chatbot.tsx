@@ -87,17 +87,20 @@ export function Chatbot() {
           )}
 
           {messages.map((m) => {
-            // Get text content from parts
+            // Get text content from parts (more robust extraction for v6 SDK)
             const textContent = (m.parts || [])
-              .filter(isTextUIPart)
-              .map((p) => p.text)
+              .map((p: any) => p.text || (typeof p === 'string' ? p : ''))
               .join("");
 
-            // If no text parts found, check if content property exists (fallback for mixed SDKs)
+            // Fallback for legacy SDK format
             const legacyContent = (m as any).content;
             const finalContent = textContent || (typeof legacyContent === 'string' ? legacyContent : '');
 
-            if (!finalContent && m.role === 'assistant' && !isLoading) return null;
+            // Ensure we at least show something if it has an id
+            if (!finalContent && m.role === 'assistant' && !isLoading) {
+               // Render raw parts for debugging if completely empty
+               return <div key={m.id} className="text-red-500 text-xs">Unrenderable message: {JSON.stringify(m.parts)}</div>;
+            }
 
             return (
               <div
