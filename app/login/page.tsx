@@ -40,6 +40,27 @@ export default function LoginPage() {
         }
         setLoading(false);
       } else {
+        // Automatically redirect admins to the admin panel
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          if (user.email === "admin@telecom.kz") {
+            router.push("/admin");
+            router.refresh();
+            return;
+          }
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", user.id)
+            .single();
+          
+          if (profile?.role === "admin") {
+            router.push("/admin");
+            router.refresh();
+            return;
+          }
+        }
+        
         router.push("/dashboard");
         router.refresh();
       }
