@@ -12,6 +12,11 @@ export function Chatbot() {
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
+    onError: (error) => {
+      console.error("Chat Error:", error);
+      // Ensure the UI knows the stream stopped
+      setInput(""); 
+    },
   });
 
   const isLoading = status === "streaming" || status === "submitted";
@@ -30,8 +35,13 @@ export function Chatbot() {
     e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
-    sendMessage({ text: trimmed });
-    setInput("");
+    
+    try {
+      sendMessage({ text: trimmed });
+      setInput("");
+    } catch (err) {
+      console.error("Send Message Error:", err);
+    }
   };
 
   return (

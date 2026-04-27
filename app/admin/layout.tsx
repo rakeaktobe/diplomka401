@@ -11,6 +11,7 @@ export default async function AdminLayout({
 }) {
   const supabase = await createClient();
 
+  // 1. Get user session securely
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -19,16 +20,19 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
+  // 2. Verify admin role in profiles table
   const { data: profile } = await supabase
     .from("profiles")
     .select("full_name, role")
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile?.role !== "admin") {
+  if (!profile || profile.role !== "admin") {
+    // Immediate redirect if not an admin
     redirect("/dashboard");
   }
 
+  // 3. Admin sign out action
   const signOut = async () => {
     "use server";
     const supabase = await createClient();
@@ -79,10 +83,8 @@ export default async function AdminLayout({
         
         {/* Admin Header */}
         <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 h-16 flex items-center justify-between shrink-0 transition-colors">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 md:hidden">
-              АДМИН-ПАНЕЛЬ
-            </h2>
+          <div className="flex items-center gap-2 text-slate-800 dark:text-slate-100">
+             <h2 className="text-lg font-semibold md:hidden uppercase">Панель управления</h2>
           </div>
 
           <div className="flex items-center gap-4">
@@ -106,9 +108,9 @@ export default async function AdminLayout({
         </header>
 
         {/* Page Content */}
-        <div className="p-4 md:p-8 flex-1 max-w-7xl mx-auto w-full">
+        <main className="p-4 md:p-8 flex-1 max-w-7xl mx-auto w-full">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

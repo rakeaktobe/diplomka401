@@ -172,9 +172,9 @@ export function Header({ locale, isAdmin }: HeaderProps) {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-300 shadow-sm"
+                className="text-sm font-bold bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors"
               >
-                Панель управления
+                Админ-панель
               </Link>
             )}
             <Link
@@ -272,10 +272,10 @@ export function Header({ locale, isAdmin }: HeaderProps) {
               {isAdmin && (
                 <Link
                   href="/admin"
-                  className="w-full text-center py-3 text-base font-semibold text-white bg-red-600 rounded-xl shadow-md"
+                  className="w-full text-center py-3 text-base font-bold text-white bg-red-500 rounded-xl shadow-md"
                   onClick={closeMobile}
                 >
-                  Панель управления
+                  Админ-панель
                 </Link>
               )}
               <Link

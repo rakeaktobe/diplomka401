@@ -2,10 +2,15 @@ import { createClient } from "@/utils/supabase/server";
 import { streamText } from "ai";
 import { google } from "@ai-sdk/google";
 
+export const runtime = 'edge';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      return new Response(JSON.stringify({ error: 'No API Key' }), { status: 500 });
+    }
+
     const { messages } = await req.json();
 
     // Fetch live tariffs from DB to inject into system prompt
@@ -37,6 +42,6 @@ export async function POST(req: Request) {
     return result.toTextStreamResponse();
   } catch (error) {
     console.error("Chat API Error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
   }
 }
