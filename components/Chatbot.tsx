@@ -14,8 +14,6 @@ export function Chatbot() {
     transport: new DefaultChatTransport({ api: "/api/chat" }),
     onError: (error) => {
       console.error("Chat Error:", error);
-      // Ensure the UI knows the stream stopped
-      setInput(""); 
     },
   });
 
@@ -36,12 +34,8 @@ export function Chatbot() {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
     
-    try {
-      sendMessage({ text: trimmed });
-      setInput("");
-    } catch (err) {
-      console.error("Send Message Error:", err);
-    }
+    sendMessage({ text: trimmed });
+    setInput("");
   };
 
   return (
@@ -93,10 +87,17 @@ export function Chatbot() {
           )}
 
           {messages.map((m) => {
-            const textContent = m.parts
+            // Get text content from parts
+            const textContent = (m.parts || [])
               .filter(isTextUIPart)
               .map((p) => p.text)
               .join("");
+
+            // If no text parts found, check if content property exists (fallback for mixed SDKs)
+            const legacyContent = (m as any).content;
+            const finalContent = textContent || (typeof legacyContent === 'string' ? legacyContent : '');
+
+            if (!finalContent && m.role === 'assistant' && !isLoading) return null;
 
             return (
               <div
@@ -120,12 +121,12 @@ export function Chatbot() {
                       : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-sm shadow-sm"
                   }`}
                 >
-                  {textContent.split("\n").map((line, i) => (
+                  {finalContent ? finalContent.split("\n").map((line: string, i: number) => (
                     <span key={i}>
                       {line}
                       <br />
                     </span>
-                  ))}
+                  )) : "..."}
                 </div>
               </div>
             );
