@@ -79,6 +79,7 @@ export function HeroSection() {
             src={slide.image}
             alt={slide.title}
             fill
+            sizes="100vw"
             quality={100}
             className="object-cover"
             style={{ objectFit: 'cover' }}

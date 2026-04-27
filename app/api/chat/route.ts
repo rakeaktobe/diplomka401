@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     const systemPrompt = `Ты — вежливый ИИ-ассистент провайдера «ТЕЛЕКОМ». Твоя задача — помогать клиентам выбрать интернет-тариф или пакет услуг (TV+). Отвечай кратко, дружелюбно, на русском языке. Опирайся ТОЛЬКО на следующие актуальные тарифы:\n${tariffsDataText}\n\nЕсли спрашивают о чем-то, не связанном с интернетом или провайдером, вежливо отклони тему.`;
 
     const result = streamText({
-      model: google("gemini-1.5-flash"),
+      model: google("gemini-1.5-flash-latest"),
       system: systemPrompt,
       messages: await convertToModelMessages(messages),
     });

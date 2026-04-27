@@ -68,6 +68,7 @@ export function NewsRibbon() {
                     src={promo.image}
                     alt={promo.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     quality={100}
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                     style={{ objectFit: 'cover' }}
