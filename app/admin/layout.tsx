@@ -27,11 +27,26 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  const isAdmin = profile?.role === "admin" || user.email === "admin@telecom.kz";
+  const isAdmin = profile?.role === "admin" || user.email?.toLowerCase() === "admin@telecom.kz";
   
+  console.log("[Admin Layout Auth Check] User email:", user.email, "Profile role:", profile?.role, "isAdmin:", isAdmin);
+
   if (!isAdmin) {
-    // Immediate redirect if not an admin
-    redirect("/dashboard");
+    // Instead of redirecting (which might be cached by Next.js), we explicitly show an error
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl font-bold text-red-600">Доступ запрещен</h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Этот раздел доступен только администраторам. <br />
+            (Debug: Email={user.email}, Role={profile?.role})
+          </p>
+          <Link href="/dashboard" className="text-blue-500 hover:underline block mt-4">
+            Вернуться в кабинет
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   // 3. Admin sign out action

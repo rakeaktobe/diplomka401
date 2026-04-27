@@ -43,7 +43,7 @@ export default function LoginPage() {
         // Automatically redirect admins to the admin panel
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          if (user.email === "admin@telecom.kz") {
+          if (user.email?.toLowerCase() === "admin@telecom.kz") {
             router.push("/admin");
             router.refresh();
             return;
