@@ -27,7 +27,7 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  const isAdmin = true; // TEMPORARY DEBUG OVERRIDE
+  const isAdmin = profile?.role === "admin" || user.email?.toLowerCase().trim() === "admin@telecom.kz";
   
   console.log("[Admin Layout Auth Check] User email:", user.email, "Profile role:", profile?.role, "isAdmin:", isAdmin);
 
@@ -107,7 +107,7 @@ export default async function AdminLayout({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
               <UserCircle2 className="w-5 h-5 text-red-600 dark:text-red-400" />
-              <span className="hidden sm:inline">Admin: {profile.full_name || "Администратор"}</span>
+              <span className="hidden sm:inline">Admin: {profile?.full_name || "Администратор"}</span>
             </div>
 
             <div className="h-4 w-[1px] bg-slate-300 dark:bg-slate-700" />
