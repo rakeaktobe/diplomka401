@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { streamText } from "ai";
+import { convertToModelMessages, streamText } from "ai";
 import { google } from "@ai-sdk/google";
 
 export const runtime = 'edge';
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const result = streamText({
       model: google("gemini-1.5-flash"),
       system: systemPrompt,
-      messages,
+      messages: await convertToModelMessages(messages),
     });
 
     return result.toTextStreamResponse();
