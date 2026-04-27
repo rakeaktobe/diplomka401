@@ -79,7 +79,6 @@ export function TicketManager() {
     });
 
     if (error) {
-      console.error("Failed to create ticket", error);
       alert("Произошла ошибка при создании обращения: " + error.message);
     } else {
       setSubject("");

@@ -15,6 +15,7 @@ import type { Locale, Dictionary } from "@/lib/i18n";
 interface HeaderProps {
   dict: Dictionary["navbar"];
   locale: Locale;
+  isAdmin?: boolean;
 }
 
 const TOP_LINKS = [
@@ -56,7 +57,7 @@ const NAV_LINKS = [
   { label: "Помощь",        href: "/help" },
 ];
 
-export function Header({ locale }: HeaderProps) {
+export function Header({ locale, isAdmin }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
@@ -168,6 +169,14 @@ export function Header({ locale }: HeaderProps) {
             >
               <Search className="w-5 h-5" />
             </button>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors duration-300 shadow-sm"
+              >
+                Панель управления
+              </Link>
+            )}
             <Link
               href="/dashboard/payments"
               className="px-4 py-2 text-sm font-semibold text-kt-blue border border-kt-blue/30 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300"
@@ -260,6 +269,15 @@ export function Header({ locale }: HeaderProps) {
             </nav>
 
             <div className="flex flex-col gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="w-full text-center py-3 text-base font-semibold text-white bg-red-600 rounded-xl shadow-md"
+                  onClick={closeMobile}
+                >
+                  Панель управления
+                </Link>
+              )}
               <Link
                 href="/login"
                 className="w-full text-center py-3 text-base font-semibold text-white bg-kt-blue rounded-xl shadow-md"

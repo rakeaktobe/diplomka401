@@ -1,13 +1,20 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport, isTextUIPart } from "ai";
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
+  const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({ api: "/api/chat" }),
+  });
+
+  const isLoading = status === "streaming" || status === "submitted";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -18,6 +25,14 @@ export function Chatbot() {
       scrollToBottom();
     }
   }, [messages, isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = input.trim();
+    if (!trimmed || isLoading) return;
+    sendMessage({ text: trimmed });
+    setInput("");
+  };
 
   return (
     <>
@@ -66,48 +81,59 @@ export function Chatbot() {
               <p>Помогу подобрать лучший тариф для вас.</p>
             </div>
           )}
-          
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}
-            >
-              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                m.role === 'user' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400' : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-              }`}>
-                {m.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-              </div>
-              
+
+          {messages.map((m) => {
+            const textContent = m.parts
+              .filter(isTextUIPart)
+              .map((p) => p.text)
+              .join("");
+
+            return (
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
-                  m.role === "user"
-                    ? "bg-blue-600 text-white rounded-tr-sm"
-                    : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-sm shadow-sm"
-                }`}
+                key={m.id}
+                className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}
               >
-                {m.content.split('\n').map((line, i) => (
-                  <span key={i}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
+                <div
+                  className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                    m.role === "user"
+                      ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+                      : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                  }`}
+                >
+                  {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                </div>
+
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
+                    m.role === "user"
+                      ? "bg-blue-600 text-white rounded-tr-sm"
+                      : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-sm shadow-sm"
+                  }`}
+                >
+                  {textContent.split("\n").map((line, i) => (
+                    <span key={i}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          
+            );
+          })}
+
           {isLoading && (
             <div className="flex gap-3">
               <div className="shrink-0 w-8 h-8 rounded-full bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 flex items-center justify-center">
                 <Bot className="w-4 h-4" />
               </div>
               <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-tl-sm px-4 py-3 flex gap-1 items-center shadow-sm">
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -116,13 +142,14 @@ export function Chatbot() {
           <form onSubmit={handleSubmit} className="flex gap-2">
             <input
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Введите ваше сообщение..."
-              className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              disabled={isLoading}
+              className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={isLoading || !(input || "").trim()}
+              disabled={isLoading || !input.trim()}
               className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white p-2.5 rounded-full transition-colors shrink-0"
             >
               <Send className="w-4 h-4 translate-x-[-1px] translate-y-[1px]" />

@@ -13,6 +13,13 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     role TEXT DEFAULT 'user'
 );
 
+-- Ensure columns exist in case the table was created in an earlier phase
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS full_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS balance NUMERIC DEFAULT 0;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'user';
+
 -- Tariffs Table
 CREATE TABLE IF NOT EXISTS public.tariffs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

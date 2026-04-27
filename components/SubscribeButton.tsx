@@ -40,7 +40,6 @@ export function SubscribeButton({ tariffId, dict }: SubscribeButtonProps) {
     });
 
     if (error) {
-      console.error("Supabase RPC Error:", error);
       const errorMessage = error.message || "";
       if (errorMessage.includes("INSUFFICIENT_FUNDS")) {
         alert("Недостаточно средств. Пожалуйста, пополните баланс.");

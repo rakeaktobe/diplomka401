@@ -8,10 +8,17 @@ type Tariff = {
   id: string;
   name: string;
   price: number;
-  speed: number;
-  features: string[];
-  type: string;
-  popular: boolean;
+  speed_mbps: number | null;
+  description: string | null;
+  category: string;
+};
+
+type TariffForm = {
+  name: string;
+  price: number;
+  speed_mbps: number;
+  description: string;
+  category: string;
 };
 
 export default function AdminTariffs() {
@@ -19,22 +26,24 @@ export default function AdminTariffs() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTariff, setEditingTariff] = useState<Tariff | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TariffForm>({
     name: "",
     price: 0,
-    speed: 0,
-    features: "",
-    type: "home",
-    popular: false,
+    speed_mbps: 0,
+    description: "",
+    category: "internet",
   });
 
   const supabase = createClient();
 
   const fetchTariffs = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("tariffs").select("*").order("price");
+    const { data, error } = await supabase
+      .from("tariffs")
+      .select("id, name, price, speed_mbps, description, category")
+      .order("price");
     if (!error && data) {
-      setTariffs(data);
+      setTariffs(data as Tariff[]);
     }
     setLoading(false);
   };
@@ -50,20 +59,18 @@ export default function AdminTariffs() {
       setFormData({
         name: tariff.name,
         price: tariff.price,
-        speed: tariff.speed,
-        features: tariff.features?.join(", ") || "",
-        type: tariff.type,
-        popular: tariff.popular,
+        speed_mbps: tariff.speed_mbps ?? 0,
+        description: tariff.description ?? "",
+        category: tariff.category,
       });
     } else {
       setEditingTariff(null);
       setFormData({
         name: "",
         price: 0,
-        speed: 0,
-        features: "",
-        type: "home",
-        popular: false,
+        speed_mbps: 0,
+        description: "",
+        category: "internet",
       });
     }
     setIsModalOpen(true);
@@ -79,10 +86,9 @@ export default function AdminTariffs() {
     const payload = {
       name: formData.name,
       price: Number(formData.price),
-      speed: Number(formData.speed),
-      features: formData.features.split(",").map((f) => f.trim()).filter(f => f),
-      type: formData.type,
-      popular: formData.popular,
+      speed_mbps: Number(formData.speed_mbps),
+      description: formData.description,
+      category: formData.category,
     };
 
     if (editingTariff) {
@@ -126,7 +132,7 @@ export default function AdminTariffs() {
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm">
               <tr>
                 <th className="px-6 py-4 font-medium">Название</th>
-                <th className="px-6 py-4 font-medium">Тип</th>
+                <th className="px-6 py-4 font-medium">Категория</th>
                 <th className="px-6 py-4 font-medium">Цена (₸)</th>
                 <th className="px-6 py-4 font-medium">Скорость (Мбит/с)</th>
                 <th className="px-6 py-4 font-medium text-right">Действия</th>
@@ -150,17 +156,12 @@ export default function AdminTariffs() {
               ) : (
                 tariffs.map((tariff) => (
                   <tr key={tariff.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                    <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">
                       {tariff.name}
-                      {tariff.popular && (
-                        <span className="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full font-semibold">
-                          POPULAR
-                        </span>
-                      )}
                     </td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400 capitalize">{tariff.type}</td>
+                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400 capitalize">{tariff.category}</td>
                     <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{tariff.price.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{tariff.speed}</td>
+                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{tariff.speed_mbps ?? "—"}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <button
@@ -187,7 +188,7 @@ export default function AdminTariffs() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
             <div className="flex justify-between items-center p-6 border-b border-slate-200 dark:border-slate-800">
               <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
                 {editingTariff ? "Редактировать тариф" : "Новый тариф"}
@@ -223,47 +224,36 @@ export default function AdminTariffs() {
                   <input
                     required
                     type="number"
-                    value={formData.speed}
-                    onChange={(e) => setFormData({ ...formData, speed: Number(e.target.value) })}
+                    value={formData.speed_mbps}
+                    onChange={(e) => setFormData({ ...formData, speed_mbps: Number(e.target.value) })}
                     className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Тип</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Категория</label>
                 <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100"
                 >
-                  <option value="home">Домашний</option>
-                  <option value="business">Бизнес</option>
-                  <option value="mobile">Мобильный</option>
+                  <option value="internet">Интернет</option>
+                  <option value="tv">Телевидение</option>
+                  <option value="mobile">Мобильная связь</option>
+                  <option value="combo">Комбо</option>
+                  <option value="b2b">Для бизнеса</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Особенности (через запятую)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Описание</label>
                 <input
                   type="text"
-                  value={formData.features}
-                  onChange={(e) => setFormData({ ...formData, features: e.target.value })}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100"
-                  placeholder="Wi-Fi роутер, TV приставка..."
+                  placeholder="Краткое описание тарифа..."
                 />
               </div>
-              <div className="flex items-center gap-2 mt-4">
-                <input
-                  type="checkbox"
-                  id="popular"
-                  checked={formData.popular}
-                  onChange={(e) => setFormData({ ...formData, popular: e.target.checked })}
-                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                />
-                <label htmlFor="popular" className="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
-                  Сделать популярным (Выделить)
-                </label>
-              </div>
-              
               <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"

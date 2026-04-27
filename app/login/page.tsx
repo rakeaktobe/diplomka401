@@ -43,8 +43,7 @@ export default function LoginPage() {
         router.push("/dashboard");
         router.refresh();
       }
-    } catch (e) {
-      console.error("Login Network Error:", e);
+    } catch {
       setErrorMsg("Ошибка сети. Проверьте подключение к базе данных.");
       setLoading(false);
     }

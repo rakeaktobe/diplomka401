@@ -47,7 +47,6 @@ export function TopUpForm() {
     });
 
     if (insertError) {
-      console.error(insertError);
       setError("Ошибка при сохранении платежа: " + insertError.message);
       setLoading(false);
       return;
@@ -67,7 +66,6 @@ export function TopUpForm() {
       .eq("id", user.id);
 
     if (updateError) {
-      console.error(updateError);
       setError("Оплата прошла, но баланс не обновлен: " + updateError.message);
     } else {
       setSuccess(true);

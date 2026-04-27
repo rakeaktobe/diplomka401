@@ -51,8 +51,7 @@ export default function RegisterPage() {
         router.push("/dashboard");
         router.refresh();
       }
-    } catch (e) {
-      console.error("Registration Network Error:", e);
+    } catch {
       setErrorMsg("Ошибка сети. Проверьте подключение к базе данных или настройки VPN.");
       setLoading(false);
     }

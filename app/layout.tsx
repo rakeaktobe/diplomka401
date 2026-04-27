@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getLocaleFromCookie, getDictionary } from "@/lib/i18n-server";
 import { Chatbot } from "@/components/Chatbot";
+import { createClient } from "@/utils/supabase/server";
 
-// ── Typography: Inter with full Cyrillic + Latin subsets ─────────
-// `display: swap` prevents FOIT; weight range covers all weights we use.
-const inter = Inter({
-  subsets: ["cyrillic", "cyrillic-ext", "latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
+// ── Typography: Inter loaded via CSS @import in globals.css ────────
+// This avoids next/font/google's build-time network fetching.
+// inter.variable just needs to be a valid CSS class name carrier.
+const inter = { variable: "font-sans", className: "font-sans" } as const;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://telecom.kz"),
@@ -51,6 +48,23 @@ export default async function RootLayout({
   const locale = await getLocaleFromCookie();
   const dict = await getDictionary(locale);
 
+  // Check if current user is admin to show admin nav button
+  let isAdmin = false;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      isAdmin = profile?.role === "admin";
+    }
+  } catch {
+    // Not authenticated or DB unavailable — isAdmin stays false
+  }
+
   return (
     // suppressHydrationWarning prevents next-themes SSR mismatch flicker
     <html
@@ -75,7 +89,7 @@ export default async function RootLayout({
           disableTransitionOnChange={false}
         >
           {/* Dual-level branded header — fixed, offset handled by main pt-[100px] */}
-          <Header dict={dict.navbar} locale={locale} />
+          <Header dict={dict.navbar} locale={locale} isAdmin={isAdmin} />
 
           <main className="flex-1 flex flex-col pt-[100px]">
             {children}
