@@ -4,6 +4,8 @@ import { LogOut, UserCircle2, LayoutDashboard, Users, CreditCard, Ticket, ArrowL
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 
 export default async function AdminLayout({
   children,
@@ -13,7 +15,9 @@ export default async function AdminLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
+  const t = dict.dashboard;
   const supabase = await createClient();
 
   // 1. Get user session securely
@@ -40,13 +44,13 @@ export default async function AdminLayout({
           <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center">
              <Shield className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white">Доступ запрещен</h1>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">{locale === 'ru' ? "Доступ запрещен" : locale === 'kk' ? "Рұқсат жоқ" : "Access Denied"}</h1>
           <p className="text-slate-600 dark:text-slate-400 font-medium">
-            Этот раздел доступен только авторизованным администраторам системы.
+            {locale === 'ru' ? "Этот раздел доступен только авторизованным администраторам системы." : locale === 'kk' ? "Бұл бөлім тек жүйенің авторизацияланған әкімшілеріне ғана қолжетімді." : "This section is only available to authorized system administrators."}
           </p>
           <Link href="/dashboard" className="block">
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              Вернуться в кабинет
+              {locale === 'ru' ? "Вернуться в кабинет" : locale === 'kk' ? "Кабинетке оралу" : "Return to dashboard"}
             </Button>
           </Link>
         </div>
@@ -64,11 +68,11 @@ export default async function AdminLayout({
   };
 
   const navItems = [
-    { name: "Обзор", href: "/admin", icon: LayoutDashboard },
-    { name: "Тарифы", href: "/admin/tariffs", icon: CreditCard },
-    { name: "Пользователи", href: "/admin/users", icon: Users },
-    { name: "Тикеты", href: "/admin/tickets", icon: Ticket },
-    { name: "Платежи", href: "/admin/payments", icon: Banknote },
+    { name: t.nav.home, href: "/admin", icon: LayoutDashboard },
+    { name: t.nav.subscriptions, href: "/admin/tariffs", icon: CreditCard },
+    { name: t.client, href: "/admin/users", icon: Users },
+    { name: t.nav.support, href: "/admin/tickets", icon: Ticket },
+    { name: t.nav.payments, href: "/admin/payments", icon: Banknote },
   ];
 
   return (
@@ -98,7 +102,7 @@ export default async function AdminLayout({
         <div className="p-6 border-t border-slate-800">
           <Link href="/dashboard" className="flex items-center gap-2 text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors group">
             <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
-            Кабинет пользователя
+            {t.cabinet}
           </Link>
         </div>
       </aside>
@@ -137,7 +141,7 @@ export default async function AdminLayout({
                 className="rounded-xl hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                <span className="font-bold">Выйти</span>
+                <span className="font-bold">{t.logout}</span>
               </Button>
             </form>
           </div>

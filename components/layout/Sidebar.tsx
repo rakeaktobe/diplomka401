@@ -14,18 +14,22 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { type Locale, getLocalizedHref } from "@/lib/i18n";
 
-export function Sidebar() {
+interface SidebarProps {
+  dict: any;
+}
+
+export function Sidebar({ dict }: SidebarProps) {
   const pathname = usePathname();
   const params = useParams();
   const locale = params?.lang as Locale || "ru";
 
   const sidebarLinks = [
-    { name: locale === 'ru' ? "Главная" : locale === 'kk' ? "Басты бет" : "Home",         href: "/dashboard",              icon: LayoutDashboard },
-    { name: locale === 'ru' ? "Мои подписки" : locale === 'kk' ? "Менің жазылымдарым" : "My subscriptions",   href: "/dashboard/subscriptions", icon: List },
-    { name: locale === 'ru' ? "Платежи" : locale === 'kk' ? "Төлемдер" : "Payments",         href: "/dashboard/payments",      icon: CreditCard },
-    { name: locale === 'ru' ? "Поддержка" : locale === 'kk' ? "Қолдау" : "Support",       href: "/dashboard/support",       icon: LifeBuoy },
-    { name: locale === 'ru' ? "Статус сети" : locale === 'kk' ? "Желі күйі" : "Network status",     href: "/dashboard/monitoring",    icon: ActivitySquare },
-    { name: locale === 'ru' ? "Профиль" : locale === 'kk' ? "Профиль" : "Profile",         href: "/dashboard/profile",       icon: UserCircle },
+    { name: dict.nav.home,         href: "/dashboard",              icon: LayoutDashboard },
+    { name: dict.nav.subscriptions, href: "/dashboard/subscriptions", icon: List },
+    { name: dict.nav.payments,      href: "/dashboard/payments",      icon: CreditCard },
+    { name: dict.nav.support,       href: "/dashboard/support",       icon: LifeBuoy },
+    { name: dict.nav.status,        href: "/dashboard/monitoring",    icon: ActivitySquare },
+    { name: dict.nav.profile,       href: "/dashboard/profile",       icon: UserCircle },
   ];
 
   return (
