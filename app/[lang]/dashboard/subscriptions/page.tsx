@@ -11,20 +11,28 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 
-export const metadata = {
-  title: "Мои подписки",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as Locale);
+  return {
+    title: dict.dashboard.subscriptions.title,
+  };
+}
 
 // ── Category icon/colour lookup ─────────────────────────────────
 type Category = "internet" | "tv" | "mobile" | "combo" | "b2b";
 
 interface Tariff {
   id: string;
-  name: string;
+  name_ru: string;
+  name_kk: string | null;
+  name_en: string | null;
   speed_mbps: number | null;
   price: number;
-  description: string;
+  description_ru: string;
   category: Category;
 }
 
@@ -49,7 +57,9 @@ export default async function SubscriptionsPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = (lang as Locale) || "ru";
+  const fullDict = await getDictionary(locale);
+  const dict = fullDict.dashboard.subscriptions;
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -60,43 +70,44 @@ export default async function SubscriptionsPage({
       id,
       status,
       next_billing_date,
-      tariffs ( id, name, speed_mbps, price, description, category )
+      tariffs ( id, name_ru, name_kk, name_en, speed_mbps, price, description_ru, category )
     `)
     .eq("user_id", user?.id ?? "");
 
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight dark:text-white">Мои подписки</h1>
-        <p className="text-slate-500 dark:text-slate-400">Ваши активные тарифы и услуги.</p>
+        <h1 className="text-3xl font-bold tracking-tight dark:text-white">{dict.title}</h1>
+        <p className="text-slate-500 dark:text-slate-400">{dict.subtitle}</p>
       </div>
 
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md flex items-center gap-2">
           <AlertTriangle className="w-5 h-5" />
-          Упс! Возникла ошибка при загрузке подписок.
+          {dict.error}
         </div>
       )}
 
       {!subscriptions || subscriptions.length === 0 ? (
         <Card className="flex flex-col items-center py-12 px-4 shadow-sm border-dashed dark:border-slate-700">
-          <CardTitle className="mb-2 dark:text-white">Нет подключенных тарифов</CardTitle>
+          <CardTitle className="mb-2 dark:text-white">{dict.empty}</CardTitle>
           <CardDescription className="text-center mb-6">
-            Вы ещё не подключили ни одной услуги или тарифа.
+            {dict.emptyDesc}
           </CardDescription>
           <Link href="/">
-            <Button>В каталог услуг</Button>
+            <Button>{dict.catalog}</Button>
           </Link>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {(subscriptions as unknown as Subscription[]).map((sub) => {
+          {(subscriptions as any[]).map((sub) => {
             const tariff = sub.tariffs;
             if (!tariff) return null;
 
             const cat    = (tariff.category as Category) ?? "internet";
             const meta   = CATEGORY_STYLE[cat] ?? CATEGORY_STYLE.internet;
             const Icon   = meta.icon;
+            const tariffName = tariff[`name_${locale}`] || tariff.name_ru;
 
             return (
               <Card
@@ -117,12 +128,12 @@ export default async function SubscriptionsPage({
                         <Icon className="w-5 h-5" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg dark:text-white">{tariff.name}</CardTitle>
+                        <CardTitle className="text-lg dark:text-white">{tariffName}</CardTitle>
                         <Badge
                           variant={sub.status === "active" ? "success" : "warning"}
                           className="mt-1 lowercase text-[10px]"
                         >
-                          {sub.status === "active" ? "Активен" : "Подключение"}
+                          {sub.status === "active" ? dict.active : dict.pending}
                         </Badge>
                       </div>
                     </div>
@@ -131,33 +142,33 @@ export default async function SubscriptionsPage({
 
                 <CardContent className="py-4 text-sm text-slate-600 dark:text-slate-400 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Оплата:</span>
+                    <span className="text-slate-500 dark:text-slate-400">{dict.payment}:</span>
                     <span className="font-semibold text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800">
-                      {formatCurrency(tariff.price)} / мес
+                      {formatCurrency(tariff.price)} / {fullDict.catalog.perMonth}
                     </span>
                   </div>
                   {tariff.speed_mbps && (
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-500 dark:text-slate-400">Скорость:</span>
+                      <span className="text-slate-500 dark:text-slate-400">{dict.speed}:</span>
                       <span className="font-semibold text-slate-900 dark:text-slate-100">
-                        до {tariff.speed_mbps} Мбит/с
+                        {fullDict.catalog.upTo} {tariff.speed_mbps} {fullDict.catalog.mbps}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">След. списание:</span>
+                    <span className="text-slate-500 dark:text-slate-400">{dict.nextBilling}:</span>
                     <span className="font-medium text-slate-900 dark:text-slate-100 flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       {sub.next_billing_date
-                        ? new Date(sub.next_billing_date).toLocaleDateString("ru-RU")
-                        : "Не назначено"}
+                        ? new Date(sub.next_billing_date).toLocaleDateString(locale === 'kk' ? 'kk-KZ' : locale === 'ru' ? 'ru-RU' : 'en-US')
+                        : dict.not_assigned}
                     </span>
                   </div>
                 </CardContent>
 
                 <CardFooter className="bg-slate-50 dark:bg-slate-800/50 pt-4">
                   <Button variant="outline" className="w-full border-slate-300 dark:border-slate-600">
-                    Сменить тариф
+                    {dict.changeBtn}
                   </Button>
                 </CardFooter>
               </Card>

@@ -6,6 +6,8 @@ import { AddressChecker } from "@/components/AddressChecker";
 import { TariffCatalog } from "@/components/TariffCatalog";
 import { TechnologyTabs } from "@/components/TechnologyTabs";
 import { NewsRibbon } from "@/components/NewsRibbon";
+import { NewsSection } from "@/components/NewsSection";
+import { HomeSpeedTest } from "@/components/HomeSpeedTest";
 import { Wifi, Tv, Smartphone, Bell } from "lucide-react";
 import { type Locale } from "@/lib/i18n";
 
@@ -21,20 +23,59 @@ export default async function Home({
 
   // ── Data ──────────────────────────────────────────────────────
   const supabase = await createClient();
-  const { data: tariffs } = await supabase
+  const { data: tariffs, error: tariffsError } = await supabase
     .from("tariffs")
     .select("*")
     .order("price", { ascending: true });
 
-  const { data: news } = await supabase
+  const { data: newsData, error: newsError } = await supabase
     .from("news")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const { data: heroSlides } = await supabase
+  const { data: heroSlidesData, error: heroError } = await supabase
     .from("hero_slides")
     .select("*")
     .order("display_order", { ascending: true });
+
+  // Fallbacks if DB is not seeded yet
+  const heroSlides = heroSlidesData?.length ? heroSlidesData : [
+    {
+      id: "fallback-1",
+      image_url: "/images/baige 5g ad.png",
+      badge_ru: "5G Интернет", badge_kk: "5G Интернеті", badge_en: "5G Internet",
+      title_ru: "Скорость нового поколения", title_kk: "Жаңа буын жылдамдығы", title_en: "Next-gen speed",
+      subtitle_ru: "Подключайте 5G от Kazakhtelecom...", subtitle_kk: "Kazakhtelecom 5G желісін қосыңыз...", subtitle_en: "Connect 5G from Kazakhtelecom...",
+      cta_ru: "Подключить сейчас", cta_kk: "Қазір қосылу", cta_en: "Connect now",
+      cta_href: "/internet/home",
+      display_order: 1
+    },
+    {
+      id: "fallback-2",
+      image_url: "/images/kazakhtelecom prime ad.png",
+      badge_ru: "Premium Подписка", badge_kk: "Premium Жазылым", badge_en: "Premium Subscription",
+      title_ru: "Kazakhtelecom Prime", title_kk: "Kazakhtelecom Prime", title_en: "Kazakhtelecom Prime",
+      subtitle_ru: "Единая подписка на интернет...", subtitle_kk: "Интернетке бірыңғай жазылым...", subtitle_en: "Single subscription for internet...",
+      cta_ru: "Узнать больше", cta_kk: "Көбірек білу", cta_en: "Learn more",
+      cta_href: "/combo",
+      display_order: 2
+    }
+  ];
+
+  const news = newsData?.length ? newsData : [
+    {
+      id: "n1", title_ru: "Запуск 5G в регионах", title_kk: "Өңірлерде 5G іске қосылды", title_en: "5G Launch in Regions",
+      excerpt_ru: "Мы расширяем сеть 5G по всему Казахстану. Теперь еще больше городов...",
+      date_ru: "15 мая 2026", date_kk: "15 мамыр 2026", date_en: "May 15, 2026",
+      gradient: "from-blue-600 to-indigo-600", category: "news"
+    },
+    {
+      id: "p1", title_ru: "Бонусная система", title_kk: "Бонустық жүйе", title_en: "Bonus System",
+      excerpt_ru: "Участвуйте в нашей обновленной бонусной системе и экономьте на связи.",
+      date_ru: "01 мая 2026", date_kk: "01 мамыр 2026", date_en: "May 1, 2026",
+      image_url: "/images/bonus system ad.png", category: "promo"
+    }
+  ];
 
   return (
     <div className="flex flex-col w-full">
@@ -46,7 +87,7 @@ export default async function Home({
       <QuickLinks locale={locale} dict={t.quickLinks} />
 
       {/* ── 3. Address Checker ───────────────────────────────── */}
-      <AddressChecker />
+      <AddressChecker dict={t.addressChecker} locale={locale} />
 
       {/* ── 4. Features strip ────────────────────────────────── */}
       <section className="py-16 bg-kt-gray-light dark:bg-slate-900 transition-colors">
@@ -114,7 +155,26 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ── 6. Corporate News Section ──────────────────────────── */}
+      {/* ── 5.5 Speed Test Section ────────────────────────────── */}
+      <HomeSpeedTest 
+        dict={{
+          badge: t.home.speedtestBadge || "Speed Test",
+          title: t.home.speedtestTitle || "How fast is your internet?",
+          desc:  t.home.speedtestDesc  || "Check your connection speed.",
+          btn:   t.home.speedtestBtn   || "Start Test",
+          metrics: {
+            mbps:   t.dashboard?.speedtest?.mbps || "Mbps",
+            ping:   t.dashboard?.speedtest?.ping || "Ping",
+            upload: t.dashboard?.speedtest?.upload || "Upload"
+          }
+        }} 
+        locale={locale} 
+      />
+
+      {/* ── 6. News & Press Center ────────────────────────────── */}
+      <NewsSection news={news as any ?? []} dict={t.news} locale={locale} />
+
+      {/* ── 7. Promotions Ribbon ──────────────────────────────── */}
       <NewsRibbon news={news as any ?? []} dict={t.news} locale={locale} />
 
     </div>

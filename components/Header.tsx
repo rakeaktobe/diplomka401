@@ -27,23 +27,23 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
   const getHref = (href: string) => `/${locale}${href === "/" ? "" : href}`;
 
   const TOP_LINKS = [
-    { label: locale === 'ru' ? "Частным лицам" : locale === 'kk' ? "Жеке тұлғаларға" : "For Individuals", href: "/" },
-    { label: locale === 'ru' ? "Бизнесу" : locale === 'kk' ? "Бизнеске" : "For Business", href: "/internet/business" },
-    { label: locale === 'ru' ? "О компании" : locale === 'kk' ? "Компания туралы" : "About Company", href: "/about" },
+    { label: dict.b2c, href: "/" },
+    { label: dict.b2b, href: "/internet/business" },
+    { label: dict.about, href: "/about" },
   ];
 
   const NAV_LINKS = [
-    { label: dict.tariffs || "Тарифы", href: "/shop" },
+    { label: dict.tariffs, href: "/shop" },
     { 
-      label: locale === 'ru' ? "Интернет" : locale === 'kk' ? "Интернет" : "Internet",      
+      label: dict.internet,      
       href: "/internet/home",
       dropdown: [
-        { label: locale === 'ru' ? "Для дома" : locale === 'kk' ? "Үйге арналған" : "For Home", href: "/internet/home" },
-        { label: locale === 'ru' ? "Для бизнеса" : locale === 'kk' ? "Бизнеске арналған" : "For Business", href: "/internet/business" },
+        { label: dict.b2c, href: "/internet/home" },
+        { label: dict.b2b, href: "/internet/business" },
       ]
     },
-    { label: dict.monitoring || "Мониторинг", href: "/dashboard/monitoring" },
-    { label: locale === 'ru' ? "Помощь" : locale === 'kk' ? "Көмек" : "Help", href: "/help" },
+    { label: dict.monitoring, href: "/dashboard/monitoring" },
+    { label: dict.help, href: "/help" },
   ];
 
   // Close mobile menu completely
@@ -78,11 +78,11 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
           <div className="flex items-center gap-4">
             <Link href={getHref("/")} className="flex items-center gap-1.5 hover:text-white transition-colors duration-300">
               <Smartphone className="w-3.5 h-3.5" />
-              {locale === 'ru' ? "Мобильное приложение" : locale === 'kk' ? "Мобильді қолданба" : "Mobile App"}
+              {dict.mobileApp}
             </Link>
             <button className="flex items-center gap-1 hover:text-white transition-colors duration-300">
               <MapPin className="w-3.5 h-3.5 text-kt-blue" />
-              {locale === 'ru' ? "Астана" : "Astana"}
+              {dict.city}
               <ChevronDown className="w-3 h-3" />
             </button>
             <LanguageSwitcher currentLocale={locale} />
@@ -104,7 +104,7 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
                 ТЕЛЕКОМ
               </span>
               <span className="text-[9px] font-bold text-kt-blue tracking-[0.25em] leading-none mt-1.5 uppercase opacity-90">
-                {locale === 'ru' ? "Национальный оператор" : locale === 'kk' ? "Ұлттық оператор" : "National Operator"}
+                {dict.nationalOperator}
               </span>
             </div>
           </Link>
@@ -158,21 +158,21 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
                 href={getHref("/admin")}
                 className="text-sm font-bold bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors"
               >
-                {locale === 'ru' ? "Админ-панель" : "Admin"}
+                {dict.adminPanel}
               </Link>
             )}
             <Link
               href={getHref("/dashboard/payments")}
               className="px-4 py-2 text-sm font-semibold text-kt-blue border border-kt-blue/30 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300"
             >
-              {locale === 'ru' ? "Оплатить" : locale === 'kk' ? "Төлеу" : "Pay"}
+              {dict.pay}
             </Link>
             <Link
               href={getHref("/login")}
               className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-kt-blue rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-sm shadow-kt-blue/20"
             >
               <User className="w-4 h-4" />
-              {dict.login || "Вход"}
+              {dict.login}
             </Link>
             <ThemeToggle />
           </div>
@@ -259,7 +259,7 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
                   className="w-full text-center py-3 text-base font-bold text-white bg-red-500 rounded-xl shadow-md"
                   onClick={closeMobile}
                 >
-                  {locale === 'ru' ? "Админ-панель" : "Admin"}
+                  {dict.adminPanel}
                 </Link>
               )}
               <Link
@@ -267,14 +267,14 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
                 className="w-full text-center py-3 text-base font-semibold text-white bg-kt-blue rounded-xl shadow-md"
                 onClick={closeMobile}
               >
-                {dict.login || "Вход"}
+                {dict.login}
               </Link>
               <Link
                 href={getHref("/dashboard/payments")}
                 className="w-full text-center py-3 text-base font-semibold text-kt-blue border-2 border-kt-blue rounded-xl"
                 onClick={closeMobile}
               >
-                {locale === 'ru' ? "Оплатить услуги" : locale === 'kk' ? "Төлем" : "Pay"}
+                {dict.payServices}
               </Link>
             </div>
           </div>

@@ -23,6 +23,23 @@ export function getLocalizedHref(href: string, locale: Locale): string {
   return `/${locale}${cleanHref}`;
 }
 
-// Infer the full dictionary shape from the Russian source of truth.
 import type ruDict from "@/dictionaries/ru.json";
+import kkDict from "@/dictionaries/kk.json";
+import enDict from "@/dictionaries/en.json";
+
 export type Dictionary = typeof ruDict;
+
+/**
+ * Client-side dictionary loader.
+ */
+export function getDictionaryClient(locale: Locale): Dictionary {
+  switch (locale) {
+    case "kk":
+      return kkDict as unknown as Dictionary;
+    case "en":
+      return enDict as unknown as Dictionary;
+    case "ru":
+    default:
+      return (require("@/dictionaries/ru.json")) as Dictionary;
+  }
+}

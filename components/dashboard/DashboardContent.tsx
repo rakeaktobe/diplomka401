@@ -67,7 +67,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
           <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
             {dict.welcome},{" "}
             <span className="text-blue-600 dark:text-blue-400">
-              {profile?.full_name?.split(' ')[0] ?? "Пользователь"}!
+              {profile?.full_name?.split(' ')[0] ?? dict.user}!
             </span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium flex items-center gap-2">
@@ -133,10 +133,10 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
               {subscriptions.length === 0 ? (
                 <EmptyState 
                   icon={Package2}
-                  title="Нет активных услуг"
-                  description="Подключите интернет или ТВ, чтобы начать пользоваться всеми преимуществами."
+                  title={dict.overview?.noSubs || "Нет активных услуг"}
+                  description={dict.subscriptions?.emptyDesc || "Подключите интернет или ТВ, чтобы начать пользоваться всеми преимуществами."}
                   action={{
-                    label: "Выбрать тариф",
+                    label: dict.catalog?.subscribe || "Выбрать тариф",
                     onClick: () => window.location.href = "/#tariffs"
                   }}
                 />
@@ -145,6 +145,9 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
                   {subscriptions.slice(0, 4).map((sub) => {
                     const tariff   = sub.tariffs;
                     const IconComp = CATEGORY_ICON[tariff?.category ?? "internet"] ?? Wifi;
+                    const locale = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'ru') as 'ru' | 'kk' | 'en';
+                    const tariffName = tariff?.[`name_${locale}`] || tariff?.name_ru || tariff?.name;
+
                     return (
                       <motion.div
                         key={sub.id}
@@ -155,12 +158,12 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
                           <IconComp className="w-6 h-6" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-sm dark:text-white truncate">{tariff?.name}</h4>
+                          <h4 className="font-bold text-sm dark:text-white truncate">{tariffName}</h4>
                           <div className="flex items-center gap-2 mt-1">
                              <Badge variant={sub.status === "active" ? "success" : "warning"} className="px-2 py-0">
-                                {sub.status === "active" ? "Работает" : "Ожидает"}
+                                {sub.status === "active" ? (dict.overview?.active || "Работает") : (dict.overview?.pending || "Ожидает")}
                              </Badge>
-                             <span className="text-[10px] font-bold text-slate-400">{tariff?.speed_mbps} Mbps</span>
+                             <span className="text-[10px] font-bold text-slate-400">{tariff?.speed_mbps} {dict.speedtest?.mbps || "Mbps"}</span>
                           </div>
                         </div>
                         <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition-colors" />
@@ -207,7 +210,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
            <Card glass className="border-none h-full">
              <CardHeader className="pb-2">
                <CardTitle className="text-sm flex items-center gap-2">
-                 <Info className="w-4 h-4 text-blue-500" /> {dict.support}
+                 <Info className="w-4 h-4 text-blue-500" /> {dict.support?.title || "Поддержка"}
                </CardTitle>
              </CardHeader>
              <CardContent>
@@ -230,12 +233,12 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
              </CardHeader>
              <CardContent className="space-y-3">
                 <div className="group cursor-pointer">
-                   <div className="text-[10px] font-bold text-blue-500 uppercase">Скидки</div>
-                   <div className="text-xs font-bold dark:text-white group-hover:underline">Кешбэк 10% на оплату картой</div>
+                   <div className="text-[10px] font-bold text-blue-500 uppercase">{dict.news_categories?.promo || "Скидки"}</div>
+                   <div className="text-xs font-bold dark:text-white group-hover:underline">{dict.news_items?.cashback || "Кешбэк 10% на оплату картой"}</div>
                 </div>
                 <div className="group cursor-pointer">
-                   <div className="text-[10px] font-bold text-emerald-500 uppercase">Обновление</div>
-                   <div className="text-xs font-bold dark:text-white group-hover:underline">Новые каналы в пакете TV+</div>
+                   <div className="text-[10px] font-bold text-emerald-500 uppercase">{dict.news_categories?.update || "Обновление"}</div>
+                   <div className="text-xs font-bold dark:text-white group-hover:underline">{dict.news_items?.channels || "Новые каналы в пакете TV+"}</div>
                 </div>
              </CardContent>
            </Card>
@@ -256,11 +259,11 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
               </div>
               <div className="space-y-1">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">{dict.phone}</div>
-                <div className="text-sm font-bold dark:text-white">{profile?.phone ?? "Не указан"}</div>
+                <div className="text-sm font-bold dark:text-white">{profile?.phone ?? (dict.not_specified || "Не указан")}</div>
               </div>
               <div className="space-y-1 md:col-span-2">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">{dict.address}</div>
-                <div className="text-sm font-bold dark:text-white truncate">{profile?.address ?? "Не указан"}</div>
+                <div className="text-sm font-bold dark:text-white truncate">{profile?.address ?? (dict.not_specified || "Не указан")}</div>
               </div>
             </div>
           </CardContent>

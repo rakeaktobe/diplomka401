@@ -3,9 +3,13 @@ import { DashboardContent } from "@/components/dashboard/DashboardContent";
 import { getDictionary } from "@/lib/i18n-server";
 import { type Locale } from "@/lib/i18n";
 
-export const metadata = {
-  title: "Личный кабинет",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as Locale);
+  return {
+    title: dict.dashboard.cabinet,
+  };
+}
 
 export const dynamic = "force-dynamic";
 

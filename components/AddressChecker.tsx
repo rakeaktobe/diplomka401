@@ -2,18 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import type { Locale, Dictionary } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
 
 type CheckResult = "available" | "unavailable" | null;
+
+interface AddressCheckerProps {
+  dict: Dictionary["addressChecker"];
+  locale: string;
+}
 
 /**
  * AddressChecker — simulates a fibre-connectivity check for a given address.
  * Shows a 1.5 s loading state, then a randomised success/warning outcome.
  * Placed on the public Landing Page directly beneath the Hero section.
  */
-export function AddressChecker() {
+export function AddressChecker({ dict, locale }: AddressCheckerProps) {
   const [address, setAddress] = useState("");
   const [loading, setLoading]   = useState(false);
   const [result, setResult]     = useState<CheckResult>(null);
@@ -52,10 +60,10 @@ export function AddressChecker() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
-              Проверить доступность по адресу
+              {dict.title}
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Узнайте, доступно ли подключение по оптике прямо к вашей квартире или офису.
+              {dict.subtitle}
             </p>
           </div>
         </div>
@@ -67,7 +75,7 @@ export function AddressChecker() {
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <Input
                 type="text"
-                placeholder="Введите вашу улицу и номер дома"
+                placeholder={dict.placeholder}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="pl-9"
@@ -81,9 +89,9 @@ export function AddressChecker() {
               className="shrink-0 min-w-[140px]"
             >
               {loading ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Проверяем...</>
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{dict.checking}</>
               ) : (
-                "Проверить"
+                dict.checkBtn
               )}
             </Button>
           </form>
@@ -115,27 +123,27 @@ export function AddressChecker() {
             <div className="flex-1">
               <p className="font-semibold text-slate-900 dark:text-slate-100">
                 {result === "available"
-                  ? "Отличные новости! По вашему адресу доступно подключение по оптике."
-                  : "К сожалению, по этому адресу подключение пока недоступно."}
+                  ? dict.availableTitle
+                  : dict.unavailableTitle}
               </p>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {result === "available"
-                  ? `${checkedAddr} — оптоволоконная линия проходит до вашего дома. Выберите тариф и подключайтесь!`
-                  : `${checkedAddr} — мы уже ведём работы по расширению сети. Оставьте заявку — мы сообщим о готовности.`}
+                  ? `${checkedAddr} ${dict.availableDesc}`
+                  : `${checkedAddr} ${dict.unavailableDesc}`}
               </p>
             </div>
 
             <div className="flex gap-2 shrink-0">
               {result === "available" && (
                 <Link
-                  href="/shop"
+                  href={`/${locale}/shop`}
                   className="inline-flex items-center justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 transition-colors"
                 >
-                  Выбрать тариф
+                  {dict.selectTariff}
                 </Link>
               )}
               <Button size="sm" variant="outline" onClick={handleReset}>
-                Другой адрес
+                {dict.reset}
               </Button>
             </div>
           </div>

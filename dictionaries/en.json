@@ -13,7 +13,17 @@
     "about":      "About Us",
     "shop":       "Shop",
     "tv":         "TV+",
-    "search":     "Search dashboard..."
+    "search":     "Search dashboard...",
+    "b2c":        "For Individuals",
+    "b2b":        "For Business",
+    "internet":   "Internet",
+    "help":       "Help",
+    "mobileApp":  "Mobile App",
+    "city":       "Astana",
+    "nationalOperator": "National Operator",
+    "adminPanel": "Admin Panel",
+    "pay":        "Pay",
+    "payServices": "Pay for services"
   },
   "hero": {
     "badge":    "Available across Kazakhstan",
@@ -76,7 +86,11 @@
     "packagesTitle": "Service Packages",
     "packagesDesc": "FTTH technology (fiber to the home) guarantees stable speed without drops during peak hours. Choose a suitable package below.",
     "promoBannerTitle": "For new subscribers — 50% discount for the first month",
-    "promoBannerDesc": "Offer valid when connecting any FTTH plan until the end of the month"
+    "promoBannerDesc": "Offer valid when connecting any FTTH plan until the end of the month",
+    "speedtestBadge": "Check your speed",
+    "speedtestTitle": "How fast is your internet?",
+    "speedtestDesc": "Verify the quality of your connection with our built-in testing tool. Measure ping, download and upload speeds in one click.",
+    "speedtestBtn": "Launch Speedtest"
   },
   "auth": {
     "loginTitle":    "Welcome back",
@@ -123,6 +137,16 @@
     "phone":         "Personal phone",
     "address":       "Connection address",
     "logout":        "Sign Out",
+    "user":          "User",
+    "not_specified": "Not specified",
+    "news_categories": {
+      "promo":       "Promos",
+      "update":      "Updates"
+    },
+    "news_items": {
+      "cashback":    "10% cashback on card payments",
+      "channels":    "New channels in TV+ package"
+    },
     "nav": {
       "home":          "Home",
       "subscriptions": "My Subscriptions",
@@ -171,8 +195,14 @@
       "empty":      "No payment history.",
       "success":    "Success",
       "inProcess":  "Processing",
-      "topUp":      "Balance top-up"
-    },
+      "topUp":       "Balance top-up",
+      "amount_min":  "Minimum top-up amount is 100 ₸.",
+      "error_save":   "Error saving payment",
+      "error_balance": "Payment successful, but balance not updated",
+      "card_number":  "Card number (demo)",
+      "expiry":       "MM/YY",
+      "cvc":          "CVC"
+      },
     "support": {
       "title":       "Support",
       "subtitle":    "Customer care and ticket history.",
@@ -187,30 +217,64 @@
       "open":        "Open",
       "inProgress":  "In Progress",
       "closed":      "Closed",
-      "loading":     "Loading tickets..."
+      "loading":     "Loading tickets...",
+      "subject_placeholder": "Enter subject",
+      "desc_placeholder": "Describe what happened in detail...",
+      "error_create": "An error occurred while creating the ticket",
+      "unauthorized": "User is not authorized."
     },
     "monitoring": {
-      "title":          "Network Status",
-      "subtitle":       "Live monitoring of servers and network nodes.",
-      "regions":        "Regional breakdown",
+      "title":       "Network Status",
+      "subtitle":    "Live monitoring of server availability.",
+      "regions":     "Region Details",
       "realtimeActive": "WebSockets Active",
-      "online":         "Online",
-      "degraded":       "Degraded",
-      "offline":        "Offline",
-      "connecting":     "Connecting..."
+      "online":      "Online",
+      "degraded":    "Issues",
+      "offline":     "Offline",
+      "connecting":  "Connecting...",
+      "description": "The system reacts instantly to changes in the database.",
+      "empty":       "No network status data.",
+      "updated":     "Updated"
     },
     "subscriptions": {
       "title":       "My Subscriptions",
-      "subtitle":    "Your active plans and services.",
-      "empty":       "No active subscriptions yet.",
-      "emptyDesc":   "Connect a plan from the catalog.",
-      "catalog":     "View catalog",
+      "subtitle":    "Your active tariffs and services.",
+      "empty":       "You have no active subscriptions yet.",
+      "emptyDesc":   "Subscribe to a tariff in the catalog.",
+      "catalog":     "To Service Catalog",
       "active":      "Active",
       "pending":     "Connecting",
       "payment":     "Payment",
       "speed":       "Speed",
-      "nextBilling": "Next billing",
-      "changeBtn":   "Change plan"
+      "nextBilling": "Next Billing",
+      "changeBtn":   "Change Tariff",
+      "error":       "Oops! An error occurred while loading subscriptions.",
+      "noSubs":      "No connected tariffs",
+      "upTo":        "up to",
+      "notAssigned": "Not assigned",
+      "perMonth":    "mo"
+    },
+    "profile": {
+      "title":       "Profile Settings",
+      "subtitle":    "Manage personal data and account.",
+      "personalData":"Personal Data",
+      "personalDesc":"Your contact information for communication and connecting services.",
+      "clientId":    "Subscriber ID",
+      "readOnly":    "Read only",
+      "fullName":    "Full Name",
+      "phone":       "Phone",
+      "address":     "Installation Address",
+      "notSpecified":"Not specified",
+      "helpText":    "To change data, contact the call center at 160.",
+      "logout":      "Log Out"
+    },
+    "speedtest_info": {
+      "howItWorks":  "How it works?",
+      "howItWorksDesc": "We measure the speed between your device and our nearest servers in Kazakhstan. For the most accurate result, we recommend using a wired connection and disabling other downloads.",
+      "whatItMeans": "What do the indicators mean?",
+      "ping":        "Ping: signal delay (the lower, the better).",
+      "download":    "Download: speed of receiving data from the network.",
+      "upload":      "Upload: speed of sending data to the network."
     }
   },
   "quickLinks": {
@@ -222,6 +286,92 @@
     "corpClients": "Corp. clients",
     "check": "Check",
     "orderStatus": "Order status"
+  },
+  "addressChecker": {
+    "title": "Check Availability by Address",
+    "subtitle": "Find out if fiber-optic connection is available directly to your apartment or office.",
+    "placeholder": "Enter your street and house number",
+    "checkBtn": "Check",
+    "checking": "Checking...",
+    "availableTitle": "Great news! Fiber connection is available at your address.",
+    "unavailableTitle": "Unfortunately, connection is not yet available at this address.",
+    "availableDesc": "— fiber-optic line passes to your house. Choose a plan and connect!",
+    "unavailableDesc": "— we are already working on expanding the network. Leave a request — we will notify you when it's ready.",
+    "selectTariff": "Choose plan",
+    "reset": "Other address"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "JSC TELECOM is the national telecommunications operator of Kazakhstan. We create the country's digital infrastructure, connecting every home and every business with the modern world.",
+    "stats": {
+      "years": "Years on market",
+      "cities": "Cities covered",
+      "subscribers": "Subscribers",
+      "employees": "Employees",
+      "million": "M"
+    },
+    "values": {
+      "title": "Our Values",
+      "reliabilityTitle": "Network Reliability",
+      "reliabilityDesc": "Uptime 99.9% — guaranteed connection stability 24/7 across all regions of Kazakhstan.",
+      "futureTitle": "Future Technologies",
+      "futureDesc": "FTTH, 5G, IoT — we build the country's digital infrastructure and implement advanced solutions.",
+      "baseTitle": "6 Million Subscribers",
+      "baseDesc": "The largest subscriber base in Kazakhstan. Every third resident of the country is our client.",
+      "ecoTitle": "Sustainability",
+      "ecoDesc": "Reducing carbon footprint, green energy, and responsible corporate governance."
+    },
+    "cta": {
+      "title": "Become a TELECOM Client",
+      "desc": "Connect high-speed FTTH internet today and see the difference.",
+      "selectTariff": "Choose Plan"
+    }
+  },
+  "help": {
+    "title": "How can we help?",
+    "search": "Search articles and instructions...",
+    "searchBtn": "Search",
+    "writeSupport": "Contact Support",
+    "writeSupportDesc": "Create a ticket in your dashboard, and we'll reply within 15 minutes.",
+    "callCenter": "Call Center 160",
+    "callCenterDesc": "Toll-free number for calls from mobile and landline phones in RK.",
+    "callMaster": "Request a Technician",
+    "callMasterDesc": "Apply for line diagnostics and router setup.",
+    "knowledgeBase": "Knowledge Base",
+    "knowledgeBaseDesc": "Equipment setup instructions, frequently asked questions (FAQ).",
+    "faqTitle": "Frequently Asked Questions",
+    "notFound": "Didn't find an answer?",
+    "notFoundDesc": "Our technical and financial support specialists will answer your question as soon as possible.",
+    "contactSupport": "Contact support",
+    "faqs": [
+      {
+        "q": "How to check balance and top up account?",
+        "a": "You can check your balance in the Personal Account on the website or in the mobile application. You can top up your account with a bank card without commission directly in the 'Payment without registration' section or by going to the 'Payments' section in the Personal Account."
+      },
+      {
+        "q": "What to do if internet speed has dropped?",
+        "a": "We recommend restarting your Wi-Fi router (unplug from the network for 10 seconds). Also make sure you are in an area of reliable signal reception or try connecting with a cable. If the problem persists, create a support request through the Personal Account."
+      },
+      {
+        "q": "How to transfer the contract to another person?",
+        "a": "To transfer the contract, the current and new subscribers must jointly contact the nearest TELECOM subscriber office with identity cards and documents for the right of ownership of the apartment."
+      },
+      {
+        "q": "How to configure the router?",
+        "a": "Basic configuration of the router provided by the provider is performed automatically by our engineers during installation. For manual configuration of details (network name, Wi-Fi password), go to the Personal Account, 'Help' section, where there is a detailed instruction for your router model."
+      }
+    ]
+  },
+  "admin": {
+    "accessDenied": "Access Denied",
+    "accessDeniedDesc": "This section is only available to authorized system administrators.",
+    "backToCabinet": "Back to dashboard",
+    "operations": "Operations",
+    "userCabinet": "User Cabinet",
+    "systemRole": "System Role",
+    "rootAdmin": "Root Administrator",
+    "loggedInAs": "Logged in as",
+    "logout": "Logout"
   },
   "footer": {
     "services":  "Services",

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, use } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ActivitySquare, Loader2 } from "lucide-react";
+import { getDictionaryClient, type Locale } from "@/lib/i18n";
 
 // ── Types matching the network_status schema ─────────────────────
 interface NetworkNode {
@@ -14,20 +15,23 @@ interface NetworkNode {
   updated_at: string;
 }
 
-export default function MonitoringPage() {
+export default function MonitoringPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = use(params);
+  const locale = (lang as Locale) || "ru";
+  const fullDict = getDictionaryClient(locale);
+  const dict = fullDict.dashboard.monitoring;
+  
   const [networkNodes, setNetworkNodes] = useState<NetworkNode[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /**
-   * Keep a stable Supabase client reference across renders.
-   * Creating it in the component body (without useRef) causes a new client
-   * on every render → the useEffect dependency changes → infinite re-subscribe.
-   */
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
 
   useEffect(() => {
-    // ── Initial Data Fetch ──────────────────────────────────────
     async function getInitialNodes() {
       const { data } = await supabase
         .from("network_status")
@@ -39,7 +43,6 @@ export default function MonitoringPage() {
 
     getInitialNodes();
 
-    // ── Supabase Realtime Subscription ─────────────────────────
     const channel = supabase
       .channel("network_status_changes")
       .on(
@@ -57,22 +60,20 @@ export default function MonitoringPage() {
       )
       .subscribe();
 
-    // ── Cleanup on unmount ──────────────────────────────────────
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // empty dep array — supabase reference is stable via useRef
+  }, [supabase]);
 
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 dark:text-white">
           <ActivitySquare className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-          Статус сети
+          {dict.title}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mt-2">
-          Live-мониторинг доступности серверов и коммутационных узлов.
+          {dict.subtitle}
         </p>
       </div>
 
@@ -81,7 +82,7 @@ export default function MonitoringPage() {
           <div className="absolute inset-0 z-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm flex flex-col items-center justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-blue-600 mb-2" />
             <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Подключение...
+              {dict.connecting}
             </span>
           </div>
         )}
@@ -89,19 +90,18 @@ export default function MonitoringPage() {
         <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-700 pb-4">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <CardTitle className="text-lg dark:text-white">
-              Детализация по регионам
+              {dict.regions}
             </CardTitle>
             <Badge
               variant="outline"
               className="border-green-300 text-green-700 bg-green-50 dark:border-green-700 dark:text-green-400 dark:bg-green-950/40 flex items-center gap-2"
             >
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              WebSockets Активно
+              {dict.realtimeActive}
             </Badge>
           </div>
           <CardDescription>
-            Система мгновенно реагирует на изменения в базе данных.
-            Обновите статус узла в Supabase, чтобы увидеть смену цвета!
+            {dict.description}
           </CardDescription>
         </CardHeader>
 
@@ -109,11 +109,7 @@ export default function MonitoringPage() {
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {networkNodes.length === 0 && !loading && (
               <p className="text-center py-12 text-slate-500 dark:text-slate-400 text-sm">
-                Нет данных о состоянии сети. Добавьте записи в таблицу{" "}
-                <code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 rounded">
-                  network_status
-                </code>
-                .
+                {dict.empty}
               </p>
             )}
             {networkNodes.map((item) => (
@@ -122,7 +118,6 @@ export default function MonitoringPage() {
                 className="flex flex-col sm:flex-row sm:items-center justify-between p-5 sm:px-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors gap-4"
               >
                 <div className="flex items-center gap-4">
-                  {/* Status dot */}
                   <div className="relative flex h-5 w-5 shrink-0">
                     {item.status === "online" && (
                       <>
@@ -143,8 +138,8 @@ export default function MonitoringPage() {
                       {item.region}
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                      Обновлено:{" "}
-                      {new Date(item.updated_at).toLocaleTimeString("ru-RU")}
+                      {dict.updated}:{" "}
+                      {new Date(item.updated_at).toLocaleTimeString(locale === 'kk' ? 'kk-KZ' : locale === 'ru' ? 'ru-RU' : 'en-US')}
                     </div>
                   </div>
                 </div>
@@ -160,9 +155,9 @@ export default function MonitoringPage() {
                     }
                     className="uppercase tracking-widest text-[10px] w-full justify-center sm:w-auto"
                   >
-                    {item.status === "online" && "Работает"}
-                    {item.status === "degraded" && "Сбои"}
-                    {item.status === "offline" && "Не работает"}
+                    {item.status === "online" && dict.online}
+                    {item.status === "degraded" && dict.degraded}
+                    {item.status === "offline" && dict.offline}
                   </Badge>
                 </div>
               </div>

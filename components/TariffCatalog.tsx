@@ -11,16 +11,21 @@ import {
   Wifi, Tv, Smartphone, Package2,
   Building2, CheckCircle2, Zap, Users, Star,
 } from "lucide-react";
+import { useParams } from "next/navigation";
 
 // ── types mirror the Supabase schema ────────────────────────────
 type Category = "internet" | "tv" | "mobile" | "combo" | "b2b";
 
 interface Tariff {
   id: string;
-  name: string;
+  name_ru: string;
+  name_kk: string | null;
+  name_en: string | null;
   speed_mbps: number | null;
   price: number;
-  description: string;
+  description_ru: string;
+  description_kk: string | null;
+  description_en: string | null;
   category: Category;
 }
 
@@ -47,10 +52,10 @@ function ComboFeatureChips({ category, speedMbps, locale }: { category: Category
   if (category !== "combo" && category !== "b2b") return null;
 
   const chips = [];
-  if (speedMbps) chips.push({ icon: Wifi, label: (locale === 'kk' ? "" : "до ") + speedMbps + (locale === 'kk' ? " Мбит/с дейін" : " Mbps") });
+  if (speedMbps) chips.push({ icon: Wifi, label: (locale === 'kk' ? "" : (locale === 'en' ? "up to " : "до ")) + speedMbps + (locale === 'kk' ? " Мбит/с дейін" : " Mbps") });
   if (category === "combo" || category === "b2b") {
-    chips.push({ icon: Smartphone, label: locale === 'kk' ? "SIM-карта" : "SIM-card" });
-    chips.push({ icon: Tv, label: locale === 'kk' ? "ТВ-пакет" : "TV package" });
+    chips.push({ icon: Smartphone, label: locale === 'kk' ? "SIM-карта" : (locale === 'en' ? "SIM card" : "SIM-карта") });
+    chips.push({ icon: Tv, label: locale === 'kk' ? "ТВ-пакет" : (locale === 'en' ? "TV package" : "ТВ-пакет") });
   }
 
   return (
@@ -72,15 +77,15 @@ function ComboFeatureChips({ category, speedMbps, locale }: { category: Category
 export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
   const [activeTab, setActiveTab] = useState<"b2c" | "b2b">("b2c");
   const [isChangingTab, setIsChangingTab] = useState(false);
-  const locale = (dict as any).locale || "ru"; 
+  const params = useParams();
+  const locale = (params?.lang as string) || "ru";
 
   // ── Deduplication safety net (in case DB has duplicates) ─────
   const uniqueTariffs = useMemo(
-    () => Array.from(new Map(tariffs.map((t) => [t.name, t])).values()),
+    () => Array.from(new Map(tariffs.map((t) => [t.name_ru, t])).values()),
     [tariffs]
   );
 
-  // ── Memoized filtered lists ───────────────────────────────────
   const b2cTariffs = useMemo(
     () => uniqueTariffs.filter((t) => t.category !== "b2b"),
     [uniqueTariffs]
@@ -101,8 +106,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
   return (
     <div>
       <div className="container mx-auto px-4 md:px-6">
-
-        {/* Heading */}
         <div className="flex flex-col items-center justify-center text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-slate-100">
             {dict.title}
@@ -112,7 +115,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
           </p>
         </div>
 
-        {/* B2C / B2B segmented control */}
         <div className="flex justify-center mb-10">
           <div className="inline-flex rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-1 gap-1 shadow-sm">
             <button
@@ -140,12 +142,10 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
           </div>
         </div>
 
-        {/* Loading State or Grid */}
         {isChangingTab || (tariffs.length === 0 && activeTab === "b2c") ? (
            <TariffSkeleton />
         ) : (
           <>
-            {/* B2B empty placeholder */}
             {activeTab === "b2b" && b2bTariffs.length === 0 && (
               <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-500 dark:text-slate-400">
                 <Building2 className="w-16 h-16 opacity-30" />
@@ -154,11 +154,10 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
               </div>
             )}
 
-            {/* Grid */}
             {displayed.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {displayed.map((tariff) => {
-                  const meta = getCategoryMeta(tariff.category, dict);
+                  const meta = getCategoryMeta(tariff.category, locale);
                   const Icon = meta.icon;
                   const isCombo = tariff.category === "combo";
                   const isB2B   = tariff.category === "b2b";
@@ -175,7 +174,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                         isB2B   ? "ring-2 ring-amber-400 dark:ring-amber-600 hover:ring-amber-500" : "",
                       ].join(" ")}
                     >
-                      {/* Top colour bar */}
                       <div
                         className={[
                           "absolute top-0 left-0 w-full h-1",
@@ -185,7 +183,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                         ].join(" ")}
                       />
 
-                      {/* Popular badge on "Black" combo */}
                       {tariff.name_ru === "Black" && (
                         <div className="absolute top-4 right-4">
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-600 text-white uppercase tracking-wider">
@@ -195,7 +192,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                       )}
 
                       <CardHeader className="pb-3">
-                        {/* Category badge */}
                         <Badge
                           variant="secondary"
                           className="inline-flex w-fit bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent mb-3"
@@ -208,7 +204,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                           {displayName}
                         </CardTitle>
 
-                        {/* Speed pill */}
                         {tariff.speed_mbps && (
                           <div className="flex items-center gap-1.5 mt-1">
                             <Zap className="w-3.5 h-3.5 text-blue-500" />
@@ -222,12 +217,10 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                           {displayDesc}
                         </CardDescription>
 
-                        {/* Combo feature chips */}
-                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} dict={dict} />
+                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} locale={locale} />
                       </CardHeader>
 
                       <CardContent className="flex-1 pb-4">
-                        {/* Price */}
                         <div className="flex items-baseline gap-1 mt-2">
                           <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
                             {formatAmount(tariff.price)}
@@ -236,7 +229,6 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                           <span className="text-sm font-medium text-slate-500 dark:text-slate-400">/ {dict.perMonth}</span>
                         </div>
 
-                        {/* Included perks */}
                         <ul className="mt-5 flex flex-col gap-2.5 text-sm text-slate-600 dark:text-slate-400">
                           <li className="flex items-center gap-2">
                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />

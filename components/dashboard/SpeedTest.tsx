@@ -96,7 +96,7 @@ export default function SpeedTest({ dict }: SpeedTestProps) {
     <Card glass className="border-none h-full flex flex-col overflow-hidden relative group">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Zap className="w-4 h-4 text-amber-500" /> {dict.title}
+          <Zap className="w-4 h-4 text-amber-500" /> {dict?.title || "Тест скорости"}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col items-center justify-center pt-2 pb-6">
@@ -152,7 +152,7 @@ export default function SpeedTest({ dict }: SpeedTestProps) {
                       {phase === "ping" ? ping : Math.round(getGaugeValue())}
                     </span>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      {phase === "ping" ? dict.ms : dict.mbps}
+                      {phase === "ping" ? (dict?.ms || "мс") : (dict?.mbps || "Мбит/с")}
                     </span>
                   </>
                 )}
@@ -168,15 +168,15 @@ export default function SpeedTest({ dict }: SpeedTestProps) {
             phase === "ping" ? "bg-blue-50 dark:bg-blue-900/30" : "bg-slate-50 dark:bg-slate-900/50"
           )}>
             <Activity className={cn("w-4 h-4 mb-1", phase === "ping" ? "text-blue-500" : "text-slate-400")} />
-            <span className="text-[10px] font-bold text-slate-400 uppercase">{dict.ping}</span>
-            <span className="text-xs font-black dark:text-white">{ping > 0 ? `${ping} ${dict.ms}` : "--"}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">{dict?.ping || "Пинг"}</span>
+            <span className="text-xs font-black dark:text-white">{ping > 0 ? `${ping} ${dict?.ms || "мс"}` : "--"}</span>
           </div>
           <div className={cn(
             "flex flex-col items-center p-2 rounded-2xl transition-colors",
             phase === "download" ? "bg-blue-50 dark:bg-blue-900/30" : "bg-slate-50 dark:bg-slate-900/50"
           )}>
             <ArrowDown className={cn("w-4 h-4 mb-1", phase === "download" ? "text-blue-500" : "text-slate-400")} />
-            <span className="text-[10px] font-bold text-slate-400 uppercase">{dict.download}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">{dict?.download || "Скачивание"}</span>
             <span className="text-xs font-black dark:text-white">{download > 0 ? Math.round(download) : "--"}</span>
           </div>
           <div className={cn(
@@ -184,16 +184,16 @@ export default function SpeedTest({ dict }: SpeedTestProps) {
             phase === "upload" ? "bg-blue-50 dark:bg-blue-900/30" : "bg-slate-50 dark:bg-slate-900/50"
           )}>
             <ArrowUp className={cn("w-4 h-4 mb-1", phase === "upload" ? "text-blue-500" : "text-slate-400")} />
-            <span className="text-[10px] font-bold text-slate-400 uppercase">{dict.upload}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">{dict?.upload || "Загрузка"}</span>
             <span className="text-xs font-black dark:text-white">{upload > 0 ? Math.round(upload) : "--"}</span>
           </div>
         </div>
 
         <p className="text-[10px] font-bold text-slate-400 uppercase mb-4 h-4 text-center">
-          {phase === "ping" && dict.testing_ping}
-          {phase === "download" && dict.testing_download}
-          {phase === "upload" && dict.testing_upload}
-          {phase === "completed" && dict.completed}
+          {phase === "ping" && (dict?.testing_ping || "Измерение задержки...")}
+          {phase === "download" && (dict?.testing_download || "Тестирование загрузки...")}
+          {phase === "upload" && (dict?.testing_upload || "Тестирование отдачи...")}
+          {phase === "completed" && (dict?.completed || "Тест завершен")}
         </p>
 
         <Button
@@ -205,9 +205,9 @@ export default function SpeedTest({ dict }: SpeedTestProps) {
           )}
         >
           {phase === "completed" ? (
-            <span className="flex items-center gap-2"><RefreshCw className="w-4 h-4" /> {dict.again}</span>
+            <span className="flex items-center gap-2"><RefreshCw className="w-4 h-4" /> {dict?.again || "Повторить"}</span>
           ) : (
-            dict.start
+            dict?.start || "Начать тест"
           )}
         </Button>
       </CardContent>

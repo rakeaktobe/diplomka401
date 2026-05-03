@@ -58,7 +58,7 @@ export function Footer({ dict, locale }: FooterProps) {
   const SUPPORT_LINKS = [
     { label: dict.helpdesk,                 href: `/${locale}/dashboard/support` },
     { label: dict.payment,                  href: `/${locale}/dashboard/payments` },
-    { label: dict.speedTest,                href: "/" },
+    { label: dict.speedTest,                href: `/${locale}/dashboard/speedtest` },
     { label: dict.contacts,                 href: `/${locale}/about` },
   ];
 

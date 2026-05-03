@@ -8,6 +8,19 @@ export function TechnologyTabs() {
   const params = useParams();
   const locale = params?.lang as string || "ru";
 
+  const labels = {
+    ftth: {
+      ru: "Оптика (FTTH)",
+      kk: "Оптика (FTTH)",
+      en: "Fiber (FTTH)"
+    },
+    adsl: {
+      ru: "Медь (ADSL)",
+      kk: "Мыс (ADSL)",
+      en: "Copper (ADSL)"
+    }
+  };
+
   return (
     <div className="flex border-b border-slate-200 dark:border-slate-700 shrink-0">
       <button
@@ -18,7 +31,7 @@ export function TechnologyTabs() {
             : "text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-200"
         }`}
       >
-        {locale === 'ru' ? "Оптика (FTTH)" : locale === 'kk' ? "Оптика (FTTH)" : "Fiber (FTTH)"}
+        {labels.ftth[locale as keyof typeof labels.ftth] || labels.ftth.ru}
       </button>
       <button
         onClick={() => setActiveTab("adsl")}
@@ -28,7 +41,7 @@ export function TechnologyTabs() {
             : "text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-200"
         }`}
       >
-        {locale === 'ru' ? "Медь (ADSL)" : locale === 'kk' ? "Мыс (ADSL)" : "Copper (ADSL)"}
+        {labels.adsl[locale as keyof typeof labels.adsl] || labels.adsl.ru}
       </button>
     </div>
   );

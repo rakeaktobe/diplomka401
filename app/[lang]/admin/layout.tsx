@@ -17,7 +17,7 @@ export default async function AdminLayout({
   const { lang } = await params;
   const locale = (lang as Locale) || "ru";
   const dict = await getDictionary(locale);
-  const t = dict.dashboard;
+  const t = dict.admin;
   const supabase = await createClient();
 
   // 1. Get user session securely
@@ -26,7 +26,7 @@ export default async function AdminLayout({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect(`/${locale}/login`);
   }
 
   // 2. Verify admin role in profiles table
@@ -44,13 +44,13 @@ export default async function AdminLayout({
           <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center">
              <Shield className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white">{locale === 'ru' ? "Доступ запрещен" : locale === 'kk' ? "Рұқсат жоқ" : "Access Denied"}</h1>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">{t.accessDenied}</h1>
           <p className="text-slate-600 dark:text-slate-400 font-medium">
-            {locale === 'ru' ? "Этот раздел доступен только авторизованным администраторам системы." : locale === 'kk' ? "Бұл бөлім тек жүйенің авторизацияланған әкімшілеріне ғана қолжетімді." : "This section is only available to authorized system administrators."}
+            {t.accessDeniedDesc}
           </p>
-          <Link href="/dashboard" className="block">
+          <Link href={`/${locale}/dashboard`} className="block">
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              {locale === 'ru' ? "Вернуться в кабинет" : locale === 'kk' ? "Кабинетке оралу" : "Return to dashboard"}
+              {t.backToCabinet}
             </Button>
           </Link>
         </div>
@@ -64,15 +64,15 @@ export default async function AdminLayout({
     const supabase = await createClient();
     await supabase.auth.signOut();
     revalidatePath("/", "layout");
-    redirect("/login");
+    redirect(`/${locale}/login`);
   };
 
   const navItems = [
-    { name: t.nav.home, href: "/admin", icon: LayoutDashboard },
-    { name: t.nav.subscriptions, href: "/admin/tariffs", icon: CreditCard },
-    { name: t.client, href: "/admin/users", icon: Users },
-    { name: t.nav.support, href: "/admin/tickets", icon: Ticket },
-    { name: t.nav.payments, href: "/admin/payments", icon: Banknote },
+    { name: dict.dashboard.nav.home, href: `/${locale}/admin`, icon: LayoutDashboard },
+    { name: dict.catalog.internet || "Тарифы", href: `/${locale}/admin/tariffs`, icon: CreditCard },
+    { name: locale === 'ru' ? "Пользователи" : locale === 'kk' ? "Пайдаланушылар" : "Users", href: `/${locale}/admin/users`, icon: Users },
+    { name: locale === 'ru' ? "Тикеты" : locale === 'kk' ? "Билеттер" : "Tickets", href: `/${locale}/admin/tickets`, icon: Ticket },
+    { name: dict.dashboard.nav.payments, href: `/${locale}/admin/payments`, icon: Banknote },
   ];
 
   return (
@@ -83,7 +83,7 @@ export default async function AdminLayout({
           <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center">
             <Shield className="w-5 h-5 text-white" />
           </div>
-          <span className="text-sm font-black tracking-[0.3em] text-white uppercase">Operations</span>
+          <span className="text-sm font-black tracking-[0.3em] text-white uppercase">{t.operations}</span>
         </div>
 
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -100,9 +100,9 @@ export default async function AdminLayout({
         </nav>
 
         <div className="p-6 border-t border-slate-800">
-          <Link href="/dashboard" className="flex items-center gap-2 text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors group">
+          <Link href={`/${locale}/dashboard`} className="flex items-center gap-2 text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors group">
             <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
-            {t.cabinet}
+            {t.userCabinet}
           </Link>
         </div>
       </aside>
@@ -114,9 +114,9 @@ export default async function AdminLayout({
         <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 px-8 h-16 flex items-center justify-between shrink-0 transition-colors">
           <div className="flex items-center gap-4">
              <div className="hidden md:block">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Role</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.systemRole}</span>
                 <div className="text-xs font-bold text-red-600 flex items-center gap-1">
-                   <Shield className="w-3 h-3" /> Root Administrator
+                   <Shield className="w-3 h-3" /> {t.rootAdmin}
                 </div>
              </div>
           </div>
@@ -124,7 +124,7 @@ export default async function AdminLayout({
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">
-                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Logged in as</div>
+                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.loggedInAs}</div>
                  <div className="text-xs font-bold dark:text-white">{profile?.full_name || "Admin"}</div>
               </div>
               <div className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">

@@ -8,7 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 
-export function TopUpForm() {
+interface TopUpFormProps {
+  dict: any;
+}
+
+export function TopUpForm({ dict }: TopUpFormProps) {
   const router = useRouter();
   // Stable client reference — avoids creating a new Supabase connection per render
   const supabaseRef = useRef(createClient());
@@ -28,14 +32,14 @@ export function TopUpForm() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
-      setError("Пользователь не авторизован.");
+      setError(dict.unauthorized || "Пользователь не авторизован.");
       setLoading(false);
       return;
     }
 
     const value = parseFloat(amount);
     if (isNaN(value) || value < 100) {
-      setError("Минимальная сумма пополнения — 100 ₸.");
+      setError(dict.amount_min || "Минимальная сумма пополнения — 100 ₸.");
       setLoading(false);
       return;
     }
@@ -47,7 +51,7 @@ export function TopUpForm() {
     });
 
     if (insertError) {
-      setError("Ошибка при сохранении платежа: " + insertError.message);
+      setError((dict.error_save || "Ошибка при сохранении платежа") + ": " + insertError.message);
       setLoading(false);
       return;
     }
@@ -66,7 +70,7 @@ export function TopUpForm() {
       .eq("id", user.id);
 
     if (updateError) {
-      setError("Оплата прошла, но баланс не обновлен: " + updateError.message);
+      setError((dict.error_balance || "Оплата прошла, но баланс не обновлен") + ": " + updateError.message);
     } else {
       setSuccess(true);
       setAmount("3500");
@@ -83,11 +87,11 @@ export function TopUpForm() {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <label className="text-sm font-medium dark:text-slate-200">
-            Сумма пополнения (₸)
+            {dict.amount}
           </label>
           {success && (
             <Badge variant="success" className="animate-in fade-in zoom-in">
-              Успешно
+              {dict.success}
             </Badge>
           )}
         </div>
@@ -107,28 +111,28 @@ export function TopUpForm() {
       {/* Mock card fields */}
       <div className="space-y-2">
         <label className="text-sm font-medium dark:text-slate-200">
-          Номер карты (демо)
+          {dict.card_number || "Номер карты (демо)"}
         </label>
         <Input type="text" placeholder="0000 0000 0000 0000" disabled />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <label className="text-sm font-medium dark:text-slate-200">
-            ММ/ГГ
+            {dict.expiry || "ММ/ГГ"}
           </label>
           <Input type="text" placeholder="12/26" disabled />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium dark:text-slate-200">CVC</label>
+          <label className="text-sm font-medium dark:text-slate-200">{dict.cvc || "CVC"}</label>
           <Input type="text" placeholder="123" disabled />
         </div>
       </div>
 
       <Button type="submit" className="w-full mt-4" disabled={loading}>
         {loading ? (
-          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Обработка...</>
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {dict.processing}</>
         ) : (
-          "Пополнить"
+          dict.topUpBtn
         )}
       </Button>
     </form>

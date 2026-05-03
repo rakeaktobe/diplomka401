@@ -9,6 +9,7 @@ import {
   List, 
   UserCircle,
   LayoutDashboard,
+  Gauge
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -27,6 +28,7 @@ export function Sidebar({ dict }: SidebarProps) {
     { name: dict.nav.home,         href: "/dashboard",              icon: LayoutDashboard },
     { name: dict.nav.subscriptions, href: "/dashboard/subscriptions", icon: List },
     { name: dict.nav.payments,      href: "/dashboard/payments",      icon: CreditCard },
+    { name: dict.speedtest.title || "Speed Test", href: "/dashboard/speedtest", icon: Gauge },
     { name: dict.nav.support,       href: "/dashboard/support",       icon: LifeBuoy },
     { name: dict.nav.status,        href: "/dashboard/monitoring",    icon: ActivitySquare },
     { name: dict.nav.profile,       href: "/dashboard/profile",       icon: UserCircle },

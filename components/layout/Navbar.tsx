@@ -41,10 +41,19 @@ export function Navbar({ dict, locale }: NavbarProps) {
                 href="/"
                 className={cn(
                   "text-sm font-semibold transition-all hover:text-blue-600 dark:hover:text-blue-400",
-                  pathname === "/" ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400"
+                  pathname === "/" || pathname === `/${locale}` ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400"
                 )}
               >
                 {dict.tariffs}
+              </Link>
+              <Link
+                href={`/${locale}/dashboard/monitoring`}
+                className={cn(
+                  "text-sm font-semibold transition-all hover:text-blue-600 dark:hover:text-blue-400",
+                  pathname?.includes("/monitoring") ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400"
+                )}
+              >
+                {dict.monitoring}
               </Link>
               <Link
                 href={`/${locale}/about`}
@@ -81,6 +90,11 @@ export function Navbar({ dict, locale }: NavbarProps) {
 
           {isDashboard ? (
              <div className="flex items-center gap-2">
+               <Link href="/dashboard/speedtest" className="mr-2">
+                 <Button variant="ghost" size="icon" className="rounded-xl relative">
+                    <Zap className="h-5 w-5 text-amber-500" />
+                 </Button>
+               </Link>
                <Button variant="ghost" size="icon" className="rounded-xl relative">
                   <Bell className="h-5 w-5" />
                   <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-950"></span>

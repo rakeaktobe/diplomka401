@@ -19,7 +19,11 @@ interface Ticket {
   created_at: string;
 }
 
-export function TicketManager() {
+interface TicketManagerProps {
+  dict: any;
+}
+
+export function TicketManager({ dict }: TicketManagerProps) {
   // Stable Supabase reference — avoids re-creating the client on every render
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
@@ -38,7 +42,6 @@ export function TicketManager() {
 
   async function fetchTickets() {
     setFetching(true);
-    // getUser() is the recommended client-side way to obtain the current user
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       setFetching(false);
@@ -66,7 +69,7 @@ export function TicketManager() {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user?.id) {
-      alert("Пользователь не авторизован.");
+      alert(dict.unauthorized || "Пользователь не авторизован.");
       setLoading(false);
       return;
     }
@@ -79,7 +82,7 @@ export function TicketManager() {
     });
 
     if (error) {
-      alert("Произошла ошибка при создании обращения: " + error.message);
+      alert((dict.error_create || "Произошла ошибка при создании обращения") + ": " + error.message);
     } else {
       setSubject("");
       setDescription("");
@@ -88,10 +91,12 @@ export function TicketManager() {
     setLoading(false);
   }
 
+  const locale = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'ru') as 'ru' | 'kk' | 'en';
+
   const STATUS_LABEL: Record<Ticket["status"], string> = {
-    open:        "Открыто",
-    in_progress: "В работе",
-    closed:      "Закрыто",
+    open:        dict.open || "Открыто",
+    in_progress: dict.inProgress || "В работе",
+    closed:      dict.closed || "Закрыто",
   };
   const STATUS_VARIANT: Record<
     Ticket["status"],
@@ -109,21 +114,21 @@ export function TicketManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 dark:text-white">
             <MessageSquarePlus className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            Новое обращение
+            {dict.newTitle}
           </CardTitle>
           <CardDescription>
-            Опишите вашу проблему, и мы решим ее как можно быстрее.
+            {dict.newDesc}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium dark:text-slate-200">
-                Тема обращения
+                {dict.subject}
               </label>
               <Input
                 type="text"
-                placeholder="Укажите тему"
+                placeholder={dict.subject_placeholder || "Укажите тему"}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
@@ -132,11 +137,11 @@ export function TicketManager() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium dark:text-slate-200">
-                Описание проблемы
+                {dict.description}
               </label>
               <textarea
                 className="flex min-h-[120px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
-                placeholder="Подробно опишите, что случилось..."
+                placeholder={dict.desc_placeholder || "Подробно опишите, что случилось..."}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -145,9 +150,9 @@ export function TicketManager() {
             </div>
             <Button type="submit" className="w-full mt-2" disabled={loading}>
               {loading ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Отправка...</>
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {dict.sending}</>
               ) : (
-                "Отправить в поддержку"
+                dict.submitBtn
               )}
             </Button>
           </form>
@@ -157,17 +162,17 @@ export function TicketManager() {
       {/* ── Ticket History ───────────────────────────────────── */}
       <Card className="lg:col-span-2">
         <CardHeader>
-          <CardTitle className="dark:text-white">История обращений</CardTitle>
+          <CardTitle className="dark:text-white">{dict.history}</CardTitle>
         </CardHeader>
         <CardContent>
           {fetching ? (
             <div className="flex items-center justify-center py-12 text-slate-500 dark:text-slate-400">
               <Loader2 className="w-6 h-6 animate-spin mr-2" />
-              Загрузка билетов...
+              {dict.loading}
             </div>
           ) : tickets.length === 0 ? (
             <div className="text-center py-12 text-slate-500 dark:text-slate-400 border border-dashed dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900/40">
-              У вас нет активных обращений.
+              {dict.empty}
             </div>
           ) : (
             <div className="space-y-4">
@@ -189,7 +194,7 @@ export function TicketManager() {
                       </p>
                       <span className="text-xs font-mono text-slate-400 dark:text-slate-500 block mt-3">
                         ID: {t.id.split("-")[0]} •{" "}
-                        {new Date(t.created_at).toLocaleString("ru-RU")}
+                        {new Date(t.created_at).toLocaleString(locale === 'kk' ? "kk-KZ" : locale === 'ru' ? "ru-RU" : "en-US")}
                       </span>
                     </div>
                   </div>
