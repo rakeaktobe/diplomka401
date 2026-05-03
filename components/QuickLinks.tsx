@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone, MessageCircle, Send, Briefcase, Search } from "lucide-react";
+import { type Locale, getLocalizedHref } from "@/lib/i18n";
 
 interface QuickLinkItem {
   icon: React.ElementType;
@@ -9,51 +10,55 @@ interface QuickLinkItem {
   href: string;
 }
 
-const ITEMS: QuickLinkItem[] = [
-  {
-    icon: Phone,
-    label: "160",
-    sublabel: "Колл-центр",
-    bg: "bg-kt-blue",
-    href: "tel:160",
-  },
-  {
-    icon: MessageCircle,
-    label: "WhatsApp",
-    sublabel: "Написать нам",
-    bg: "bg-[#25D366]",
-    href: "https://wa.me/77771234567",
-  },
-  {
-    icon: Send,
-    label: "Telegram",
-    sublabel: "Наш бот",
-    bg: "bg-[#229ED9]",
-    href: "https://t.me/telecom_kz_bot",
-  },
-  {
-    icon: Briefcase,
-    label: "Бизнес",
-    sublabel: "Корп. клиентам",
-    bg: "bg-slate-800",
-    href: "/",
-  },
-  {
-    icon: Search,
-    label: "Проверка",
-    sublabel: "Статус заявки",
-    bg: "bg-kt-blue",
-    href: "/",
-  },
-];
+interface QuickLinksProps {
+  locale: Locale;
+}
 
-export function QuickLinks() {
+export function QuickLinks({ locale }: QuickLinksProps) {
+  const ITEMS: QuickLinkItem[] = [
+    {
+      icon: Phone,
+      label: "160",
+      sublabel: locale === 'ru' ? "Колл-центр" : locale === 'kk' ? "Байланыс орталығы" : "Call Center",
+      bg: "bg-kt-blue",
+      href: "tel:160",
+    },
+    {
+      icon: MessageCircle,
+      label: "WhatsApp",
+      sublabel: locale === 'ru' ? "Написать нам" : locale === 'kk' ? "Бізге жазыңыз" : "Message us",
+      bg: "bg-[#25D366]",
+      href: "https://wa.me/77771234567",
+    },
+    {
+      icon: Send,
+      label: "Telegram",
+      sublabel: locale === 'ru' ? "Наш бот" : locale === 'kk' ? "Біздің бот" : "Our bot",
+      bg: "bg-[#229ED9]",
+      href: "https://t.me/telecom_kz_bot",
+    },
+    {
+      icon: Briefcase,
+      label: locale === 'ru' ? "Бизнес" : locale === 'kk' ? "Бизнес" : "Business",
+      sublabel: locale === 'ru' ? "Корп. клиентам" : locale === 'kk' ? "Корп. клиенттерге" : "Corp. clients",
+      bg: "bg-slate-800",
+      href: "/internet/business",
+    },
+    {
+      icon: Search,
+      label: locale === 'ru' ? "Проверка" : locale === 'kk' ? "Тексеру" : "Check",
+      sublabel: locale === 'ru' ? "Статус заявки" : locale === 'kk' ? "Өтінім мәртебесі" : "Order status",
+      bg: "bg-kt-blue",
+      href: "/dashboard",
+    },
+  ];
+
   return (
     <section className="bg-white dark:bg-slate-900 py-12 border-b border-slate-100 dark:border-slate-800">
       <div className="max-w-screen-xl mx-auto px-4">
         {/* Title */}
         <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-8">
-          Онлайн-каналы связи
+          {locale === 'ru' ? "Онлайн-каналы связи" : locale === 'kk' ? "Онлайн байланыс арналары" : "Online Communication Channels"}
         </h2>
 
         {/* Items grid */}
@@ -61,7 +66,7 @@ export function QuickLinks() {
           {ITEMS.map(({ icon: Icon, label, sublabel, bg, href }) => (
             <Link
               key={label}
-              href={href}
+              href={getLocalizedHref(href, locale)}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
               className="group flex flex-col items-center gap-3 w-24 transition-transform duration-300 hover:-translate-y-1"

@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { Database } from "@/lib/database.types";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -14,7 +15,7 @@ export async function createClient() {
   if (url?.endsWith('/rest/v1/')) url = url.replace('/rest/v1/', '');
   if (url?.endsWith('/rest/v1'))  url = url.replace('/rest/v1', '');
 
-  return createServerClient(
+  return createServerClient<Database>(
     url || "https://missing.supabase.co",
     key || "missing-key",
     {

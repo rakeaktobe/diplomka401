@@ -15,14 +15,20 @@ import { locales, defaultLocale } from "@/lib/i18n";
  * Uses dynamic import so only the requested locale is bundled.
  */
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  switch (locale) {
-    case "kk":
-      return (await import("@/dictionaries/kk.json")).default as unknown as Dictionary;
-    case "en":
-      return (await import("@/dictionaries/en.json")).default as unknown as Dictionary;
-    case "ru":
-    default:
-      return (await import("@/dictionaries/ru.json")).default;
+  try {
+    switch (locale) {
+      case "kk":
+        return (await import("@/dictionaries/kk.json")).default as unknown as Dictionary;
+      case "en":
+        return (await import("@/dictionaries/en.json")).default as unknown as Dictionary;
+      case "ru":
+      default:
+        return (await import("@/dictionaries/ru.json")).default;
+    }
+  } catch (error) {
+    console.error(`Failed to load dictionary for locale: ${locale}`, error);
+    // Fallback to Russian as it is the "source of truth"
+    return (await import("@/dictionaries/ru.json")).default;
   }
 }
 

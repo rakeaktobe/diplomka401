@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { type Locale, locales } from "@/lib/i18n";
 
@@ -16,17 +16,38 @@ interface LanguageSwitcherProps {
 
 /**
  * Language switcher component.
- * Sets the NEXT_LOCALE cookie and refreshes Server Components with the new
- * dictionary. Uses startTransition so the UI stays responsive during refresh.
+ * Updates the URL segment (e.g., /ru -> /kk) and sets the NEXT_LOCALE cookie.
+ * Uses usePathname and router.push() for a smooth transition.
  */
 export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  function setLocale(locale: Locale) {
-    if (locale === currentLocale) return;
-    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+  function setLocale(newLocale: Locale) {
+    if (newLocale === currentLocale) return;
+
+    // 1. Update cookie for middleware and server-side consistency
+    // eslint-disable-next-line react-hooks/immutability
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+
+    // 2. Calculate the new path by replacing the locale segment
+    const segments = pathname.split("/");
+    
+    // Check if the first segment is a known locale
+    const currentLocaleInPath = segments[1] as Locale;
+    if (locales.includes(currentLocaleInPath)) {
+      segments[1] = newLocale;
+    } else {
+      // If no locale in path, prepend it
+      segments.splice(1, 0, newLocale);
+    }
+    
+    const newPathname = segments.join("/") || "/";
+
     startTransition(() => {
+      router.push(newPathname);
+      // Force a refresh to update server components with new dictionary
       router.refresh();
     });
   }

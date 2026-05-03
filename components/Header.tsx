@@ -18,49 +18,33 @@ interface HeaderProps {
   isAdmin?: boolean;
 }
 
-const TOP_LINKS = [
-  { label: "Частным лицам",              href: "/" },
-  { label: "Бизнесу",                    href: "/internet/business" },
-  { label: "О компании",                 href: "/about" },
-  { label: "Инвесторам и акционерам",    href: "/about" },
-  { label: "Устойчивое развитие",        href: "/about" },
-  { label: "Адреса и контакты",          href: "/about" },
-];
-
-const NAV_LINKS = [
-  { label: "Магазин",       href: "/shop" },
-  { 
-    label: "Интернет",      
-    href: "/internet/home",
-    dropdown: [
-      { label: "Для дома", href: "/internet/home" },
-      { label: "Для бизнеса", href: "/internet/business" },
-      { label: "Мобильный интернет", href: "/internet/mobile" },
-    ]
-  },
-  { 
-    label: "Телевидение",   
-    href: "/tv/digital",
-    dropdown: [
-      { label: "Цифровое ТВ", href: "/tv/digital" },
-      { label: "TV+", href: "/tv/plus" },
-    ]
-  },
-  { 
-    label: "Пакеты услуг",       
-    href: "/combo",
-    dropdown: [
-      { label: "Комбо (Интернет + ТВ)", href: "/combo" },
-    ]
-  },
-  { label: "Телефон",       href: "/shop" },
-  { label: "Помощь",        href: "/help" },
-];
-
-export function Header({ locale, isAdmin }: HeaderProps) {
+export function Header({ dict, locale, isAdmin }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
+  // Helper to prefix href with locale
+  const getHref = (href: string) => `/${locale}${href === "/" ? "" : href}`;
+
+  const TOP_LINKS = [
+    { label: locale === 'ru' ? "Частным лицам" : locale === 'kk' ? "Жеке тұлғаларға" : "For Individuals", href: "/" },
+    { label: locale === 'ru' ? "Бизнесу" : locale === 'kk' ? "Бизнеске" : "For Business", href: "/internet/business" },
+    { label: locale === 'ru' ? "О компании" : locale === 'kk' ? "Компания туралы" : "About Company", href: "/about" },
+  ];
+
+  const NAV_LINKS = [
+    { label: dict.tariffs || "Тарифы", href: "/shop" },
+    { 
+      label: locale === 'ru' ? "Интернет" : locale === 'kk' ? "Интернет" : "Internet",      
+      href: "/internet/home",
+      dropdown: [
+        { label: locale === 'ru' ? "Для дома" : locale === 'kk' ? "Үйге арналған" : "For Home", href: "/internet/home" },
+        { label: locale === 'ru' ? "Для бизнеса" : locale === 'kk' ? "Бизнеске арналған" : "For Business", href: "/internet/business" },
+      ]
+    },
+    { label: dict.monitoring || "Мониторинг", href: "/dashboard/monitoring" },
+    { label: locale === 'ru' ? "Помощь" : locale === 'kk' ? "Көмек" : "Help", href: "/help" },
+  ];
 
   // Close mobile menu completely
   const closeMobile = () => {
@@ -80,7 +64,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
             {TOP_LINKS.map(({ label, href }, i) => (
               <Link
                 key={label}
-                href={href}
+                href={getHref(href)}
                 className={`px-3 py-2 hover:text-white transition-colors duration-300 whitespace-nowrap ${
                   i === 0 ? "text-white font-semibold" : ""
                 }`}
@@ -92,13 +76,13 @@ export function Header({ locale, isAdmin }: HeaderProps) {
 
           {/* Right: app + city + language */}
           <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-1.5 hover:text-white transition-colors duration-300">
+            <Link href={getHref("/")} className="flex items-center gap-1.5 hover:text-white transition-colors duration-300">
               <Smartphone className="w-3.5 h-3.5" />
-              Мобильное приложение
+              {locale === 'ru' ? "Мобильное приложение" : locale === 'kk' ? "Мобильді қолданба" : "Mobile App"}
             </Link>
             <button className="flex items-center gap-1 hover:text-white transition-colors duration-300">
               <MapPin className="w-3.5 h-3.5 text-kt-blue" />
-              Астана
+              {locale === 'ru' ? "Астана" : "Astana"}
               <ChevronDown className="w-3 h-3" />
             </button>
             <LanguageSwitcher currentLocale={locale} />
@@ -111,7 +95,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
         <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-between h-[72px] gap-4">
 
           {/* Logo with striking branding + hover effects */}
-          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <Link href={getHref("/")} className="flex items-center gap-3 shrink-0 group">
             <div className="group-hover:scale-110 transition-transform duration-300 drop-shadow-md">
               <TelecomLogo size={44} />
             </div>
@@ -120,7 +104,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
                 ТЕЛЕКОМ
               </span>
               <span className="text-[9px] font-bold text-kt-blue tracking-[0.25em] leading-none mt-1.5 uppercase opacity-90">
-                Национальный оператор
+                {locale === 'ru' ? "Национальный оператор" : locale === 'kk' ? "Ұлттық оператор" : "National Operator"}
               </span>
             </div>
           </Link>
@@ -130,9 +114,9 @@ export function Header({ locale, isAdmin }: HeaderProps) {
             {NAV_LINKS.map(({ label, href, dropdown }) => (
               <div key={label} className="relative group/nav z-50">
                 <Link
-                  href={href}
+                  href={getHref(href)}
                   className={`px-3 py-2 text-sm font-semibold rounded-md transition-colors duration-300 flex items-center gap-1.5 ${
-                    pathname.startsWith(href) && href !== "/"
+                    pathname.startsWith(getHref(href)) && href !== "/"
                       ? "text-kt-blue"
                       : "text-slate-700 dark:text-slate-200 hover:text-kt-blue dark:hover:text-kt-blue"
                   }`}
@@ -148,7 +132,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
                       {dropdown.map(d => (
                         <Link 
                           key={d.label} 
-                          href={d.href} 
+                          href={getHref(d.href)} 
                           className="px-5 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-kt-blue dark:hover:text-kt-blue transition-colors"
                         >
                           {d.label}
@@ -171,24 +155,24 @@ export function Header({ locale, isAdmin }: HeaderProps) {
             </button>
             {isAdmin && (
               <Link
-                href="/admin"
+                href={getHref("/admin")}
                 className="text-sm font-bold bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors"
               >
-                Админ-панель
+                {locale === 'ru' ? "Админ-панель" : "Admin"}
               </Link>
             )}
             <Link
-              href="/dashboard/payments"
+              href={getHref("/dashboard/payments")}
               className="px-4 py-2 text-sm font-semibold text-kt-blue border border-kt-blue/30 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300"
             >
-              Оплатить
+              {locale === 'ru' ? "Оплатить" : locale === 'kk' ? "Төлеу" : "Pay"}
             </Link>
             <Link
-              href="/login"
+              href={getHref("/login")}
               className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-kt-blue rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-sm shadow-kt-blue/20"
             >
               <User className="w-4 h-4" />
-              Вход
+              {dict.login || "Вход"}
             </Link>
             <ThemeToggle />
           </div>
@@ -214,7 +198,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
               {TOP_LINKS.map(({ label, href }) => (
                 <Link
                   key={label}
-                  href={href}
+                  href={getHref(href)}
                   onClick={closeMobile}
                   className="text-xs shrink-0 whitespace-nowrap text-slate-500 dark:text-slate-400 hover:text-kt-blue px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700"
                 >
@@ -229,7 +213,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
                 <div key={label} className="flex flex-col border-b border-slate-50 dark:border-slate-800/50 last:border-0">
                   <div className="flex items-center justify-between">
                     <Link
-                      href={href}
+                      href={getHref(href)}
                       onClick={() => {
                         if (!dropdown) closeMobile();
                       }}
@@ -254,7 +238,7 @@ export function Header({ locale, isAdmin }: HeaderProps) {
                         {dropdown.map(d => (
                           <Link
                             key={d.label}
-                            href={d.href}
+                            href={getHref(d.href)}
                             onClick={closeMobile}
                             className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-kt-blue"
                           >
@@ -271,26 +255,26 @@ export function Header({ locale, isAdmin }: HeaderProps) {
             <div className="flex flex-col gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
               {isAdmin && (
                 <Link
-                  href="/admin"
+                  href={getHref("/admin")}
                   className="w-full text-center py-3 text-base font-bold text-white bg-red-500 rounded-xl shadow-md"
                   onClick={closeMobile}
                 >
-                  Админ-панель
+                  {locale === 'ru' ? "Админ-панель" : "Admin"}
                 </Link>
               )}
               <Link
-                href="/login"
+                href={getHref("/login")}
                 className="w-full text-center py-3 text-base font-semibold text-white bg-kt-blue rounded-xl shadow-md"
                 onClick={closeMobile}
               >
-                Вход в Личный кабинет
+                {dict.login || "Вход"}
               </Link>
               <Link
-                href="/dashboard/payments"
+                href={getHref("/dashboard/payments")}
                 className="w-full text-center py-3 text-base font-semibold text-kt-blue border-2 border-kt-blue rounded-xl"
                 onClick={closeMobile}
               >
-                Оплатить услуги
+                {locale === 'ru' ? "Оплатить услуги" : locale === 'kk' ? "Төлем" : "Pay"}
               </Link>
             </div>
           </div>

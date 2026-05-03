@@ -6,6 +6,7 @@ import { formatAmount } from "@/utils/formatCurrency";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SubscribeButton } from "@/components/SubscribeButton";
+import { TariffSkeleton } from "./TariffSkeleton";
 import {
   Wifi, Tv, Smartphone, Package2,
   Building2, CheckCircle2, Zap, Users, Star,
@@ -30,26 +31,26 @@ interface TariffCatalogProps {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-const CATEGORY_META: Record<
-  Category,
-  { label: string; icon: React.ElementType; color: string }
-> = {
-  internet: { label: "Интернет",         icon: Wifi,      color: "blue"   },
-  tv:       { label: "Телевидение",       icon: Tv,        color: "indigo" },
-  mobile:   { label: "Мобильная связь",   icon: Smartphone,color: "cyan"   },
-  combo:    { label: "Комбо",             icon: Package2,  color: "violet" },
-  b2b:      { label: "Для бизнеса",       icon: Building2, color: "amber"  },
-};
+function getCategoryMeta(category: Category, locale: string): { label: string; icon: React.ElementType; color: string } {
+  const meta: Record<Category, { label: string; icon: React.ElementType; color: string }> = {
+    internet: { label: locale === 'ru' ? "Интернет" : locale === 'kk' ? "Интернет" : "Internet",         icon: Wifi,      color: "blue"   },
+    tv:       { label: locale === 'ru' ? "Телевидение" : locale === 'kk' ? "Теледидар" : "Television",       icon: Tv,        color: "indigo" },
+    mobile:   { label: locale === 'ru' ? "Мобильная связь" : locale === 'kk' ? "Мобильді байланыс" : "Mobile",   icon: Smartphone,color: "cyan"   },
+    combo:    { label: locale === 'ru' ? "Комбо" : locale === 'kk' ? "Комбо" : "Combo",             icon: Package2,  color: "violet" },
+    b2b:      { label: locale === 'ru' ? "Для бизнеса" : locale === 'kk' ? "Бизнеске арналған" : "For Business",       icon: Building2, color: "amber"  },
+  };
+  return meta[category];
+}
 
 /** Derive visual feature chips from the tariff description for combos */
-function ComboFeatureChips({ category, speedMbps }: { category: Category; speedMbps: number | null }) {
+function ComboFeatureChips({ category, speedMbps, locale }: { category: Category; speedMbps: number | null; locale: string }) {
   if (category !== "combo" && category !== "b2b") return null;
 
   const chips = [];
-  if (speedMbps) chips.push({ icon: Wifi, label: `до ${speedMbps} Мбит/с` });
+  if (speedMbps) chips.push({ icon: Wifi, label: (locale === 'kk' ? "" : "до ") + speedMbps + (locale === 'kk' ? " Мбит/с дейін" : " Mbps") });
   if (category === "combo" || category === "b2b") {
-    chips.push({ icon: Smartphone, label: "SIM-карта" });
-    chips.push({ icon: Tv, label: "ТВ-пакет" });
+    chips.push({ icon: Smartphone, label: locale === 'kk' ? "SIM-карта" : "SIM-card" });
+    chips.push({ icon: Tv, label: locale === 'kk' ? "ТВ-пакет" : "TV package" });
   }
 
   return (
@@ -70,6 +71,8 @@ function ComboFeatureChips({ category, speedMbps }: { category: Category; speedM
 
 export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
   const [activeTab, setActiveTab] = useState<"b2c" | "b2b">("b2c");
+  const [isChangingTab, setIsChangingTab] = useState(false);
+  const locale = (dict as any).locale || "ru"; 
 
   // ── Deduplication safety net (in case DB has duplicates) ─────
   const uniqueTariffs = useMemo(
@@ -87,6 +90,13 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
     [uniqueTariffs]
   );
   const displayed = activeTab === "b2c" ? b2cTariffs : b2bTariffs;
+
+  const handleTabChange = (tab: "b2c" | "b2b") => {
+    if (tab === activeTab) return;
+    setIsChangingTab(true);
+    setActiveTab(tab);
+    setTimeout(() => setIsChangingTab(false), 400);
+  };
 
   return (
     <div>
@@ -106,7 +116,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
         <div className="flex justify-center mb-10">
           <div className="inline-flex rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-1 gap-1 shadow-sm">
             <button
-              onClick={() => setActiveTab("b2c")}
+              onClick={() => handleTabChange("b2c")}
               className={[
                 "px-6 py-2 rounded-lg text-sm font-semibold transition-all",
                 activeTab === "b2c"
@@ -114,10 +124,10 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
               ].join(" ")}
             >
-              Для дома
+              {locale === 'ru' ? "Для дома" : locale === 'kk' ? "Үйге арналған" : "For Home"}
             </button>
             <button
-              onClick={() => setActiveTab("b2b")}
+              onClick={() => handleTabChange("b2b")}
               className={[
                 "px-6 py-2 rounded-lg text-sm font-semibold transition-all",
                 activeTab === "b2b"
@@ -125,131 +135,138 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
               ].join(" ")}
             >
-              Для бизнеса
+              {locale === 'ru' ? "Для бизнеса" : locale === 'kk' ? "Бизнеске арналған" : "For Business"}
             </button>
           </div>
         </div>
 
-        {/* B2B empty placeholder */}
-        {activeTab === "b2b" && b2bTariffs.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-500 dark:text-slate-400">
-            <Building2 className="w-16 h-16 opacity-30" />
-            <p className="text-lg font-medium">Бизнес-тарифы скоро появятся</p>
-            <p className="text-sm">Для подбора корпоративного решения свяжитесь с нами: <span className="text-blue-600">b2b@telecom.kz</span></p>
-          </div>
-        )}
+        {/* Loading State or Grid */}
+        {isChangingTab || (tariffs.length === 0 && activeTab === "b2c") ? (
+           <TariffSkeleton />
+        ) : (
+          <>
+            {/* B2B empty placeholder */}
+            {activeTab === "b2b" && b2bTariffs.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-500 dark:text-slate-400">
+                <Building2 className="w-16 h-16 opacity-30" />
+                <p className="text-lg font-medium">{locale === 'ru' ? "Бизнес-тарифы скоро появятся" : locale === 'kk' ? "Бизнес-тарифтер жақында болады" : "Business tariffs coming soon"}</p>
+                <p className="text-sm">{locale === 'ru' ? "Для подбора корпоративного решения свяжитесь с нами" : locale === 'kk' ? "Корпоративтік шешімді таңдау үшін бізге хабарласыңыз" : "For corporate solutions, please contact us"}: <span className="text-blue-600">b2b@telecom.kz</span></p>
+              </div>
+            )}
 
-        {/* Grid */}
-        {displayed.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {displayed.map((tariff) => {
-              const meta = CATEGORY_META[tariff.category];
-              const Icon = meta.icon;
-              const isCombo = tariff.category === "combo";
-              const isB2B   = tariff.category === "b2b";
+            {/* Grid */}
+            {displayed.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {displayed.map((tariff) => {
+                  const meta = getCategoryMeta(tariff.category, locale);
+                  const Icon = meta.icon;
+                  const isCombo = tariff.category === "combo";
+                  const isB2B   = tariff.category === "b2b";
 
-              return (
-                <Card
-                  key={tariff.id}
-                  className={[
-                    "relative flex flex-col group transition-all bg-white dark:bg-slate-900 pt-2 overflow-hidden",
-                    isCombo ? "ring-2 ring-violet-400 dark:ring-violet-600 hover:ring-violet-500" : "hover:border-blue-300 dark:hover:border-blue-700",
-                    isB2B   ? "ring-2 ring-amber-400 dark:ring-amber-600 hover:ring-amber-500" : "",
-                  ].join(" ")}
-                >
-                  {/* Top colour bar */}
-                  <div
-                    className={[
-                      "absolute top-0 left-0 w-full h-1",
-                      isCombo ? "bg-gradient-to-r from-violet-500 to-blue-500" :
-                      isB2B   ? "bg-gradient-to-r from-amber-500 to-orange-500" :
-                      "bg-blue-500",
-                    ].join(" ")}
-                  />
-
-                  {/* Popular badge on "Black" combo */}
-                  {tariff.name === "Black" && (
-                    <div className="absolute top-4 right-4">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-600 text-white uppercase tracking-wider">
-                        <Star className="w-2.5 h-2.5" /> Топ
-                      </span>
-                    </div>
-                  )}
-
-                  <CardHeader className="pb-3">
-                    {/* Category badge */}
-                    <Badge
-                      variant="secondary"
-                      className="inline-flex w-fit bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent mb-3"
+                  return (
+                    <Card
+                      key={tariff.id}
+                      className={[
+                        "relative flex flex-col group transition-all bg-white dark:bg-slate-900 pt-2 overflow-hidden",
+                        isCombo ? "ring-2 ring-violet-400 dark:ring-violet-600 hover:ring-violet-500" : "hover:border-blue-300 dark:hover:border-blue-700",
+                        isB2B   ? "ring-2 ring-amber-400 dark:ring-amber-600 hover:ring-amber-500" : "",
+                      ].join(" ")}
                     >
-                      <Icon className="w-3 h-3 mr-1.5" />
-                      {meta.label}
-                    </Badge>
+                      {/* Top colour bar */}
+                      <div
+                        className={[
+                          "absolute top-0 left-0 w-full h-1",
+                          isCombo ? "bg-gradient-to-r from-violet-500 to-blue-500" :
+                          isB2B   ? "bg-gradient-to-r from-amber-500 to-orange-500" :
+                          "bg-blue-500",
+                        ].join(" ")}
+                      />
 
-                    <CardTitle className="text-xl text-slate-800 dark:text-slate-100">
-                      {tariff.name}
-                    </CardTitle>
-
-                    {/* Speed pill */}
-                    {tariff.speed_mbps && (
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <Zap className="w-3.5 h-3.5 text-blue-500" />
-                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                          до {tariff.speed_mbps} Мбит/с
-                        </span>
-                      </div>
-                    )}
-
-                    <CardDescription className="mt-2 text-sm leading-relaxed min-h-[56px]">
-                      {tariff.description}
-                    </CardDescription>
-
-                    {/* Combo feature chips */}
-                    <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} />
-                  </CardHeader>
-
-                  <CardContent className="flex-1 pb-4">
-                    {/* Price */}
-                    <div className="flex items-baseline gap-1 mt-2">
-                      <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
-                        {formatAmount(tariff.price)}
-                      </span>
-                      <span className="text-lg font-bold text-slate-500 dark:text-slate-400">₸</span>
-                      <span className="text-sm font-medium text-slate-500 dark:text-slate-400">/ мес</span>
-                    </div>
-
-                    {/* Included perks */}
-                    <ul className="mt-5 flex flex-col gap-2.5 text-sm text-slate-600 dark:text-slate-400">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                        Безлимитный трафик
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                        Подключение бесплатно
-                      </li>
-                      {(isCombo || isB2B) && (
-                        <li className="flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                          {isB2B ? "Статический IP-адрес" : "Единый счёт на все услуги"}
-                        </li>
+                      {/* Popular badge on "Black" combo */}
+                      {tariff.name === "Black" && (
+                        <div className="absolute top-4 right-4">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-600 text-white uppercase tracking-wider">
+                            <Star className="w-2.5 h-2.5" /> {locale === 'ru' ? "Топ" : "Top"}
+                          </span>
+                        </div>
                       )}
-                      {isB2B && (
-                        <li className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-blue-500 shrink-0" />
-                          Персональный менеджер
-                        </li>
-                      )}
-                    </ul>
-                  </CardContent>
 
-                  <CardFooter>
-                    <SubscribeButton tariffId={tariff.id} dict={dict} />
-                  </CardFooter>
-                </Card>
-              );
-            })}
-          </div>
+                      <CardHeader className="pb-3">
+                        {/* Category badge */}
+                        <Badge
+                          variant="secondary"
+                          className="inline-flex w-fit bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent mb-3"
+                        >
+                          <Icon className="w-3 h-3 mr-1.5" />
+                          {meta.label}
+                        </Badge>
+
+                        <CardTitle className="text-xl text-slate-800 dark:text-slate-100">
+                          {tariff.name}
+                        </CardTitle>
+
+                        {/* Speed pill */}
+                        {tariff.speed_mbps && (
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <Zap className="w-3.5 h-3.5 text-blue-500" />
+                            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                              {locale === 'kk' ? "" : "до "} {tariff.speed_mbps} {locale === 'kk' ? " Мбит/с дейін" : " Mbps"}
+                            </span>
+                          </div>
+                        )}
+
+                        <CardDescription className="mt-2 text-sm leading-relaxed min-h-[56px]">
+                          {tariff.description}
+                        </CardDescription>
+
+                        {/* Combo feature chips */}
+                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} locale={locale} />
+                      </CardHeader>
+
+                      <CardContent className="flex-1 pb-4">
+                        {/* Price */}
+                        <div className="flex items-baseline gap-1 mt-2">
+                          <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
+                            {formatAmount(tariff.price)}
+                          </span>
+                          <span className="text-lg font-bold text-slate-500 dark:text-slate-400">₸</span>
+                          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">/ {dict.perMonth || "мес"}</span>
+                        </div>
+
+                        {/* Included perks */}
+                        <ul className="mt-5 flex flex-col gap-2.5 text-sm text-slate-600 dark:text-slate-400">
+                          <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                            {dict.unlimited || "Безлимитный трафик"}
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                            {dict.freeConn || "Подключение бесплатно"}
+                          </li>
+                          {(isCombo || isB2B) && (
+                            <li className="flex items-center gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                              {isB2B ? (locale === 'kk' ? "Статикалық IP-мекенжай" : "Static IP-address") : (locale === 'kk' ? "Барлық қызметтерге арналған бірыңғай шот" : "Single bill for all services")}
+                            </li>
+                          )}
+                          {isB2B && (
+                            <li className="flex items-center gap-2">
+                              <Users className="w-4 h-4 text-blue-500 shrink-0" />
+                              {locale === 'kk' ? "Жеке менеджер" : "Personal manager"}
+                            </li>
+                          )}
+                        </ul>
+                      </CardContent>
+
+                      <CardFooter>
+                        <SubscribeButton tariffId={tariff.id} dict={dict} />
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

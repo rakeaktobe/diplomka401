@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
 export function TechnologyTabs() {
   const [activeTab, setActiveTab] = useState<"ftth" | "adsl">("ftth");
+  const params = useParams();
+  const locale = params?.lang as string || "ru";
 
   return (
     <div className="flex border-b border-slate-200 dark:border-slate-700 shrink-0">
@@ -15,7 +18,7 @@ export function TechnologyTabs() {
             : "text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-200"
         }`}
       >
-        Оптика (FTTH)
+        {locale === 'ru' ? "Оптика (FTTH)" : locale === 'kk' ? "Оптика (FTTH)" : "Fiber (FTTH)"}
       </button>
       <button
         onClick={() => setActiveTab("adsl")}
@@ -25,7 +28,7 @@ export function TechnologyTabs() {
             : "text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-200"
         }`}
       >
-        Медь (ADSL)
+        {locale === 'ru' ? "Медь (ADSL)" : locale === 'kk' ? "Мыс (ADSL)" : "Copper (ADSL)"}
       </button>
     </div>
   );

@@ -1,21 +1,20 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, isTextUIPart } from "ai";
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, AlertTriangle } from "lucide-react";
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
-    onError: (error) => {
-      console.error("Chat Error:", error);
+  const { messages, append, status, error, reload } = useChat({
+    api: "/api/chat",
+    onError: (err: any) => {
+      console.error("Chat Error:", err);
     },
-  });
+  } as any) as any;
 
   const isLoading = status === "streaming" || status === "submitted";
 
@@ -27,15 +26,31 @@ export function Chatbot() {
     if (isOpen) {
       scrollToBottom();
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isLoading]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
     
-    sendMessage({ text: trimmed });
+    await append({ role: 'user', content: trimmed });
     setInput("");
+  };
+
+  const getMessageContent = (m: any): string => {
+    if (m.content) return m.content;
+    
+    // Fallback for complex message structures in newer AI SDK versions
+    if (m.parts) {
+      return (m.parts as any[])
+        .map(part => {
+          if (part.type === 'text') return part.text;
+          return '';
+        })
+        .join('');
+    }
+    
+    return "";
   };
 
   return (
@@ -86,21 +101,8 @@ export function Chatbot() {
             </div>
           )}
 
-          {messages.map((m) => {
-            // Get text content from parts (more robust extraction for v6 SDK)
-            const textContent = (m.parts || [])
-              .map((p: any) => p.text || (typeof p === 'string' ? p : ''))
-              .join("");
-
-            // Fallback for legacy SDK format
-            const legacyContent = (m as any).content;
-            const finalContent = textContent || (typeof legacyContent === 'string' ? legacyContent : '');
-
-            // Ensure we at least show something if it has an id
-            if (!finalContent && m.role === 'assistant' && !isLoading) {
-               // Render raw parts for debugging if completely empty
-               return <div key={m.id} className="text-red-500 text-xs">Unrenderable message: {JSON.stringify(m.parts)}</div>;
-            }
+          {messages.map((m: any) => {
+            const content = getMessageContent(m);
 
             return (
               <div
@@ -124,7 +126,7 @@ export function Chatbot() {
                       : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-sm shadow-sm"
                   }`}
                 >
-                  {finalContent ? finalContent.split("\n").map((line: string, i: number) => (
+                  {content ? content.split("\n").map((line, i) => (
                     <span key={i}>
                       {line}
                       <br />
@@ -145,6 +147,21 @@ export function Chatbot() {
                 <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                 <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="flex flex-col items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-xl text-center">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              <p className="text-xs text-red-600 dark:text-red-400">
+                Произошла ошибка при получении ответа. Пожалуйста, попробуйте еще раз.
+              </p>
+              <button 
+                onClick={() => reload()}
+                className="text-xs font-medium text-red-700 dark:text-red-300 underline hover:no-underline"
+              >
+                Повторить запрос
+              </button>
             </div>
           )}
 
