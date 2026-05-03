@@ -170,7 +170,7 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
       <div className="absolute bottom-10 left-4 md:left-8 z-30 flex items-center gap-8">
         {/* Pagination Dots */}
         <div className="flex items-center gap-3">
-          {SLIDES.map((_, i) => (
+          {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}

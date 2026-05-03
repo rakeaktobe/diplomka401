@@ -14,35 +14,44 @@ import { Database } from "@/lib/database.types";
 // inter.variable just needs to be a valid CSS class name carrier.
 const inter = { variable: "font-sans", className: "font-sans" } as const;
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://telecom.kz"),
-  title: {
-    default: "ТЕЛЕКОМ | Надежный провайдер",
-    template: "%s | ТЕЛЕКОМ",
-  },
-  description: "Скоростной интернет, мобильная связь и TV+ для дома и бизнеса в Казахстане.",
-  openGraph: {
-    title: "ТЕЛЕКОМ | Надежный провайдер",
-    description: "Скоростной интернет, мобильная связь и TV+ для дома и бизнеса в Казахстане.",
-    url: "https://telecom.kz",
-    siteName: "ТЕЛЕКОМ",
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
-    locale: "ru_RU",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "ТЕЛЕКОМ | Надежный провайдер",
-    description: "Скоростной интернет, мобильная связь и TV+ для дома и бизнеса в Казахстане.",
-    images: ["/og-image.jpg"],
-  },
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-    ],
-    shortcut: "/favicon.svg",
-  },
-};
+export async function generateMetadata(
+  { params }: { params: Promise<{ lang: string }> }
+): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
+  const t = dict.metadata;
+
+  return {
+    metadataBase: new URL("https://telecom.kz"),
+    title: {
+      default: t.title,
+      template: `%s | ${t.siteName}`,
+    },
+    description: t.description,
+    openGraph: {
+      title: t.title,
+      description: t.description,
+      url: `https://telecom.kz/${locale}`,
+      siteName: t.siteName,
+      images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+      locale: locale === 'kk' ? 'kk_KZ' : locale === 'ru' ? 'ru_RU' : 'en_US',
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t.title,
+      description: t.description,
+      images: ["/og-image.jpg"],
+    },
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+      ],
+      shortcut: "/favicon.svg",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,

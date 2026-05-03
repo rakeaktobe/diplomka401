@@ -1,5 +1,10 @@
 {
   "locale": "en",
+  "metadata": {
+    "title": "TELECOM | Reliable Provider",
+    "siteName": "TELECOM",
+    "description": "High-speed internet, mobile communication and TV+ for home and business in Kazakhstan."
+  },
   "navbar": {
     "tariffs":    "Tariffs",
     "monitoring": "Monitoring",
@@ -96,6 +101,27 @@
   },
   "dashboard": {
     "cabinet":       "Dashboard",
+    "welcome":       "Good day",
+    "status":        "Status",
+    "active":        "Active",
+    "id":            "Client ID",
+    "balance":       "Current balance",
+    "pay_until":     "Pay until",
+    "top_up":        "Top up account",
+    "active_services": "Active services",
+    "all_services":  "All services",
+    "manage_services": "Manage your tariffs and options.",
+    "network_status": "Network status",
+    "stable":        "Stable",
+    "support":       "Support",
+    "no_tickets":    "No active tickets",
+    "support_desc":  "All your requests are processed and closed.",
+    "new_ticket":    "Open new ticket",
+    "news":          "News",
+    "account_info":  "Account information",
+    "contract_num":  "Contract number",
+    "phone":         "Personal phone",
+    "address":       "Connection address",
     "logout":        "Sign Out",
     "nav": {
       "home":          "Home",
@@ -104,6 +130,20 @@
       "support":       "Support",
       "status":        "Network Status",
       "profile":       "Profile"
+    },
+    "speedtest": {
+      "title": "Speed Test",
+      "start": "Start Test",
+      "ping": "Ping",
+      "download": "Download",
+      "upload": "Upload",
+      "testing_ping": "Measuring latency...",
+      "testing_download": "Testing download...",
+      "testing_upload": "Testing upload...",
+      "completed": "Test completed",
+      "mbps": "Mbps",
+      "ms": "ms",
+      "again": "Repeat"
     },
     "client":        "Client",
     "overview": {
