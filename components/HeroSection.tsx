@@ -16,55 +16,55 @@ interface Slide {
   ctaHref: string;
 }
 
-const SLIDES: Slide[] = [
-  {
-    image: "/images/baige 5g ad.png",
-    badge: "5G Интернет",
-    title: "Скорость нового поколения",
-    subtitle: "Подключайте 5G от Kazakhtelecom и забудьте о задержках. Максимальная скорость для вашего комфорта.",
-    cta: "Подключить сейчас",
-    ctaHref: "/internet/home"
-  },
-  {
-    image: "/images/kazakhtelecom prime ad.png",
-    badge: "Premium Подписка",
-    title: "Kazakhtelecom Prime",
-    subtitle: "Единая подписка на интернет, ТВ и мобильную связь с эксклюзивными бонусами и приоритетной поддержкой.",
-    cta: "Узнать больше",
-    ctaHref: "/combo"
-  },
-  {
-    image: "/images/general tv+ ad.png",
-    badge: "TV+ Сервис",
-    title: "Более 170 каналов в Full HD",
-    subtitle: "Смотрите любимые фильмы и шоу на любом устройстве. Кинотеатры онлайн в одном приложении.",
-    cta: "Выбрать пакет",
-    ctaHref: "/tv/digital"
-  }
-];
+interface Slide {
+  id: string;
+  image_url: string;
+  badge_ru: string | null;
+  badge_kk: string | null;
+  badge_en: string | null;
+  title_ru: string | null;
+  title_kk: string | null;
+  title_en: string | null;
+  subtitle_ru: string | null;
+  subtitle_kk: string | null;
+  subtitle_en: string | null;
+  cta_ru: string | null;
+  cta_kk: string | null;
+  cta_en: string | null;
+  cta_href: string | null;
+}
 
 interface HeroSectionProps {
+  slides: Slide[];
   dict: Dictionary["hero"];
   locale: string;
 }
 
-export function HeroSection({ locale }: HeroSectionProps) {
+export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   const nextSlide = useCallback(() => {
-    setCurrent((prev) => (prev === SLIDES.length - 1 ? 0 : prev + 1));
-  }, []);
+    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  }, [slides.length]);
 
   const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1));
+    setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
   useEffect(() => {
-    if (isHovered) return;
+    if (isHovered || slides.length <= 1) return;
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, [nextSlide, isHovered]);
+  }, [nextSlide, isHovered, slides.length]);
+
+  if (!slides.length) return null;
+
+  const currentSlide = slides[current];
+  const badge = (currentSlide as any)[`badge_${locale}`] || currentSlide.badge_ru;
+  const title = (currentSlide as any)[`title_${locale}`] || currentSlide.title_ru;
+  const subtitle = (currentSlide as any)[`subtitle_${locale}`] || currentSlide.subtitle_ru;
+  const cta = (currentSlide as any)[`cta_${locale}`] || currentSlide.cta_ru;
 
   return (
     <section 
@@ -75,7 +75,7 @@ export function HeroSection({ locale }: HeroSectionProps) {
       {/* Background Images Layer */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
-          {SLIDES.map((slide, index) => (
+          {slides.map((slide, index) => (
             index === current && (
               <motion.div
                 key={index}
@@ -86,8 +86,8 @@ export function HeroSection({ locale }: HeroSectionProps) {
                 className="absolute inset-0"
               >
                 <Image 
-                  src={slide.image}
-                  alt={slide.title}
+                  src={slide.image_url || '/favicon.svg'}
+                  alt={title || ''}
                   fill
                   priority={index === 0}
                   className="object-cover object-center"
@@ -115,7 +115,7 @@ export function HeroSection({ locale }: HeroSectionProps) {
           >
             <span className="inline-flex items-center gap-2 bg-blue-600/20 backdrop-blur-md text-blue-400 text-xs font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase tracking-widest">
               <Zap className="w-3 h-3" />
-              {SLIDES[current].badge}
+              {badge}
             </span>
           </motion.div>
 
@@ -127,7 +127,7 @@ export function HeroSection({ locale }: HeroSectionProps) {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05]"
           >
-            {SLIDES[current].title}
+            {title}
           </motion.h1>
 
           {/* Subtitle */}
@@ -138,7 +138,7 @@ export function HeroSection({ locale }: HeroSectionProps) {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-lg md:text-xl text-slate-200/90 leading-relaxed max-w-lg font-medium"
           >
-            {SLIDES[current].subtitle}
+            {subtitle}
           </motion.p>
 
           {/* CTA Group */}
@@ -150,17 +150,17 @@ export function HeroSection({ locale }: HeroSectionProps) {
             className="flex gap-4 mt-4 flex-wrap"
           >
             <Link
-              href={`/${locale}${SLIDES[current].ctaHref}`}
+              href={`/${locale}${currentSlide.cta_href}`}
               className="inline-flex items-center gap-2 bg-blue-600 text-white font-black px-10 py-5 rounded-2xl hover:bg-blue-700 transition-all duration-300 shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-1"
             >
-              {SLIDES[current].cta}
+              {cta}
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               href={`/${locale}/dashboard`}
               className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white font-bold px-10 py-5 rounded-2xl hover:bg-white/20 backdrop-blur-md transition-all duration-300"
             >
-              {locale === 'ru' ? "Личный кабинет" : locale === 'kk' ? "Жеке кабинет" : "Personal Account"}
+              {dict.ctaDash}
             </Link>
           </motion.div>
         </div>

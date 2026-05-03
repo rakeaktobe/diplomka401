@@ -26,14 +26,24 @@ export default async function Home({
     .select("*")
     .order("price", { ascending: true });
 
+  const { data: news } = await supabase
+    .from("news")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const { data: heroSlides } = await supabase
+    .from("hero_slides")
+    .select("*")
+    .order("display_order", { ascending: true });
+
   return (
     <div className="flex flex-col w-full">
 
       {/* ── 1. Hero Carousel ─────────────────────────────────── */}
-      <HeroSection dict={t.hero} locale={locale} />
+      <HeroSection slides={heroSlides as any ?? []} dict={t.hero} locale={locale} />
 
       {/* ── 2. Quick Links (Онлайн-каналы связи) ─────────────── */}
-      <QuickLinks locale={locale} />
+      <QuickLinks locale={locale} dict={t.quickLinks} />
 
       {/* ── 3. Address Checker ───────────────────────────────── */}
       <AddressChecker />
@@ -54,10 +64,10 @@ export default async function Home({
                   <Icon className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
-                  {t.features[key].title}
+                  {t.features[key as keyof typeof t.features].title}
                 </h3>
                 <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {t.features[key].desc}
+                  {t.features[key as keyof typeof t.features].desc}
                 </p>
               </div>
             ))}
@@ -73,11 +83,10 @@ export default async function Home({
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
             <div>
               <h2 className="text-3xl font-black text-slate-900 dark:text-white">
-                Пакеты услуг
+                {t.home.packagesTitle}
               </h2>
               <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm max-w-lg">
-                Технология FTTH (оптика до квартиры) гарантирует стабильную скорость без
-                падений в часы пик. Выберите подходящий пакет ниже.
+                {t.home.packagesDesc}
               </p>
             </div>
 
@@ -92,21 +101,21 @@ export default async function Home({
             </div>
             <div>
               <p className="font-bold text-base leading-tight">
-                Для новых абонентов — 50% скидка на первый месяц
+                {t.home.promoBannerTitle}
               </p>
               <p className="text-sm text-white/80 mt-0.5">
-                Акция действует при подключении любого тарифа FTTH до конца месяца
+                {t.home.promoBannerDesc}
               </p>
             </div>
           </div>
 
           {/* Tariff catalog */}
-          <TariffCatalog tariffs={tariffs ?? []} dict={t.catalog} />
+          <TariffCatalog tariffs={tariffs as any ?? []} dict={t.catalog} />
         </div>
       </section>
 
       {/* ── 6. Corporate News Section ──────────────────────────── */}
-      <NewsRibbon />
+      <NewsRibbon news={news as any ?? []} dict={t.news} locale={locale} />
 
     </div>
   );

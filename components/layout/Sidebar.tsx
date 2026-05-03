@@ -72,7 +72,7 @@ export function Sidebar() {
           </div>
           <div className="flex flex-col overflow-hidden">
             <span className="text-sm font-bold text-slate-900 dark:text-white truncate">
-              {locale === 'ru' ? "Клиент" : locale === 'kk' ? "Клиент" : "Client"}
+              {dict.client}
             </span>
             <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate">ID: 8823491</span>
           </div>

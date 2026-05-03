@@ -1,43 +1,14 @@
 import Link from "next/link";
 import { Phone, Mail, Instagram, Facebook, Youtube, Twitter, Smartphone, Apple } from "lucide-react";
 import { TelecomLogo } from "@/components/TelecomLogo";
+import type { Dictionary } from "@/lib/i18n";
 
-// ── Data ─────────────────────────────────────────────────────────────────────
+// ── types ─────────────────────────────────────────────────────────────────────
 
-const ABOUT_LINKS = [
-  { label: "О нас",                    href: "/about" },
-  { label: "Новости",                  href: "/about" },
-  { label: "Инвесторам",               href: "/about" },
-  { label: "Карьера",                  href: "/about" },
-  { label: "Устойчивое развитие",      href: "/about" },
-];
-
-const B2C_LINKS = [
-  { label: "Интернет",          href: "/shop" },
-  { label: "Телевидение",       href: "/shop" },
-  { label: "Мобильная связь",   href: "/shop" },
-  { label: "Пакеты услуг",      href: "/shop" },
-];
-
-const SUPPORT_LINKS = [
-  { label: "Помощь и инструкции",        href: "/dashboard/support" },
-  { label: "Оплата без регистрации",     href: "/dashboard/payments" },
-  { label: "Проверка скорости",          href: "/" },
-  { label: "Контакты",                   href: "/about" },
-];
-
-const LEGAL_LINKS = [
-  "Политика конфиденциальности",
-  "Публичная оферта",
-  "Карта сайта",
-];
-
-const SOCIALS = [
-  { icon: Instagram, label: "Instagram", href: "/",   hover: "hover:bg-pink-600" },
-  { icon: Facebook,  label: "Facebook",  href: "/",   hover: "hover:bg-blue-600" },
-  { icon: Youtube,   label: "YouTube",   href: "/",   hover: "hover:bg-red-600"  },
-  { icon: Twitter,   label: "Twitter",   href: "/",   hover: "hover:bg-sky-500"  },
-];
+interface FooterProps {
+  dict: Dictionary["footer"];
+  locale: string;
+}
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -68,7 +39,42 @@ function LinkList({ links }: { links: { label: string; href: string }[] }) {
 
 // ── Main Footer ───────────────────────────────────────────────────────────────
 
-export function Footer() {
+export function Footer({ dict, locale }: FooterProps) {
+  const ABOUT_LINKS = [
+    { label: dict.about,                    href: `/${locale}/about` },
+    { label: dict.news,                     href: `/${locale}/news` },
+    { label: dict.investors,                href: `/${locale}/about` },
+    { label: dict.career,                   href: `/${locale}/about` },
+    { label: dict.sustainability,           href: `/${locale}/about` },
+  ];
+
+  const B2C_LINKS = [
+    { label: dict.internet,          href: `/${locale}/shop` },
+    { label: dict.tv,                href: `/${locale}/shop` },
+    { label: dict.mobile,            href: `/${locale}/shop` },
+    { label: dict.packages,          href: `/${locale}/shop` },
+  ];
+
+  const SUPPORT_LINKS = [
+    { label: dict.helpdesk,                 href: `/${locale}/dashboard/support` },
+    { label: dict.payment,                  href: `/${locale}/dashboard/payments` },
+    { label: dict.speedTest,                href: "/" },
+    { label: dict.contacts,                 href: `/${locale}/about` },
+  ];
+
+  const LEGAL_LINKS = [
+    { label: dict.privacy, href: `/${locale}/about` },
+    { label: dict.offer,   href: `/${locale}/about` },
+    { label: dict.siteMap, href: `/${locale}/about` },
+  ];
+
+  const SOCIALS = [
+    { icon: Instagram, label: "Instagram", href: "/",   hover: "hover:bg-pink-600" },
+    { icon: Facebook,  label: "Facebook",  href: "/",   hover: "hover:bg-blue-600" },
+    { icon: Youtube,   label: "YouTube",   href: "/",   hover: "hover:bg-red-600"  },
+    { icon: Twitter,   label: "Twitter",   href: "/",   hover: "hover:bg-sky-500"  },
+  ];
+
   return (
     <footer className="bg-[#1a1a1a] text-slate-300">
 
@@ -80,7 +86,7 @@ export function Footer() {
           <div className="lg:col-span-1 flex flex-col gap-5">
             {/* Logo — links to homepage */}
             <div className="flex items-center gap-2.5">
-              <Link href="/" className="flex items-center gap-2.5 group">
+              <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
                 <div className="group-hover:scale-110 transition-transform duration-300">
                   <TelecomLogo size={44} />
                 </div>
@@ -92,8 +98,7 @@ export function Footer() {
 
             {/* Tagline */}
             <p className="text-sm text-slate-400 leading-relaxed">
-              Крупнейший телекоммуникационный оператор, предоставляющий полный
-              спектр современных услуг связи.
+              {dict.tagline}
             </p>
 
             {/* App store buttons — external links kept as <a> */}
@@ -106,7 +111,7 @@ export function Footer() {
               >
                 <Apple className="w-6 h-6 text-white shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 leading-none">Скачать в</p>
+                  <p className="text-[10px] text-slate-400 leading-none">{dict.downloadApp}</p>
                   <p className="text-sm font-semibold text-white leading-tight mt-0.5">App Store</p>
                 </div>
               </a>
@@ -118,35 +123,35 @@ export function Footer() {
               >
                 <Smartphone className="w-6 h-6 text-white shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 leading-none">Установить на</p>
+                  <p className="text-[10px] text-slate-400 leading-none">{dict.installOn}</p>
                   <p className="text-sm font-semibold text-white leading-tight mt-0.5">Google Play</p>
                 </div>
               </a>
             </div>
           </div>
 
-          {/* ── Col 2: О компании ──────────────────── */}
+          {/* ── Col 2: About ──────────────────── */}
           <div>
-            <ColumnTitle>О компании</ColumnTitle>
+            <ColumnTitle>{dict.about}</ColumnTitle>
             <LinkList links={ABOUT_LINKS} />
           </div>
 
-          {/* ── Col 3: Частным лицам ───────────────── */}
+          {/* ── Col 3: For Home ───────────────── */}
           <div>
-            <ColumnTitle>Частным лицам</ColumnTitle>
+            <ColumnTitle>{dict.b2c}</ColumnTitle>
             <LinkList links={B2C_LINKS} />
           </div>
 
-          {/* ── Col 4: Поддержка ───────────────────── */}
+          {/* ── Col 4: Support ───────────────────── */}
           <div>
-            <ColumnTitle>Поддержка</ColumnTitle>
+            <ColumnTitle>{dict.support}</ColumnTitle>
             <LinkList links={SUPPORT_LINKS} />
           </div>
 
-          {/* ── Col 5: Контакты ────────────────────── */}
+          {/* ── Col 5: Contacts ────────────────────── */}
           <div className="flex flex-col gap-5">
             <div>
-              <ColumnTitle>Контакты</ColumnTitle>
+              <ColumnTitle>{dict.contacts}</ColumnTitle>
 
               {/* Phone */}
               <a
@@ -157,7 +162,7 @@ export function Footer() {
                   <Phone className="w-4 h-4 text-kt-blue group-hover:text-white transition-colors duration-300" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-wide">Колл-центр</p>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-wide">{dict.callCenter}</p>
                   <p className="text-xl font-black text-white leading-tight">160</p>
                 </div>
               </a>
@@ -179,7 +184,7 @@ export function Footer() {
             {/* Social icons */}
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-3">
-                Мы в соцсетях
+                {dict.socials}
               </p>
               <div className="flex items-center gap-2.5">
                 {SOCIALS.map(({ icon: Icon, label, href, hover }) => (
@@ -205,15 +210,15 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-sm text-slate-500 text-center md:text-left">
-            © {new Date().getFullYear()} АО «ТЕЛЕКОМ». Все права защищены.
+            © {new Date().getFullYear()} {dict.copyright}
           </p>
 
           {/* Legal links */}
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            {LEGAL_LINKS.map((label) => (
+            {LEGAL_LINKS.map(({ label, href }) => (
               <Link
                 key={label}
-                href="/about"
+                href={href}
                 className="text-sm text-slate-500 hover:text-kt-blue transition-colors duration-200 whitespace-nowrap"
               >
                 {label}

@@ -21,11 +21,13 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cn } from "@/lib/utils";
+import SpeedTest from "./SpeedTest";
 
 interface DashboardContentProps {
   profile: any;
   subscriptions: any[];
   user: any;
+  dict: any;
 }
 
 const CATEGORY_ICON: Record<string, React.ElementType> = {
@@ -51,7 +53,7 @@ const item = {
   show: { opacity: 1, y: 0 }
 };
 
-export function DashboardContent({ profile, subscriptions, user }: DashboardContentProps) {
+export function DashboardContent({ profile, subscriptions, user, dict }: DashboardContentProps) {
   return (
     <motion.div 
       variants={container}
@@ -63,20 +65,20 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
       <motion.div variants={item} className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-            Қайырлы күн,{" "}
+            {dict.welcome},{" "}
             <span className="text-blue-600 dark:text-blue-400">
               {profile?.full_name?.split(' ')[0] ?? "Пользователь"}!
             </span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            Ваш аккаунт защищен и активен.
+            {dict.active}
           </p>
         </div>
         <div className="flex items-center gap-3">
-           <Badge variant="blue" className="px-4 py-1.5 text-xs">Статус: Premium</Badge>
+           <Badge variant="blue" className="px-4 py-1.5 text-xs">{dict.status}: Premium</Badge>
            <div className="text-right hidden sm:block">
-             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">ID Клиента</div>
+             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{dict.id}</div>
              <div className="text-sm font-black dark:text-white">8823491</div>
            </div>
         </div>
@@ -91,7 +93,7 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
             
             <CardHeader className="pb-0 relative z-10">
               <CardTitle className="text-xs font-black text-blue-100 uppercase tracking-[0.2em] flex items-center gap-2">
-                <Wallet className="w-4 h-4" /> Текущий баланс
+                <Wallet className="w-4 h-4" /> {dict.balance}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 relative z-10">
@@ -100,13 +102,13 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
               </div>
               <div className="flex items-center gap-2 text-blue-100/80 text-sm font-medium">
                 <Calendar className="w-4 h-4" />
-                <span>Оплата до 15.05.2026</span>
+                <span>{dict.pay_until} 15.05.2026</span>
               </div>
             </CardContent>
             <CardFooter className="pt-4 relative z-10">
               <Link href="/dashboard/payments" className="w-full">
                 <Button className="w-full bg-white text-blue-700 hover:bg-blue-50 border-none font-bold rounded-2xl h-12">
-                  Пополнить счет
+                  {dict.top_up}
                 </Button>
               </Link>
             </CardFooter>
@@ -118,12 +120,12 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
           <Card glass className="h-full">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
-                <CardTitle>Активные услуги</CardTitle>
-                <CardDescription>Управление вашими тарифами и опциями.</CardDescription>
+                <CardTitle>{dict.active_services}</CardTitle>
+                <CardDescription>{dict.manage_services}</CardDescription>
               </div>
               <Link href="/dashboard/subscriptions">
                 <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 font-bold gap-1 group">
-                  Все услуги <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  {dict.all_services} <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
             </CardHeader>
@@ -172,19 +174,24 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Speed Test Card */}
+        <motion.div variants={item} className="lg:col-span-1">
+           <SpeedTest dict={dict.speedtest} />
+        </motion.div>
+
         {/* Network Status Card */}
         <motion.div variants={item}>
-           <Card glass className="overflow-hidden border-none">
+           <Card glass className="overflow-hidden border-none h-full">
              <CardHeader className="pb-2">
                <CardTitle className="text-sm flex items-center gap-2">
-                 <Zap className="w-4 h-4 text-amber-500" /> Состояние сети
+                 <Zap className="w-4 h-4 text-amber-500" /> {dict.network_status}
                </CardTitle>
              </CardHeader>
              <CardContent>
                <div className="flex items-end justify-between mb-4">
                   <div className="text-3xl font-black text-emerald-500">99.9%</div>
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Стабильно</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{dict.stable}</div>
                </div>
                <div className="flex gap-1 h-1.5 w-full">
                   {[...Array(20)].map((_, i) => (
@@ -197,18 +204,18 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
 
         {/* Support Tickets */}
         <motion.div variants={item}>
-           <Card glass className="border-none">
+           <Card glass className="border-none h-full">
              <CardHeader className="pb-2">
                <CardTitle className="text-sm flex items-center gap-2">
-                 <Info className="w-4 h-4 text-blue-500" /> Поддержка
+                 <Info className="w-4 h-4 text-blue-500" /> {dict.support}
                </CardTitle>
              </CardHeader>
              <CardContent>
-                <div className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Нет активных тикетов</div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Все ваши запросы обработаны и закрыты.</p>
+                <div className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">{dict.no_tickets}</div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">{dict.support_desc}</p>
                 <Link href="/dashboard/support">
                   <Button variant="outline" size="sm" className="w-full rounded-xl text-xs font-bold border-slate-200 dark:border-slate-800">
-                    Открыть новый тикет
+                    {dict.new_ticket}
                   </Button>
                 </Link>
              </CardContent>
@@ -217,9 +224,9 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
 
         {/* News/Updates */}
         <motion.div variants={item}>
-           <Card glass className="border-none">
+           <Card glass className="border-none h-full">
              <CardHeader className="pb-2">
-               <CardTitle className="text-sm">Новости</CardTitle>
+               <CardTitle className="text-sm">{dict.news}</CardTitle>
              </CardHeader>
              <CardContent className="space-y-3">
                 <div className="group cursor-pointer">
@@ -239,20 +246,20 @@ export function DashboardContent({ profile, subscriptions, user }: DashboardCont
       <motion.div variants={item}>
         <Card glass className="overflow-hidden border-none">
           <CardHeader>
-            <CardTitle>Информация об аккаунте</CardTitle>
+            <CardTitle>{dict.account_info}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="space-y-1">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">Номер договора</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">{dict.contract_num}</div>
                 <div className="text-sm font-bold dark:text-white">ЛС-84820129</div>
               </div>
               <div className="space-y-1">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">Личный телефон</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">{dict.phone}</div>
                 <div className="text-sm font-bold dark:text-white">{profile?.phone ?? "Не указан"}</div>
               </div>
               <div className="space-y-1 md:col-span-2">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">Адрес подключения</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">{dict.address}</div>
                 <div className="text-sm font-bold dark:text-white truncate">{profile?.address ?? "Не указан"}</div>
               </div>
             </div>

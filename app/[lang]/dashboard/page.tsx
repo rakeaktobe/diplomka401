@@ -1,5 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { DashboardContent } from "@/components/dashboard/DashboardContent";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 
 export const metadata = {
   title: "Личный кабинет",
@@ -13,7 +15,8 @@ export default async function DashboardPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -39,6 +42,7 @@ export default async function DashboardPage({
       profile={profile} 
       subscriptions={subscriptions} 
       user={user} 
+      dict={dict.dashboard}
     />
   );
 }

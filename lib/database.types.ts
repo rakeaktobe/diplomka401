@@ -38,27 +38,98 @@ export interface Database {
       tariffs: {
         Row: {
           id: string
-          name: string
-          speed_mbps: number
+          name_ru: string
+          name_kk: string | null
+          name_en: string | null
+          speed_mbps: number | null
           price: number
-          description: string | null
+          description_ru: string | null
+          description_kk: string | null
+          description_en: string | null
           category: string
         }
         Insert: {
           id?: string
-          name: string
-          speed_mbps: number
+          name_ru: string
+          name_kk?: string | null
+          name_en?: string | null
+          speed_mbps: number | null
           price: number
-          description?: string | null
+          description_ru?: string | null
+          description_kk?: string | null
+          description_en?: string | null
           category: string
         }
         Update: {
           id?: string
-          name?: string
-          speed_mbps?: number
+          name_ru?: string
+          name_kk?: string | null
+          name_en?: string | null
+          speed_mbps?: number | null
           price?: number
-          description?: string | null
+          description_ru?: string | null
+          description_kk?: string | null
+          description_en?: string | null
           category?: string
+        }
+      }
+      news: {
+        Row: {
+          id: string
+          title_ru: string | null
+          title_kk: string | null
+          title_en: string | null
+          excerpt_ru: string | null
+          excerpt_kk: string | null
+          excerpt_en: string | null
+          content_ru: string | null
+          content_kk: string | null
+          content_en: string | null
+          date_ru: string | null
+          date_kk: string | null
+          date_en: string | null
+          gradient: string | null
+          image_url: string | null
+          category: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title_ru?: string | null
+          title_kk?: string | null
+          title_en?: string | null
+          excerpt_ru?: string | null
+          excerpt_kk?: string | null
+          excerpt_en?: string | null
+          content_ru?: string | null
+          content_kk?: string | null
+          content_en?: string | null
+          date_ru?: string | null
+          date_kk?: string | null
+          date_en?: string | null
+          gradient?: string | null
+          image_url?: string | null
+          category?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title_ru?: string | null
+          title_kk?: string | null
+          title_en?: string | null
+          excerpt_ru?: string | null
+          excerpt_kk?: string | null
+          excerpt_en?: string | null
+          content_ru?: string | null
+          content_kk?: string | null
+          content_en?: string | null
+          date_ru?: string | null
+          date_kk?: string | null
+          date_en?: string | null
+          gradient?: string | null
+          image_url?: string | null
+          category?: string
+          created_at?: string
         }
       }
       subscriptions: {

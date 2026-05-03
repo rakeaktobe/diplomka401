@@ -124,7 +124,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
               ].join(" ")}
             >
-              {locale === 'ru' ? "Для дома" : locale === 'kk' ? "Үйге арналған" : "For Home"}
+              {dict.forHome}
             </button>
             <button
               onClick={() => handleTabChange("b2b")}
@@ -135,7 +135,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800",
               ].join(" ")}
             >
-              {locale === 'ru' ? "Для бизнеса" : locale === 'kk' ? "Бизнеске арналған" : "For Business"}
+              {dict.forBusiness}
             </button>
           </div>
         </div>
@@ -149,8 +149,8 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
             {activeTab === "b2b" && b2bTariffs.length === 0 && (
               <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-500 dark:text-slate-400">
                 <Building2 className="w-16 h-16 opacity-30" />
-                <p className="text-lg font-medium">{locale === 'ru' ? "Бизнес-тарифы скоро появятся" : locale === 'kk' ? "Бизнес-тарифтер жақында болады" : "Business tariffs coming soon"}</p>
-                <p className="text-sm">{locale === 'ru' ? "Для подбора корпоративного решения свяжитесь с нами" : locale === 'kk' ? "Корпоративтік шешімді таңдау үшін бізге хабарласыңыз" : "For corporate solutions, please contact us"}: <span className="text-blue-600">b2b@telecom.kz</span></p>
+                <p className="text-lg font-medium">{dict.comingSoon}</p>
+                <p className="text-sm">{dict.b2bContact}: <span className="text-blue-600">b2b@telecom.kz</span></p>
               </div>
             )}
 
@@ -158,10 +158,13 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
             {displayed.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {displayed.map((tariff) => {
-                  const meta = getCategoryMeta(tariff.category, locale);
+                  const meta = getCategoryMeta(tariff.category, dict);
                   const Icon = meta.icon;
                   const isCombo = tariff.category === "combo";
                   const isB2B   = tariff.category === "b2b";
+                  
+                  const displayName = (tariff as any)[`name_${locale}`] || tariff.name_ru;
+                  const displayDesc = (tariff as any)[`description_${locale}`] || tariff.description_ru;
 
                   return (
                     <Card
@@ -183,10 +186,10 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                       />
 
                       {/* Popular badge on "Black" combo */}
-                      {tariff.name === "Black" && (
+                      {tariff.name_ru === "Black" && (
                         <div className="absolute top-4 right-4">
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-600 text-white uppercase tracking-wider">
-                            <Star className="w-2.5 h-2.5" /> {locale === 'ru' ? "Топ" : "Top"}
+                            <Star className="w-2.5 h-2.5" /> {dict.top}
                           </span>
                         </div>
                       )}
@@ -202,7 +205,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                         </Badge>
 
                         <CardTitle className="text-xl text-slate-800 dark:text-slate-100">
-                          {tariff.name}
+                          {displayName}
                         </CardTitle>
 
                         {/* Speed pill */}
@@ -210,17 +213,17 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                           <div className="flex items-center gap-1.5 mt-1">
                             <Zap className="w-3.5 h-3.5 text-blue-500" />
                             <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                              {locale === 'kk' ? "" : "до "} {tariff.speed_mbps} {locale === 'kk' ? " Мбит/с дейін" : " Mbps"}
+                              {dict.upTo} {tariff.speed_mbps} {dict.mbps}
                             </span>
                           </div>
                         )}
 
                         <CardDescription className="mt-2 text-sm leading-relaxed min-h-[56px]">
-                          {tariff.description}
+                          {displayDesc}
                         </CardDescription>
 
                         {/* Combo feature chips */}
-                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} locale={locale} />
+                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} dict={dict} />
                       </CardHeader>
 
                       <CardContent className="flex-1 pb-4">
@@ -230,29 +233,29 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                             {formatAmount(tariff.price)}
                           </span>
                           <span className="text-lg font-bold text-slate-500 dark:text-slate-400">₸</span>
-                          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">/ {dict.perMonth || "мес"}</span>
+                          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">/ {dict.perMonth}</span>
                         </div>
 
                         {/* Included perks */}
                         <ul className="mt-5 flex flex-col gap-2.5 text-sm text-slate-600 dark:text-slate-400">
                           <li className="flex items-center gap-2">
                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                            {dict.unlimited || "Безлимитный трафик"}
+                            {dict.unlimited}
                           </li>
                           <li className="flex items-center gap-2">
                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                            {dict.freeConn || "Подключение бесплатно"}
+                            {dict.freeConn}
                           </li>
                           {(isCombo || isB2B) && (
                             <li className="flex items-center gap-2">
                               <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
-                              {isB2B ? (locale === 'kk' ? "Статикалық IP-мекенжай" : "Static IP-address") : (locale === 'kk' ? "Барлық қызметтерге арналған бірыңғай шот" : "Single bill for all services")}
+                              {isB2B ? dict.staticIp : dict.singleBill}
                             </li>
                           )}
                           {isB2B && (
                             <li className="flex items-center gap-2">
                               <Users className="w-4 h-4 text-blue-500 shrink-0" />
-                              {locale === 'kk' ? "Жеке менеджер" : "Personal manager"}
+                              {dict.personalManager}
                             </li>
                           )}
                         </ul>

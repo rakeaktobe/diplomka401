@@ -4,7 +4,11 @@
     "tariffs":    "Tariffs",
     "monitoring": "Monitoring",
     "login":      "Sign In",
-    "cabinet":    "Cabinet"
+    "cabinet":    "Cabinet",
+    "about":      "About Us",
+    "shop":       "Shop",
+    "tv":         "TV+",
+    "search":     "Search dashboard..."
   },
   "hero": {
     "badge":    "Available across Kazakhstan",
@@ -35,12 +39,39 @@
     "internet": "Internet",
     "tv":       "TV",
     "mobile":   "Mobile",
-    "perMonth":  "₸ / mo",
+    "combo":    "Combo",
+    "b2b":      "For Business",
+    "perMonth":  "mo",
     "unlimited": "Unlimited traffic",
     "freeConn":  "Free connection",
     "subscribe": "Subscribe",
     "subscribing": "Subscribing...",
-    "subscribed": "Success!"
+    "subscribed": "Success!",
+    "forHome":   "For Home",
+    "forBusiness": "For Business",
+    "comingSoon": "Coming Soon",
+    "b2bContact": "For corporate solutions, please contact us",
+    "top": "Top",
+    "upTo": "up to",
+    "mbps": "Mbps",
+    "staticIp": "Static IP-address",
+    "singleBill": "Single bill for all services",
+    "personalManager": "Personal manager"
+  },
+  "news": {
+    "title": "News and Press Center",
+    "subtitle": "The latest events, promotions, and important notifications from TELECOM.",
+    "allNews": "All News",
+    "readMore": "Read More",
+    "promosTitle": "Promotions and Offers",
+    "promosSubtitle": "Learn more about our products and special offers.",
+    "allPromos": "All Promotions"
+  },
+  "home": {
+    "packagesTitle": "Service Packages",
+    "packagesDesc": "FTTH technology (fiber to the home) guarantees stable speed without drops during peak hours. Choose a suitable package below.",
+    "promoBannerTitle": "For new subscribers — 50% discount for the first month",
+    "promoBannerDesc": "Offer valid when connecting any FTTH plan until the end of the month"
   },
   "auth": {
     "loginTitle":    "Welcome back",
@@ -71,8 +102,10 @@
       "subscriptions": "My Subscriptions",
       "payments":      "Payments",
       "support":       "Support",
-      "status":        "Network Status"
+      "status":        "Network Status",
+      "profile":       "Profile"
     },
+    "client":        "Client",
     "overview": {
       "title":         "Welcome",
       "subtitle":      "Your personal service management dashboard.",
@@ -140,16 +173,43 @@
       "changeBtn":   "Change plan"
     }
   },
+  "quickLinks": {
+    "title": "Online Communication Channels",
+    "callCenter": "Call Center",
+    "messageUs": "Message us",
+    "ourBot": "Our bot",
+    "business": "Business",
+    "corpClients": "Corp. clients",
+    "check": "Check",
+    "orderStatus": "Order status"
+  },
   "footer": {
     "services":  "Services",
-    "internet":  "Home Internet",
-    "tv":        "Digital TV",
-    "mobile":    "Mobile Service",
+    "internet":  "Internet",
+    "tv":        "TV",
+    "mobile":    "Mobile",
     "support":   "Support",
-    "helpdesk":  "Help Desk",
+    "helpdesk":  "Help & Instructions",
     "faq":       "FAQ",
-    "payment":   "Pay for services",
+    "payment":   "Payment without registration",
     "contacts":  "Contacts",
-    "copyright": "All rights reserved."
+    "copyright": "TELECOM JSC. All rights reserved.",
+    "about":     "About Us",
+    "b2c":       "For Individuals",
+    "b2b":       "For Business",
+    "news":      "News",
+    "investors": "Investors",
+    "career":    "Career",
+    "sustainability": "Sustainability",
+    "speedTest": "Speed Test",
+    "privacy":   "Privacy Policy",
+    "offer":     "Public Offer",
+    "siteMap":   "Site Map",
+    "tagline":   "The largest telecommunications operator providing a full range of modern communication services.",
+    "downloadApp": "Download in",
+    "installOn": "Install on",
+    "callCenter": "Call Center",
+    "socials":   "Social Media",
+    "packages":  "Service Packages"
   }
 }

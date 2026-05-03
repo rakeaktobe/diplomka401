@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone, MessageCircle, Send, Briefcase, Search } from "lucide-react";
 import { type Locale, getLocalizedHref } from "@/lib/i18n";
+import type { Dictionary } from "@/lib/i18n";
 
 interface QuickLinkItem {
   icon: React.ElementType;
@@ -12,42 +13,43 @@ interface QuickLinkItem {
 
 interface QuickLinksProps {
   locale: Locale;
+  dict: Dictionary["quickLinks"];
 }
 
-export function QuickLinks({ locale }: QuickLinksProps) {
+export function QuickLinks({ locale, dict }: QuickLinksProps) {
   const ITEMS: QuickLinkItem[] = [
     {
       icon: Phone,
       label: "160",
-      sublabel: locale === 'ru' ? "Колл-центр" : locale === 'kk' ? "Байланыс орталығы" : "Call Center",
+      sublabel: dict.callCenter,
       bg: "bg-kt-blue",
       href: "tel:160",
     },
     {
       icon: MessageCircle,
       label: "WhatsApp",
-      sublabel: locale === 'ru' ? "Написать нам" : locale === 'kk' ? "Бізге жазыңыз" : "Message us",
+      sublabel: dict.messageUs,
       bg: "bg-[#25D366]",
       href: "https://wa.me/77771234567",
     },
     {
       icon: Send,
       label: "Telegram",
-      sublabel: locale === 'ru' ? "Наш бот" : locale === 'kk' ? "Біздің бот" : "Our bot",
+      sublabel: dict.ourBot,
       bg: "bg-[#229ED9]",
       href: "https://t.me/telecom_kz_bot",
     },
     {
       icon: Briefcase,
-      label: locale === 'ru' ? "Бизнес" : locale === 'kk' ? "Бизнес" : "Business",
-      sublabel: locale === 'ru' ? "Корп. клиентам" : locale === 'kk' ? "Корп. клиенттерге" : "Corp. clients",
+      label: dict.business,
+      sublabel: dict.corpClients,
       bg: "bg-slate-800",
       href: "/internet/business",
     },
     {
       icon: Search,
-      label: locale === 'ru' ? "Проверка" : locale === 'kk' ? "Тексеру" : "Check",
-      sublabel: locale === 'ru' ? "Статус заявки" : locale === 'kk' ? "Өтінім мәртебесі" : "Order status",
+      label: dict.check,
+      sublabel: dict.orderStatus,
       bg: "bg-kt-blue",
       href: "/dashboard",
     },
@@ -58,7 +60,7 @@ export function QuickLinks({ locale }: QuickLinksProps) {
       <div className="max-w-screen-xl mx-auto px-4">
         {/* Title */}
         <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-8">
-          {locale === 'ru' ? "Онлайн-каналы связи" : locale === 'kk' ? "Онлайн байланыс арналары" : "Online Communication Channels"}
+          {dict.title}
         </h2>
 
         {/* Items grid */}

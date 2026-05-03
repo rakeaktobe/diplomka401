@@ -49,7 +49,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex flex-1 w-full relative">
-      <Sidebar />
+      <Sidebar dict={dict.dashboard} />
 
       <div className="flex flex-col flex-1 w-full bg-slate-50 dark:bg-slate-950 relative h-[calc(100vh-4rem)] overflow-y-auto transition-colors">
 

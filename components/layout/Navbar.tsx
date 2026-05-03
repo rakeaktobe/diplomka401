@@ -50,11 +50,11 @@ export function Navbar({ dict, locale }: NavbarProps) {
                 href={`/${locale}/about`}
                 className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all"
               >
-                О компании
+                {dict.about}
               </Link>
               <nav className="flex items-center gap-6 ml-4 pl-4 border-l border-slate-200 dark:border-slate-800">
-                <Link href={`/${locale}/shop`} className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-all">Магазин</Link>
-                <Link href={`/${locale}/tv`} className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-all">TV+</Link>
+                <Link href={`/${locale}/shop`} className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-all">{dict.shop}</Link>
+                <Link href={`/${locale}/tv`} className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-all">{dict.tv}</Link>
               </nav>
             </nav>
           )}
@@ -66,7 +66,7 @@ export function Navbar({ dict, locale }: NavbarProps) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
             <input 
               type="text" 
-              placeholder="Поиск по кабинету..." 
+              placeholder={dict.search} 
               className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-900 border-none text-sm focus:ring-2 focus:ring-blue-500/20 transition-all"
             />
           </div>

@@ -103,7 +103,7 @@ export default async function RootLayout({
             {children}
           </main>
 
-          <Footer />
+          <Footer dict={dict.footer} locale={locale} />
           <Chatbot />
         </ThemeProvider>
       </body>
