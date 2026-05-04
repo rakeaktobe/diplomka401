@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Users, CreditCard, Ticket, Activity, ArrowUpRight, ShieldCheck, Zap, Banknote } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 interface AdminDashboardContentProps {
   stats: {
@@ -29,6 +30,9 @@ const item = {
 };
 
 export function AdminDashboardContent({ stats }: AdminDashboardContentProps) {
+  const params = useParams();
+  const locale = (params?.lang as string) || "ru";
+
   const statCards = [
     {
       title: "Всего пользователей",
@@ -149,19 +153,19 @@ export function AdminDashboardContent({ stats }: AdminDashboardContentProps) {
                      Используйте эти ярлыки для быстрого перехода к важным разделам управления.
                   </p>
                   <div className="grid grid-cols-2 gap-3">
-                     <Link href="/admin/users" className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
+                     <Link href={`/${locale}/admin/users`} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
                         <Users className="w-5 h-5 mx-auto mb-2 text-blue-400 group-hover:scale-110 transition-transform" />
                         <div className="text-xs font-bold">Пользователи</div>
                      </Link>
-                     <Link href="/admin/tariffs" className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
+                     <Link href={`/${locale}/admin/tariffs`} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
                         <CreditCard className="w-5 h-5 mx-auto mb-2 text-emerald-400 group-hover:scale-110 transition-transform" />
                         <div className="text-xs font-bold">Тарифы</div>
                      </Link>
-                     <Link href="/admin/tickets" className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
+                     <Link href={`/${locale}/admin/tickets`} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
                         <Ticket className="w-5 h-5 mx-auto mb-2 text-amber-400 group-hover:scale-110 transition-transform" />
                         <div className="text-xs font-bold">Тикеты</div>
                      </Link>
-                     <Link href="/admin/payments" className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
+                     <Link href={`/${locale}/admin/payments`} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group text-center">
                         <Banknote className="w-5 h-5 mx-auto mb-2 text-purple-400 group-hover:scale-110 transition-transform" />
                         <div className="text-xs font-bold">Платежи</div>
                      </Link>

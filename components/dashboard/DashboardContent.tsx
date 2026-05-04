@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
   Wallet, 
@@ -54,6 +55,9 @@ const item = {
 };
 
 export function DashboardContent({ profile, subscriptions, user, dict }: DashboardContentProps) {
+  const params = useParams();
+  const locale = (params?.lang as string) || "ru";
+
   return (
     <motion.div 
       variants={container}
@@ -106,7 +110,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
               </div>
             </CardContent>
             <CardFooter className="pt-4 relative z-10">
-              <Link href="/dashboard/payments" className="w-full">
+              <Link href={`/${locale}/dashboard/payments`} className="w-full">
                 <Button className="w-full bg-white text-blue-700 hover:bg-blue-50 border-none font-bold rounded-2xl h-12">
                   {dict.top_up}
                 </Button>
@@ -123,7 +127,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
                 <CardTitle>{dict.active_services}</CardTitle>
                 <CardDescription>{dict.manage_services}</CardDescription>
               </div>
-              <Link href="/dashboard/subscriptions">
+              <Link href={`/${locale}/dashboard/subscriptions`}>
                 <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 font-bold gap-1 group">
                   {dict.all_services} <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
@@ -137,7 +141,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
                   description={dict.subscriptions?.emptyDesc || "Подключите интернет или ТВ, чтобы начать пользоваться всеми преимуществами."}
                   action={{
                     label: dict.catalog?.subscribe || "Выбрать тариф",
-                    onClick: () => window.location.href = "/#tariffs"
+                    onClick: () => window.location.href = `/${locale}#tariffs`
                   }}
                 />
               ) : (
@@ -145,8 +149,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
                   {subscriptions.slice(0, 4).map((sub) => {
                     const tariff   = sub.tariffs;
                     const IconComp = CATEGORY_ICON[tariff?.category ?? "internet"] ?? Wifi;
-                    const locale = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'ru') as 'ru' | 'kk' | 'en';
-                    const tariffName = tariff?.[`name_${locale}`] || tariff?.name_ru || tariff?.name;
+                    const tariffName = tariff?.[`name_${locale}`] || tariff?.name;
 
                     return (
                       <motion.div
@@ -216,7 +219,7 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
              <CardContent>
                 <div className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">{dict.no_tickets}</div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">{dict.support_desc}</p>
-                <Link href="/dashboard/support">
+                <Link href={`/${locale}/dashboard/support`}>
                   <Button variant="outline" size="sm" className="w-full rounded-xl text-xs font-bold border-slate-200 dark:border-slate-800">
                     {dict.new_ticket}
                   </Button>

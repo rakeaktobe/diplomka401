@@ -1,11 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
-import { convertToModelMessages, streamText } from "ai";
+import { streamText } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
 
-const DEFAULT_MODEL = "gemini-1.5-flash";
+const DEFAULT_MODEL = "gemini-3-flash-preview";
 
 export async function POST(req: Request) {
   try {
@@ -63,10 +63,10 @@ ${tariffsDataText}
     const result = streamText({
       model: google(DEFAULT_MODEL),
       system: systemPrompt,
-      messages: await convertToModelMessages(messages),
+      messages: messages,
     });
 
-    return result.toTextStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
     console.error("[AI Chat] Route Error:", error);

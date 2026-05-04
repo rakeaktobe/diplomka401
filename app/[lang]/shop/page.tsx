@@ -75,7 +75,7 @@ export default async function ShopPage({
 
       {/* ── Address Checker ─────────────────────────────────── */}
       <div className="bg-kt-gray-light dark:bg-slate-900 pb-16">
-        <AddressChecker />
+        <AddressChecker dict={dict.addressChecker} locale={locale} />
       </div>
 
     </div>

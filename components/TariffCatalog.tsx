@@ -18,12 +18,12 @@ type Category = "internet" | "tv" | "mobile" | "combo" | "b2b";
 
 interface Tariff {
   id: string;
-  name_ru: string;
+  name: string;
   name_kk: string | null;
   name_en: string | null;
   speed_mbps: number | null;
   price: number;
-  description_ru: string;
+  description: string;
   description_kk: string | null;
   description_en: string | null;
   category: Category;
@@ -82,7 +82,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
 
   // ── Deduplication safety net (in case DB has duplicates) ─────
   const uniqueTariffs = useMemo(
-    () => Array.from(new Map(tariffs.map((t) => [t.name_ru, t])).values()),
+    () => Array.from(new Map(tariffs.map((t) => [t.name, t])).values()),
     [tariffs]
   );
 
@@ -162,8 +162,8 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                   const isCombo = tariff.category === "combo";
                   const isB2B   = tariff.category === "b2b";
                   
-                  const displayName = (tariff as any)[`name_${locale}`] || tariff.name_ru;
-                  const displayDesc = (tariff as any)[`description_${locale}`] || tariff.description_ru;
+                  const displayName = (tariff as any)[`name_${locale}`] || tariff.name;
+                  const displayDesc = (tariff as any)[`description_${locale}`] || tariff.description;
 
                   return (
                     <Card
@@ -183,7 +183,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                         ].join(" ")}
                       />
 
-                      {tariff.name_ru === "Black" && (
+                      {tariff.name === "Black" && (
                         <div className="absolute top-4 right-4">
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-600 text-white uppercase tracking-wider">
                             <Star className="w-2.5 h-2.5" /> {dict.top}

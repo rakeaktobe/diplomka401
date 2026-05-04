@@ -55,7 +55,8 @@ export default async function proxy(request: NextRequest) {
   );
 
   // If no locale in URL, redirect to default or cookie locale
-  if (!pathnameHasLocale) {
+  // Ignore API routes so they don't get redirected
+  if (!pathnameHasLocale && !pathname.startsWith('/api')) {
     const localeCookie = request.cookies.get('NEXT_LOCALE')?.value;
     const locale = (localeCookie && locales.includes(localeCookie as any)) 
       ? localeCookie 

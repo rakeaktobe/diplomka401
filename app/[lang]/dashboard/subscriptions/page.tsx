@@ -27,12 +27,12 @@ type Category = "internet" | "tv" | "mobile" | "combo" | "b2b";
 
 interface Tariff {
   id: string;
-  name_ru: string;
+  name: string;
   name_kk: string | null;
   name_en: string | null;
   speed_mbps: number | null;
   price: number;
-  description_ru: string;
+  description: string;
   category: Category;
 }
 
@@ -70,7 +70,7 @@ export default async function SubscriptionsPage({
       id,
       status,
       next_billing_date,
-      tariffs ( id, name_ru, name_kk, name_en, speed_mbps, price, description_ru, category )
+      tariffs ( id, name, name_kk, name_en, speed_mbps, price, description, category )
     `)
     .eq("user_id", user?.id ?? "");
 
@@ -107,7 +107,7 @@ export default async function SubscriptionsPage({
             const cat    = (tariff.category as Category) ?? "internet";
             const meta   = CATEGORY_STYLE[cat] ?? CATEGORY_STYLE.internet;
             const Icon   = meta.icon;
-            const tariffName = tariff[`name_${locale}`] || tariff.name_ru;
+            const tariffName = tariff[`name_${locale}`] || tariff.name;
 
             return (
               <Card
