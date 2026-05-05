@@ -212,6 +212,3 @@ export function TicketManager({ dict }: TicketManagerProps) {
     </div>
   );
 }
-  </div>
-  );
-}
