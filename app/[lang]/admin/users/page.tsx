@@ -1,5 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import UserTable from "./UserTable";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 import { Database } from "@/lib/database.types";
 
 type UserProfile = Database['public']['Tables']['profiles']['Row'] & {
@@ -14,7 +16,8 @@ export default async function AdminUsersPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
   const supabase = await createClient();
 
   // 1. Fetch users with their profiles and active subscriptions (joined with tariffs)
@@ -47,6 +50,7 @@ export default async function AdminUsersPage({
       <UserTable 
         users={(users as any) || []} 
         tariffs={tariffs || []} 
+        dict={dict}
       />
     </div>
   );

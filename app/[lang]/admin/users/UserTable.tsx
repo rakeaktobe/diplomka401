@@ -33,9 +33,10 @@ type UserProfile = {
 interface UserTableProps {
   users: UserProfile[];
   tariffs: Tariff[];
+  dict: any;
 }
 
-export default function UserTable({ users, tariffs }: UserTableProps) {
+export default function UserTable({ users, tariffs, dict }: UserTableProps) {
   const [isPending, startTransition] = useTransition();
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [modalType, setModalType] = useState<"balance" | "subscription" | null>(null);
@@ -109,11 +110,11 @@ export default function UserTable({ users, tariffs }: UserTableProps) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Пользователь</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Роль</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Баланс</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Активный тариф</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Управление</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.user || "Пользователь"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{dict?.dashboard?.status || "Роль"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.balance || "Баланс"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.active_services || "Активный тариф"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{dict?.dashboard?.manage_services || "Управление"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">

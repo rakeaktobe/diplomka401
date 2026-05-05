@@ -28,7 +28,7 @@ BEGIN
   
   -- Insert a payment record for the subscription fee (Removed non-existent payment_method)
   INSERT INTO payments (user_id, amount, status)
-  VALUES (p_user_id, -v_price, 'completed');
+  VALUES (p_user_id, -v_price, 'success');
   
   -- Insert the active subscription
   INSERT INTO subscriptions (user_id, tariff_id, status, next_billing_date)

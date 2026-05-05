@@ -1,9 +1,15 @@
 import { createClient } from "@/utils/supabase/server";
 import { AdminDashboardContent } from "@/components/admin/AdminDashboardContent";
+import { getDictionary } from "@/lib/i18n-server";
+import { Locale } from "@/lib/i18n";
 
-export const metadata = {
-  title: "Админ-панель | Обзор",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as Locale || "ru");
+  return {
+    title: `${dict.navbar.adminPanel} | ${dict.admin.dashboard.title}`,
+  };
+}
 
 export default async function AdminOverview({
   params,
@@ -11,7 +17,8 @@ export default async function AdminOverview({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
   const supabase = await createClient();
 
   // 1. Total users
@@ -30,6 +37,7 @@ export default async function AdminOverview({
 
   return (
     <AdminDashboardContent 
+      dict={dict}
       stats={{
         totalUsers: totalUsers || 0,
         activeSubs: activeSubs || 0,

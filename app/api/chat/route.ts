@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { streamText } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n-server";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -13,13 +14,8 @@ export async function POST(req: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     const { messages, locale = 'ru' }: { messages: any[], locale?: string } = await req.json();
     
-    // Load dictionary for the current locale
-    let dict;
-    try {
-      dict = require(`@/dictionaries/${locale}.json`);
-    } catch {
-      dict = require("@/dictionaries/ru.json");
-    }
+    // Load dictionary using the server-side helper
+    const dict = await getDictionary(locale as Locale);
 
     if (!apiKey) {
       console.error("[AI Chat] GEMINI_API_KEY is missing in environment variables.");

@@ -97,8 +97,8 @@ export default function PaymentList({ initialPayments }: PaymentListProps) {
                     </span>
                   </td>
                   <td className="px-8 py-6">
-                    <Badge variant={payment.status === 'completed' ? 'default' : 'outline'} className={payment.status === 'completed' ? 'bg-green-500' : ''}>
-                      {payment.status === 'completed' ? 'Успешно' : payment.status}
+                    <Badge variant={payment.status === 'success' ? 'default' : 'outline'} className={payment.status === 'success' ? 'bg-green-500' : ''}>
+                      {payment.status === 'success' ? 'Успешно' : payment.status}
                     </Badge>
                   </td>
                   <td className="px-8 py-6 text-right">

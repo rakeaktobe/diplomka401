@@ -21,6 +21,7 @@ type Tariff = {
 
 interface TariffListProps {
   initialTariffs: Tariff[];
+  dict: any;
 }
 
 const CATEGORY_ICON: Record<string, any> = {
@@ -31,7 +32,7 @@ const CATEGORY_ICON: Record<string, any> = {
   b2b: Shield,
 };
 
-export default function TariffList({ initialTariffs }: TariffListProps) {
+export default function TariffList({ initialTariffs, dict }: TariffListProps) {
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTariff, setEditingTariff] = useState<Tariff | null>(null);
@@ -126,11 +127,11 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Тариф</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Категория</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Цена</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Характеристики</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Действие</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.admin?.dashboard?.tariffs || "Тариф"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{dict?.admin?.dashboard?.system || "Категория"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.overview?.balance || "Цена"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.active_services || "Характеристики"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{dict?.dashboard?.manage_services || "Действие"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">

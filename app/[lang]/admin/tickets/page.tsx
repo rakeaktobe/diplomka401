@@ -2,29 +2,36 @@ import { createClient } from "@/utils/supabase/server";
 import TicketList from "./TicketList";
 import { Database } from "@/lib/database.types";
 
-type TicketWithProfile = Database['public']['Tables']['tickets']['Row'] & {
-  profiles: { full_name: string | null } | null;
-};
-
+/**
+ * Admin Tickets Page (Server Component)
+ * Fetches all support tickets with author profile information.
+ */
 export default async function AdminTicketsPage({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = lang || "ru";
   const supabase = await createClient();
 
+  // Fetch all tickets with author names from the profiles table.
+  // The is_admin() RLS policy allows admins to see all records.
   const { data: tickets, error } = await supabase
     .from("tickets")
-    .select("*, profiles(full_name)")
+    .select(`
+      *,
+      profiles (
+        full_name
+      )
+    `)
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching tickets:", error);
+    console.error("[AdminTickets] Error fetching tickets:", error);
   }
 
   return (
-    <TicketList initialTickets={(tickets as TicketWithProfile[]) || []} />
+    <TicketList initialTickets={(tickets as any) || []} />
   );
 }

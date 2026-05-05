@@ -37,7 +37,7 @@ export async function updateUserBalance(userId: string, amount: number) {
   await supabase.from("payments").insert({
     user_id: userId,
     amount: amount,
-    status: "completed",
+    status: "success",
     // @ts-expect-error: admin_manual is a valid status/method in DB but might be missing in generated types
     payment_method: "admin_manual",
   });

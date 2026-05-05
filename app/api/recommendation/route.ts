@@ -1,6 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { generateText } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -20,13 +22,8 @@ export async function POST(req: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     const { download, upload, ping, locale = 'ru' } = await req.json();
 
-    // Load dictionary for the current locale
-    let dict;
-    try {
-      dict = require(`@/dictionaries/${locale}.json`);
-    } catch {
-      dict = require("@/dictionaries/ru.json");
-    }
+    // Load dictionary using the server-side helper
+    const dict = await getDictionary(locale as Locale);
 
     if (!apiKey) {
       return new Response(
@@ -57,7 +54,18 @@ export async function POST(req: Request) {
         .join("\n");
     }
 
-    const systemPrompt = `${dict.ai_recommendation.role}
+    // Identify language name for the prompt
+    const languageNames: Record<string, string> = {
+      ru: "Russian",
+      kk: "Kazakh",
+      en: "English"
+    };
+    const currentLanguage = languageNames[locale] || "Russian";
+
+    const systemPrompt = `You are a helpful expert assistant for Kazakhtelecom.
+    CRITICAL: You MUST respond strictly in ${currentLanguage}.
+    
+    ${dict.ai_recommendation.role}
     ${dict.ai_recommendation.language_rule}
     
     ${dict.ai_recommendation.user_results}

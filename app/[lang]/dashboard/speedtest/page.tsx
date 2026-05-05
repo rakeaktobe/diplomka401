@@ -34,7 +34,7 @@ export default async function SpeedTestPage({
       </div>
 
       <div className="w-full max-w-2xl mx-auto">
-        <SpeedTest dict={dict.dashboard.speedtest} />
+        <SpeedTest dict={dict.dashboard.speedtest} locale={locale} />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">

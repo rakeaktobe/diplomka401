@@ -181,7 +181,7 @@ BEGIN
 
     -- Insert payment record (negative for deduction)
     INSERT INTO public.payments (user_id, amount, status)
-    VALUES (p_user_id, -v_price, 'completed');
+    VALUES (p_user_id, -v_price, 'success');
 
     -- Insert subscription record
     INSERT INTO public.subscriptions (user_id, tariff_id, status, next_billing_date)
