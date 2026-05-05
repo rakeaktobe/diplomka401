@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n";
+import { revalidateSubscriptions } from "@/app/actions/billing";
 
 interface SubscribeButtonProps {
   tariffId: string;
@@ -81,6 +82,8 @@ export function SubscribeButton({ tariffId, dict }: SubscribeButtonProps) {
       }
 
       setSuccess(true);
+      await revalidateSubscriptions(); // Purge server-side Next.js Cache
+      router.refresh(); // Purge client-side Router Cache
       setTimeout(() => {
         router.push("/dashboard/subscriptions");
       }, 900);

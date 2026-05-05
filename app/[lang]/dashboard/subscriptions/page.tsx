@@ -66,15 +66,26 @@ export default async function SubscriptionsPage({
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: subscriptions, error } = await supabase
-    .from("subscriptions")
-    .select(`
-      id,
-      status,
-      next_billing_date,
-      tariffs ( id, name, name_ru, name_kk, name_en, speed_mbps, price, description, description_ru, category )
-    `)
-    .eq("user_id", user?.id ?? "");
+  let subscriptions = null;
+  let error = null;
+
+  try {
+    const res = await supabase
+      .from("subscriptions")
+      .select(`
+        id,
+        status,
+        next_billing_date,
+        tariffs ( id, name_ru, name_kk, name_en, speed_mbps, price, description_ru, category )
+      `)
+      .eq("user_id", user?.id ?? "");
+      
+    if (res.error) throw res.error;
+    subscriptions = res.data;
+  } catch (err) {
+    console.error("[Subscriptions] Error fetching subscriptions:", err);
+    error = err;
+  }
 
   return (
     <div className="space-y-6 max-w-5xl">

@@ -73,9 +73,16 @@ CREATE TABLE IF NOT EXISTS public.news (
 -- 2.1. ДОБАВЛЕНИЕ КОЛОНОК (для старых баз, где таблицы уже были)
 DO $$
 BEGIN
+    -- Переименовываем старые колонки, если они назывались по-старому (из 000001_initial_schema.sql)
+    BEGIN ALTER TABLE public.tariffs RENAME COLUMN name TO name_ru; EXCEPTION WHEN undefined_column THEN NULL; END;
+    BEGIN ALTER TABLE public.tariffs RENAME COLUMN description TO description_ru; EXCEPTION WHEN undefined_column THEN NULL; END;
+
+    -- Добавляем колонки, если их не было
     BEGIN ALTER TABLE public.profiles ADD COLUMN balance NUMERIC DEFAULT 0.0; EXCEPTION WHEN duplicate_column THEN NULL; END;
     BEGIN ALTER TABLE public.profiles ADD COLUMN role TEXT DEFAULT 'user'; EXCEPTION WHEN duplicate_column THEN NULL; END;
 
+    BEGIN ALTER TABLE public.tariffs ADD COLUMN name_ru TEXT; EXCEPTION WHEN duplicate_column THEN NULL; END;
+    BEGIN ALTER TABLE public.tariffs ADD COLUMN description_ru TEXT; EXCEPTION WHEN duplicate_column THEN NULL; END;
     BEGIN ALTER TABLE public.tariffs ADD COLUMN name_kk TEXT; EXCEPTION WHEN duplicate_column THEN NULL; END;
     BEGIN ALTER TABLE public.tariffs ADD COLUMN name_en TEXT; EXCEPTION WHEN duplicate_column THEN NULL; END;
     BEGIN ALTER TABLE public.tariffs ADD COLUMN description_kk TEXT; EXCEPTION WHEN duplicate_column THEN NULL; END;
