@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Loader2, AlertCircle } from "lucide-react";
+import { getDictionaryClient } from "@/lib/i18n";
 
 export default function LoginPage({
   params,
@@ -16,6 +17,7 @@ export default function LoginPage({
 }) {
   const { lang } = use(params);
   const locale = (lang as any) || "ru";
+  const dict = getDictionaryClient(locale);
   const router = useRouter();
   const supabase = createClient();
 
@@ -37,9 +39,9 @@ export default function LoginPage({
 
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
-          setErrorMsg("Неверный email или пароль.");
+          setErrorMsg(dict.auth.errInvalidCreds);
         } else {
-          setErrorMsg("Ошибка авторизации. Попробуйте снова.");
+          setErrorMsg(dict.auth.errGeneral);
         }
         setLoading(false);
       } else {
@@ -67,7 +69,7 @@ export default function LoginPage({
         router.refresh();
       }
     } catch {
-      setErrorMsg("Ошибка сети. Проверьте подключение к базе данных.");
+      setErrorMsg(dict.auth.errNetwork);
       setLoading(false);
     }
   };
@@ -76,14 +78,14 @@ export default function LoginPage({
     <div className="flex-1 flex flex-col items-center justify-center p-4">
       <Link href={`/${locale}`} className="flex items-center gap-2 text-blue-600 mb-8">
         <Activity className="h-8 w-8" />
-        <span className="text-2xl font-bold tracking-tight">ТЕЛЕКОМ</span>
+        <span className="text-2xl font-bold tracking-tight">{dict.auth.brandName}</span>
       </Link>
       
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">С возвращением</CardTitle>
+          <CardTitle className="text-2xl text-center">{dict.auth.loginTitle}</CardTitle>
           <CardDescription className="text-center">
-            Введите ваши данные для входа в личный кабинет
+            {dict.auth.loginSubtitle}
           </CardDescription>
         </CardHeader>
         
@@ -96,12 +98,12 @@ export default function LoginPage({
             )}
             <div className="space-y-2">
               <label className="text-sm font-medium leading-none" htmlFor="email">
-                Email
+                {dict.auth.email}
               </label>
               <Input 
                 id="email" 
                 type="email" 
-                placeholder="m@example.com" 
+                placeholder={dict.auth.emailPlaceholder} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -111,10 +113,10 @@ export default function LoginPage({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium leading-none" htmlFor="password">
-                  Пароль
+                  {dict.auth.password}
                 </label>
                 <Link href={`/${locale}/help`} className="text-sm text-blue-600 hover:underline">
-                  Забыли пароль?
+                  {dict.auth.forgotPwd}
                 </Link>
               </div>
               <Input 
@@ -129,12 +131,12 @@ export default function LoginPage({
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full" disabled={loading}>
-               {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Вход...</> : "Войти"}
+               {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {dict.auth.loginLoading}</> : dict.auth.loginBtn}
             </Button>
             <div className="text-sm text-center text-slate-500">
-              Нет аккаунта?{" "}
+              {dict.auth.noAccount}{" "}
               <Link href={`/${locale}/register`} className="text-blue-600 hover:underline">
-                Зарегистрироваться
+                {dict.auth.registerBtn}
               </Link>
             </div>
           </CardFooter>
@@ -143,3 +145,4 @@ export default function LoginPage({
     </div>
   );
 }
+

@@ -12,10 +12,10 @@ import { cn } from "@/lib/utils";
 
 type Tariff = {
   id: string;
-  name: string;
+  name_ru: string;
   price: number;
   speed_mbps: number | null;
-  description: string | null;
+  description_ru: string | null;
   category: string;
 };
 
@@ -37,10 +37,10 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
   const [editingTariff, setEditingTariff] = useState<Tariff | null>(null);
   const [search, setSearch] = useState("");
   const [formData, setFormData] = useState({
-    name: "",
+    name_ru: "",
     price: 0,
     speed_mbps: 0,
-    description: "",
+    description_ru: "",
     category: "internet",
   });
 
@@ -48,19 +48,19 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
     if (tariff) {
       setEditingTariff(tariff);
       setFormData({
-        name: tariff.name,
+        name_ru: tariff.name_ru,
         price: tariff.price,
         speed_mbps: tariff.speed_mbps ?? 0,
-        description: tariff.description ?? "",
+        description_ru: tariff.description_ru ?? "",
         category: tariff.category,
       });
     } else {
       setEditingTariff(null);
       setFormData({
-        name: "",
+        name_ru: "",
         price: 0,
         speed_mbps: 0,
-        description: "",
+        description_ru: "",
         category: "internet",
       });
     }
@@ -91,7 +91,7 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
     });
   };
 
-  const filteredTariffs = initialTariffs.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredTariffs = initialTariffs.filter(t => t.name_ru.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-8 pb-10">
@@ -151,10 +151,10 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-slate-900 dark:text-white">
-                            {tariff.name}
+                            {tariff.name_ru}
                           </span>
                           <span className="text-[10px] text-slate-400 font-medium line-clamp-1 max-w-[200px]">
-                            {tariff.description || "Нет описания"}
+                            {tariff.description_ru || "Нет описания"}
                           </span>
                         </div>
                       </div>
@@ -247,8 +247,8 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
                        <Input
                          required
                          type="text"
-                         value={formData.name}
-                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                         value={formData.name_ru}
+                         onChange={(e) => setFormData({ ...formData, name_ru: e.target.value })}
                          className="h-14 font-bold rounded-2xl bg-slate-50 dark:bg-slate-950 border-none px-6"
                          placeholder="Введите название..."
                        />
@@ -299,8 +299,8 @@ export default function TariffList({ initialTariffs }: TariffListProps) {
                     <div className="space-y-2 md:col-span-2">
                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Описание тарифа</label>
                        <textarea
-                         value={formData.description}
-                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                         value={formData.description_ru}
+                         onChange={(e) => setFormData({ ...formData, description_ru: e.target.value })}
                          className="w-full h-32 p-6 rounded-3xl bg-slate-50 dark:bg-slate-950 border-none font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all resize-none"
                          placeholder="Кратко опишите преимущества..."
                        />

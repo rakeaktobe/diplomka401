@@ -18,14 +18,16 @@ type Category = "internet" | "tv" | "mobile" | "combo" | "b2b";
 
 interface Tariff {
   id: string;
-  name: string;
-  name_kk: string | null;
-  name_en: string | null;
+  name?: string | null;
+  name_ru?: string | null;
+  name_kk?: string | null;
+  name_en?: string | null;
   speed_mbps: number | null;
   price: number;
-  description: string;
-  description_kk: string | null;
-  description_en: string | null;
+  description?: string | null;
+  description_ru?: string | null;
+  description_kk?: string | null;
+  description_en?: string | null;
   category: Category;
 }
 
@@ -36,26 +38,26 @@ interface TariffCatalogProps {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-function getCategoryMeta(category: Category, locale: string): { label: string; icon: React.ElementType; color: string } {
+function getCategoryMeta(category: Category, dict: Dictionary["catalog"]): { label: string; icon: React.ElementType; color: string } {
   const meta: Record<Category, { label: string; icon: React.ElementType; color: string }> = {
-    internet: { label: locale === 'ru' ? "Интернет" : locale === 'kk' ? "Интернет" : "Internet",         icon: Wifi,      color: "blue"   },
-    tv:       { label: locale === 'ru' ? "Телевидение" : locale === 'kk' ? "Теледидар" : "Television",       icon: Tv,        color: "indigo" },
-    mobile:   { label: locale === 'ru' ? "Мобильная связь" : locale === 'kk' ? "Мобильді байланыс" : "Mobile",   icon: Smartphone,color: "cyan"   },
-    combo:    { label: locale === 'ru' ? "Комбо" : locale === 'kk' ? "Комбо" : "Combo",             icon: Package2,  color: "violet" },
-    b2b:      { label: locale === 'ru' ? "Для бизнеса" : locale === 'kk' ? "Бизнеске арналған" : "For Business",       icon: Building2, color: "amber"  },
+    internet: { label: dict.internet, icon: Wifi,      color: "blue"   },
+    tv:       { label: dict.tv,       icon: Tv,        color: "indigo" },
+    mobile:   { label: dict.mobile,   icon: Smartphone,color: "cyan"   },
+    combo:    { label: dict.combo,    icon: Package2,  color: "violet" },
+    b2b:      { label: dict.b2b,      icon: Building2, color: "amber"  },
   };
   return meta[category];
 }
 
 /** Derive visual feature chips from the tariff description for combos */
-function ComboFeatureChips({ category, speedMbps, locale }: { category: Category; speedMbps: number | null; locale: string }) {
+function ComboFeatureChips({ category, speedMbps, dict }: { category: Category; speedMbps: number | null; dict: Dictionary["catalog"] }) {
   if (category !== "combo" && category !== "b2b") return null;
 
   const chips = [];
-  if (speedMbps) chips.push({ icon: Wifi, label: (locale === 'kk' ? "" : (locale === 'en' ? "up to " : "до ")) + speedMbps + (locale === 'kk' ? " Мбит/с дейін" : " Mbps") });
+  if (speedMbps) chips.push({ icon: Wifi, label: `${dict.upTo} ${speedMbps} ${dict.mbps}` });
   if (category === "combo" || category === "b2b") {
-    chips.push({ icon: Smartphone, label: locale === 'kk' ? "SIM-карта" : (locale === 'en' ? "SIM card" : "SIM-карта") });
-    chips.push({ icon: Tv, label: locale === 'kk' ? "ТВ-пакет" : (locale === 'en' ? "TV package" : "ТВ-пакет") });
+    chips.push({ icon: Smartphone, label: "SIM-карта" });
+    chips.push({ icon: Tv, label: "ТВ-пакет" });
   }
 
   return (
@@ -82,7 +84,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
 
   // ── Deduplication safety net (in case DB has duplicates) ─────
   const uniqueTariffs = useMemo(
-    () => Array.from(new Map(tariffs.map((t) => [t.name, t])).values()),
+    () => Array.from(new Map(tariffs.map((t) => [t.name_ru || t.name, t])).values()),
     [tariffs]
   );
 
@@ -157,13 +159,15 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
             {displayed.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {displayed.map((tariff) => {
-                  const meta = getCategoryMeta(tariff.category, locale);
+                  const meta = getCategoryMeta(tariff.category, dict);
                   const Icon = meta.icon;
                   const isCombo = tariff.category === "combo";
                   const isB2B   = tariff.category === "b2b";
                   
-                  const displayName = (tariff as any)[`name_${locale}`] || tariff.name;
-                  const displayDesc = (tariff as any)[`description_${locale}`] || tariff.description;
+                  // Use dictionary translation if available, otherwise fallback to DB locale, then fallback to base name
+                  const tDict = (dict as any).tariffs?.[tariff.name_ru || tariff.name];
+                  const displayName = tDict?.name || (tariff as any)[`name_${locale}`] || tariff.name_ru || tariff.name;
+                  const displayDesc = tDict?.description || (tariff as any)[`description_${locale}`] || tariff.description_ru || tariff.description;
 
                   return (
                     <Card
@@ -183,7 +187,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                         ].join(" ")}
                       />
 
-                      {tariff.name === "Black" && (
+                      {(tariff.name_ru === "Black" || tariff.name === "Black") && (
                         <div className="absolute top-4 right-4">
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-600 text-white uppercase tracking-wider">
                             <Star className="w-2.5 h-2.5" /> {dict.top}
@@ -217,8 +221,9 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                           {displayDesc}
                         </CardDescription>
 
-                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} locale={locale} />
+                        <ComboFeatureChips category={tariff.category} speedMbps={tariff.speed_mbps} dict={dict} />
                       </CardHeader>
+
 
                       <CardContent className="flex-1 pb-4">
                         <div className="flex items-baseline gap-1 mt-2">

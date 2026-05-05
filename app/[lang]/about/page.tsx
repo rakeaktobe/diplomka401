@@ -4,6 +4,14 @@ import { TelecomLogo } from "@/components/TelecomLogo";
 import { getDictionary } from "@/lib/i18n-server";
 import { type Locale } from "@/lib/i18n";
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as Locale);
+  return {
+    title: `${dict.about.title} — ${dict.metadata.siteName}`,
+  };
+}
+
 export default async function AboutPage({
   params,
 }: {
@@ -13,6 +21,7 @@ export default async function AboutPage({
   const locale = (lang as Locale) || "ru";
   const dict = await getDictionary(locale);
   const t = dict.about;
+  const brandName = dict.metadata.siteName;
 
   const STATS = [
     { label: t.stats.years,      value: "28+" },
@@ -53,7 +62,7 @@ export default async function AboutPage({
           <div className="flex-1 flex flex-col gap-6">
             <div className="flex items-center gap-3">
               <TelecomLogo size={52} />
-              <span className="text-3xl font-black tracking-tight">ТЕЛЕКОМ</span>
+              <span className="text-3xl font-black tracking-tight">{brandName}</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black leading-tight">
               {t.title}

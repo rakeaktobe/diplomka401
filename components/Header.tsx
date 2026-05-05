@@ -10,7 +10,15 @@ import {
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { TelecomLogo } from "@/components/TelecomLogo";
+import { useCity } from "@/lib/city-context";
 import type { Locale, Dictionary } from "@/lib/i18n";
+
+const CITIES = [
+  "Астана", "Алматы", "Шымкент", "Караганда", "Актобе", "Актау", 
+  "Атырау", "Павлодар", "Тараз", "Усть-Каменогорск", "Семей", 
+  "Костанай", "Кызылорда", "Уральск", "Петропавловск", 
+  "Туркестан", "Кокшетау", "Талдыкорган"
+];
 
 interface HeaderProps {
   dict: Dictionary["navbar"];
@@ -20,6 +28,7 @@ interface HeaderProps {
 
 export function Header({ dict, locale, isAdmin }: HeaderProps) {
   const pathname = usePathname();
+  const { city, setCity } = useCity();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
@@ -80,11 +89,33 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
               <Smartphone className="w-3.5 h-3.5" />
               {dict.mobileApp}
             </Link>
-            <button className="flex items-center gap-1 hover:text-white transition-colors duration-300">
-              <MapPin className="w-3.5 h-3.5 text-kt-blue" />
-              {dict.city}
-              <ChevronDown className="w-3 h-3" />
-            </button>
+            
+            <div className="relative group/city">
+              <button className="flex items-center gap-1 hover:text-white transition-colors duration-300 py-2">
+                <MapPin className="w-3.5 h-3.5 text-kt-blue" />
+                <span>{city}</span>
+                <ChevronDown className="w-3 h-3 transition-transform group-hover/city:rotate-180" />
+              </button>
+
+              <div className="absolute top-full right-0 pt-1 w-48 opacity-0 invisible group-hover/city:opacity-100 group-hover/city:visible transition-all duration-200 z-[60]">
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden py-2 flex flex-col">
+                  <div className="max-h-60 overflow-y-auto">
+                    {CITIES.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => setCity(c)}
+                        className={`px-4 py-2 text-sm text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-kt-blue transition-colors w-full ${
+                          city === c ? "text-kt-blue font-bold bg-blue-50/50 dark:bg-blue-900/10" : "text-slate-700 dark:text-slate-300"
+                        }`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <LanguageSwitcher currentLocale={locale} />
           </div>
         </div>
@@ -193,6 +224,41 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
         {/* Mobile dropdown with accordions */}
         {mobileOpen && (
           <div className="lg:hidden absolute top-full left-0 right-0 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl overflow-y-auto max-h-[calc(100vh-72px)] px-4 pb-8 pt-3 flex flex-col gap-4 z-40">
+            
+            {/* City + Language for Mobile */}
+            <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+              <div className="relative flex-1">
+                <button 
+                  onClick={() => setOpenAccordion(openAccordion === "mobile-city" ? null : "mobile-city")}
+                  className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200"
+                >
+                  <MapPin className="w-4 h-4 text-kt-blue" />
+                  {city}
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openAccordion === "mobile-city" ? "rotate-180" : ""}`} />
+                </button>
+                
+                {openAccordion === "mobile-city" && (
+                  <div className="absolute top-full left-0 mt-2 w-full max-h-60 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-lg shadow-lg z-50 py-1">
+                    {CITIES.map(c => (
+                      <button
+                        key={c}
+                        onClick={() => {
+                          setCity(c);
+                          setOpenAccordion(null);
+                        }}
+                        className={`w-full px-4 py-2.5 text-sm text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
+                          city === c ? "text-kt-blue font-bold" : "text-slate-600 dark:text-slate-300"
+                        }`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <LanguageSwitcher currentLocale={locale} />
+            </div>
+
             {/* Segment links top row */}
             <div className="flex gap-2 pb-4 overflow-x-auto border-b border-slate-100 dark:border-slate-800 scrollbar-hide">
               {TOP_LINKS.map(({ label, href }) => (

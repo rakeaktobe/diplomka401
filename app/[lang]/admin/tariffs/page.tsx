@@ -12,7 +12,7 @@ export default async function AdminTariffsPage({
 
   const { data: tariffs, error } = await supabase
     .from("tariffs")
-    .select("id, name, price, speed_mbps, description, category")
+    .select("id, name_ru, price, speed_mbps, description_ru, category")
     .order("price");
 
   if (error) {

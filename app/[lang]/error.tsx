@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCcw, Home } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { getDictionaryClient, type Locale } from '@/lib/i18n';
 
 export default function GlobalError({
   error,
@@ -12,6 +14,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
+  const locale = (pathname?.split('/')[1] as Locale) || 'ru';
+  const dict = getDictionaryClient(locale);
+
   useEffect(() => {
     // Log the error to an error reporting service
     console.error('Unhandled Runtime Error:', error);
@@ -25,11 +31,11 @@ export default function GlobalError({
         </div>
         
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-          Что-то пошло не так
+          {dict.error.title}
         </h1>
         
         <p className="text-slate-600 dark:text-slate-400 mb-8 text-sm">
-          Произошла непредвиденная ошибка. Мы уже работаем над ее исправлением.
+          {dict.error.desc}
           {error.digest && (
             <code className="block mt-2 p-2 bg-slate-100 dark:bg-slate-800 rounded text-xs">
               ID: {error.digest}
@@ -43,16 +49,16 @@ export default function GlobalError({
             className="w-full flex items-center justify-center gap-2"
           >
             <RefreshCcw className="w-4 h-4" />
-            Попробовать снова
+            {dict.error.retry}
           </Button>
           
           <Button 
             variant="outline" 
             className="w-full p-0"
           >
-            <Link href="/" className="flex items-center justify-center gap-2 w-full h-full">
+            <Link href={`/${locale}`} className="flex items-center justify-center gap-2 w-full h-full">
               <Home className="w-4 h-4" />
-              Вернуться на главную
+              {dict.error.backHome}
             </Link>
           </Button>
         </div>

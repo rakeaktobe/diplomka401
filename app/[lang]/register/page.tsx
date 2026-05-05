@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Loader2, AlertCircle } from "lucide-react";
+import { getDictionaryClient } from "@/lib/i18n";
 
 export default function RegisterPage({
   params,
@@ -16,6 +17,7 @@ export default function RegisterPage({
 }) {
   const { lang } = use(params);
   const locale = (lang as any) || "ru";
+  const dict = getDictionaryClient(locale);
   const router = useRouter();
   const supabase = createClient();
 
@@ -46,11 +48,11 @@ export default function RegisterPage({
 
       if (error) {
         if (error.message.includes("User already registered") || error.message.includes("already exists")) {
-          setErrorMsg("Пользователь с таким email уже существует.");
+          setErrorMsg(dict.auth.errDuplicate);
         } else if (error.message.includes("Password should be at least 6 characters")) {
-          setErrorMsg("Пароль должен содержать минимум 6 символов.");
+          setErrorMsg(dict.auth.errWeakPwd);
         } else {
-          setErrorMsg("Ошибка регистрации. " + error.message);
+          setErrorMsg(dict.auth.errRegistration + " " + error.message);
         }
         setLoading(false);
       } else {
@@ -58,7 +60,7 @@ export default function RegisterPage({
         router.refresh();
       }
     } catch {
-      setErrorMsg("Ошибка сети. Проверьте подключение к базе данных или настройки VPN.");
+      setErrorMsg(dict.auth.errNetwork);
       setLoading(false);
     }
   };
@@ -67,14 +69,14 @@ export default function RegisterPage({
     <div className="flex-1 flex flex-col items-center justify-center p-4">
       <Link href={`/${locale}`} className="flex items-center gap-2 text-blue-600 mb-8 mt-12">
         <Activity className="h-8 w-8" />
-        <span className="text-2xl font-bold tracking-tight">ТЕЛЕКОМ</span>
+        <span className="text-2xl font-bold tracking-tight">{dict.auth.brandName}</span>
       </Link>
       
       <Card className="w-full max-w-md mb-12">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">Создать аккаунт</CardTitle>
+          <CardTitle className="text-2xl text-center">{dict.auth.regTitle}</CardTitle>
           <CardDescription className="text-center">
-            Введите ваши данные для регистрации в системе
+            {dict.auth.regSubtitle}
           </CardDescription>
         </CardHeader>
         
@@ -86,10 +88,10 @@ export default function RegisterPage({
                </div>
              )}
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none" htmlFor="fullName">ФИО</label>
+              <label className="text-sm font-medium leading-none" htmlFor="fullName">{dict.auth.fullName}</label>
               <Input 
                 id="fullName" 
-                placeholder="Иванов Иван Иванович" 
+                placeholder={dict.auth.fullNamePlaceholder} 
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
@@ -97,11 +99,11 @@ export default function RegisterPage({
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none" htmlFor="phone">Телефон</label>
+              <label className="text-sm font-medium leading-none" htmlFor="phone">{dict.auth.phone}</label>
               <Input 
                 id="phone" 
                 type="tel"
-                placeholder="+7 (700) 000-0000" 
+                placeholder={dict.auth.phonePlaceholder} 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
@@ -109,11 +111,11 @@ export default function RegisterPage({
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none" htmlFor="email">Email</label>
+              <label className="text-sm font-medium leading-none" htmlFor="email">{dict.auth.email}</label>
               <Input 
                 id="email" 
                 type="email" 
-                placeholder="m@example.com" 
+                placeholder={dict.auth.emailPlaceholder} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -121,7 +123,7 @@ export default function RegisterPage({
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none" htmlFor="password">Пароль</label>
+              <label className="text-sm font-medium leading-none" htmlFor="password">{dict.auth.password}</label>
               <Input 
                 id="password" 
                 type="password" 
@@ -134,12 +136,12 @@ export default function RegisterPage({
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full" disabled={loading}>
-               {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Создание...</> : "Зарегистрироваться"}
+               {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {dict.auth.regLoading}</> : dict.auth.registerBtn}
             </Button>
             <div className="text-sm text-center text-slate-500">
-              Уже есть аккаунт?{" "}
+              {dict.auth.hasAccount}{" "}
               <Link href={`/${locale}/login`} className="text-blue-600 hover:underline">
-                Войти
+                {dict.auth.loginBtn}
               </Link>
             </div>
           </CardFooter>

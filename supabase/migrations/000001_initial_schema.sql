@@ -179,9 +179,9 @@ BEGIN
     SET balance = balance - v_price
     WHERE id = p_user_id;
 
-    -- Insert payment record
+    -- Insert payment record (negative for deduction)
     INSERT INTO public.payments (user_id, amount, status)
-    VALUES (p_user_id, v_price, 'completed');
+    VALUES (p_user_id, -v_price, 'completed');
 
     -- Insert subscription record
     INSERT INTO public.subscriptions (user_id, tariff_id, status, next_billing_date)

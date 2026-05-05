@@ -55,21 +55,21 @@ export function ProfileContent({ profile, dict }: ProfileContentProps) {
             <label className="text-sm font-medium flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
               <UserCircle className="w-4 h-4 text-slate-400" /> {dict.fullName}
             </label>
-            <Input readOnly value={profile.full_name || dict.notSpecified || "Не указано"} className="dark:bg-slate-900 dark:text-white" />
+            <Input readOnly value={profile.full_name || dict.notSpecified} className="dark:bg-slate-900 dark:text-white" />
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-              <Phone className="w-4 h-4 text-slate-400" /> {dict.phone || "Телефон"}
+              <Phone className="w-4 h-4 text-slate-400" /> {dict.phone}
             </label>
-            <Input readOnly value={profile.phone || dict.notSpecified || "Не указано"} className="dark:bg-slate-900 dark:text-white" />
+            <Input readOnly value={profile.phone || dict.notSpecified} className="dark:bg-slate-900 dark:text-white" />
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-              <MapPin className="w-4 h-4 text-slate-400" /> {dict.address || "Адрес подключения"}
+              <MapPin className="w-4 h-4 text-slate-400" /> {dict.address}
             </label>
-            <Input readOnly value={profile.address || dict.notSpecified || "Не указано"} className="dark:bg-slate-900 dark:text-white" />
+            <Input readOnly value={profile.address || dict.notSpecified} className="dark:bg-slate-900 dark:text-white" />
           </div>
         </CardContent>
         <CardFooter className="bg-slate-50 dark:bg-slate-900/50 py-4 px-6 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center rounded-b-xl">
@@ -81,7 +81,7 @@ export function ProfileContent({ profile, dict }: ProfileContentProps) {
             onClick={handleLogout}
             className="gap-2 shrink-0"
           >
-            <LogOut className="w-4 h-4" /> {dict.logout || "Выйти"}
+            <LogOut className="w-4 h-4" /> {dict.logout}
           </Button>
         </CardFooter>
       </Card>

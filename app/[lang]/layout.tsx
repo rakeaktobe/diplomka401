@@ -3,6 +3,7 @@ import "../globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { CityProvider } from "@/lib/city-context";
 import { getDictionary } from "@/lib/i18n-server";
 import { Chatbot } from "@/components/Chatbot";
 import { createClient } from "@/utils/supabase/server";
@@ -106,15 +107,17 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          {/* Dual-level branded header — fixed, offset handled by main pt-[100px] */}
-          <Header dict={dict.navbar} locale={locale} isAdmin={isAdmin} />
+          <CityProvider defaultCity={dict.navbar.city}>
+            {/* Dual-level branded header — fixed, offset handled by main pt-[100px] */}
+            <Header dict={dict.navbar} locale={locale} isAdmin={isAdmin} />
 
-          <main className="flex-1 flex flex-col pt-[100px]">
-            {children}
-          </main>
+            <main className="flex-1 flex flex-col pt-[100px]">
+              {children}
+            </main>
 
-          <Footer dict={dict.footer} locale={locale} />
-          <Chatbot />
+            <Footer dict={dict.footer} locale={locale} />
+            <Chatbot />
+          </CityProvider>
         </ThemeProvider>
       </body>
     </html>

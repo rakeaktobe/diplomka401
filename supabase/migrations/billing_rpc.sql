@@ -26,9 +26,9 @@ BEGIN
   SET balance = balance - v_price 
   WHERE id = p_user_id;
   
-  -- Insert a payment record for the subscription fee
-  INSERT INTO payments (user_id, amount, status, payment_method)
-  VALUES (p_user_id, -v_price, 'fee', 'balance_deduction');
+  -- Insert a payment record for the subscription fee (Removed non-existent payment_method)
+  INSERT INTO payments (user_id, amount, status)
+  VALUES (p_user_id, -v_price, 'completed');
   
   -- Insert the active subscription
   INSERT INTO subscriptions (user_id, tariff_id, status, next_billing_date)

@@ -24,35 +24,70 @@ export function SubscribeButton({ tariffId, dict }: SubscribeButtonProps) {
     setLoading(true);
 
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session?.user) {
+    if (!user) {
       // Guest → redirect to login
       router.push("/login");
       return;
     }
 
-    // Call the RPC function for secure atomic transaction
-    const { error } = await supabase.rpc("subscribe_to_tariff", {
-      p_user_id: session.user.id,
-      p_tariff_id: tariffId,
-    });
+    try {
+      // 1. Fetch user profile balance
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("balance")
+        .eq("id", user.id)
+        .single();
 
-    if (error) {
-      const errorMessage = error.message || "";
-      if (errorMessage.includes("INSUFFICIENT_FUNDS")) {
-        alert("Недостаточно средств. Пожалуйста, пополните баланс.");
-        router.push("/dashboard/payments");
-      } else {
-        alert("Ошибка: " + (errorMessage || "Произошла неизвестная ошибка при подписке"));
+      if (profileError || !profile) {
+        throw new Error(profileError?.message || "Profile not found");
       }
-      setLoading(false);
-    } else {
+
+      // 2. Fetch tariff details (price)
+      const { data: tariff, error: tariffError } = await supabase
+        .from("tariffs")
+        .select("price")
+        .eq("id", tariffId)
+        .single();
+
+      if (tariffError || !tariff) {
+        throw new Error(tariffError?.message || "Tariff not found");
+      }
+
+      // 3. Logic: Check if balance is sufficient
+      if (profile.balance < tariff.price) {
+        alert(dict.buyError || "Купить невозможно");
+        setLoading(false);
+        return;
+      }
+
+      // 4. Call the RPC function for secure atomic transaction
+      const { error: rpcError } = await supabase.rpc("subscribe_to_tariff", {
+        p_user_id: user.id,
+        p_tariff_id: tariffId,
+      });
+
+      if (rpcError) {
+        const errorMessage = rpcError.message || "";
+        if (errorMessage.includes("INSUFFICIENT_FUNDS")) {
+          alert(dict.buyError || "Купить невозможно");
+        } else {
+          alert("Ошибка: " + (errorMessage || "Произошла неизвестная ошибка при подписке"));
+        }
+        setLoading(false);
+        return;
+      }
+
       setSuccess(true);
       setTimeout(() => {
         router.push("/dashboard/subscriptions");
       }, 900);
+    } catch (err: any) {
+      console.error("Subscription process error:", err);
+      alert("Произошла ошибка: " + err.message);
+      setLoading(false);
     }
   };
 

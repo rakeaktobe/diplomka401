@@ -4,39 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { MessageCircle, X, Send, Bot, User, AlertTriangle } from "lucide-react";
-
-const chatbotTranslations = {
-  ru: {
-    ariaOpen: "Открыть чат с ИИ-ассистентом",
-    title: "ТЕЛЕКОМ Ассистент",
-    subtitle: "Ответит на любые вопросы",
-    welcome1: "Здравствуйте! Я ваш ИИ-помощник.",
-    welcome2: "Помогу подобрать лучший тариф для вас.",
-    errorText: "Произошла ошибка при получении ответа. Пожалуйста, попробуйте еще раз.",
-    retry: "Повторить запрос",
-    placeholder: "Введите ваше сообщение..."
-  },
-  kk: {
-    ariaOpen: "ЖИ-көмекшісімен чатты ашу",
-    title: "ТЕЛЕКОМ Көмекшісі",
-    subtitle: "Кез келген сұраққа жауап береді",
-    welcome1: "Сәлеметсіз бе! Мен сіздің ЖИ-көмекшіңізбін.",
-    welcome2: "Сізге ең жақсы тарифті таңдауға көмектесемін.",
-    errorText: "Жауап алу кезінде қате кетті. Қайталап көріңіз.",
-    retry: "Сұрауды қайталау",
-    placeholder: "Хабарламаңызды енгізіңіз..."
-  },
-  en: {
-    ariaOpen: "Open chat with AI assistant",
-    title: "TELECOM Assistant",
-    subtitle: "Will answer any questions",
-    welcome1: "Hello! I am your AI assistant.",
-    welcome2: "I will help you pick the best tariff.",
-    errorText: "An error occurred while getting a response. Please try again.",
-    retry: "Retry request",
-    placeholder: "Type your message..."
-  }
-};
+import { getDictionaryClient, type Locale } from "@/lib/i18n";
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,11 +12,12 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
-  const locale = (params?.lang as string) || "ru";
-  const t = chatbotTranslations[locale as keyof typeof chatbotTranslations] || chatbotTranslations.ru;
+  const locale = (params?.lang as Locale) || "ru";
+  const dict = getDictionaryClient(locale).chatbot;
 
   const { messages, sendMessage, status, error, regenerate } = useChat({
     api: "/api/chat",
+    body: { locale },
     onError: (err: any) => {
       console.error("Chat Error:", err);
     },
@@ -99,7 +68,7 @@ export function Chatbot() {
         className={`fixed bottom-6 right-6 z-50 p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-transform duration-300 ease-in-out ${
           isOpen ? "scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100"
         }`}
-        aria-label={t.ariaOpen}
+        aria-label={dict.ariaOpen}
       >
         <MessageCircle className="w-6 h-6" />
       </button>
@@ -117,8 +86,8 @@ export function Chatbot() {
               <Bot className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold leading-none">{t.title}</h3>
-              <p className="text-xs text-blue-100 mt-1">{t.subtitle}</p>
+              <h3 className="font-semibold leading-none">{dict.title}</h3>
+              <p className="text-xs text-blue-100 mt-1">{dict.subtitle}</p>
             </div>
           </div>
           <button
@@ -134,8 +103,8 @@ export function Chatbot() {
           {messages.length === 0 && (
             <div className="text-center text-slate-500 dark:text-slate-400 text-sm mt-8">
               <Bot className="w-10 h-10 mx-auto text-blue-300 dark:text-blue-800 mb-3 opacity-50" />
-              <p>{t.welcome1}</p>
-              <p>{t.welcome2}</p>
+              <p>{dict.welcome1}</p>
+              <p>{dict.welcome2}</p>
             </div>
           )}
 
@@ -192,13 +161,13 @@ export function Chatbot() {
             <div className="flex flex-col items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-xl text-center">
               <AlertTriangle className="w-5 h-5 text-red-500" />
               <p className="text-xs text-red-600 dark:text-red-400">
-                {t.errorText}
+                {dict.errorText}
               </p>
               <button 
                 onClick={() => regenerate()}
                 className="text-xs font-medium text-red-700 dark:text-red-300 underline hover:no-underline"
               >
-                {t.retry}
+                {dict.retry}
               </button>
             </div>
           )}
@@ -212,7 +181,7 @@ export function Chatbot() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={t.placeholder}
+              placeholder={dict.placeholder}
               disabled={isLoading}
               className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm disabled:opacity-50"
             />
@@ -229,3 +198,4 @@ export function Chatbot() {
     </>
   );
 }
+

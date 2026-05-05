@@ -5,6 +5,17 @@
     "siteName": "TELECOM",
     "description": "High-speed internet, mobile communication and TV+ for home and business in Kazakhstan."
   },
+  "error": {
+    "title": "Something went wrong",
+    "desc": "An unexpected error occurred. We are already working to fix it.",
+    "retry": "Try again",
+    "backHome": "Back to Home"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "desc": "Unfortunately, the page you requested does not exist or has been moved.",
+    "backHome": "To Home"
+  },
   "navbar": {
     "tariffs":    "Tariffs",
     "monitoring": "Monitoring",
@@ -71,7 +82,62 @@
     "mbps": "Mbps",
     "staticIp": "Static IP-address",
     "singleBill": "Single bill for all services",
-    "personalManager": "Personal manager"
+    "personalManager": "Personal manager",
+    "buyError": "Purchase impossible",
+    "tariffs": {
+      "Black": {
+        "name": "Black",
+        "description": "Flagship combo package: 500 Mbps + 2 SIM cards with unlimited internet + TV+ (170 channels in HD/4K). One bill for everything."
+      },
+      "Silver": {
+        "name": "Silver",
+        "description": "Optimal combo package: 200 Mbps + 1 SIM card with unlimited internet + TV+ (120 channels). For a family of 3–4 people."
+      },
+      "Bereke Combo": {
+        "name": "Bereke Combo",
+        "description": "Starter combo package: 100 Mbps + 1 SIM card (20 GB) + TV Basic (80 channels)."
+      },
+      "Bereke Home": {
+        "name": "Bereke Home",
+        "description": "Reliable home internet up to 100 Mbps. Unlimited traffic, free connection."
+      },
+      "Turbo 300": {
+        "name": "Turbo 300",
+        "description": "High-speed access up to 300 Mbps. Ideal for 4K streaming and online gaming."
+      },
+      "Гигабит": {
+        "name": "Gigabit",
+        "description": "Maximum speed up to 1 Gbps via fiber. For those who need everything at once."
+      },
+      "ТВ Базовый": {
+        "name": "TV Basic",
+        "description": "80 channels in digital quality, including Kazakh state and regional channels."
+      },
+      "ТВ Плюс": {
+        "name": "TV Plus",
+        "description": "170 HD/4K channels + 30 days of catch-up. Includes kids, sports, and movie packages."
+      },
+      "Мобильный Старт": {
+        "name": "Mobile Start",
+        "description": "10 GB internet, unlimited calls within TELECOM network. 500 minutes to other operators."
+      },
+      "Мобильный Безлим": {
+        "name": "Mobile Unlimited",
+        "description": "Unlimited mobile internet + unlimited calls across Kazakhstan. Roaming in CIS."
+      },
+      "Бизнес Стандарт": {
+        "name": "Business Standard",
+        "description": "Up to 300 Mbps, static IP, SLA 99.5%, dedicated support line, 5 SIM cards."
+      },
+      "Бизнес Премиум": {
+        "name": "Business Premium",
+        "description": "Up to 1 Gbps, 2 static IPs, SLA 99.9%, personal manager, unlimited SIMs."
+      },
+      "Корпоративный": {
+        "name": "Corporate",
+        "description": "Dedicated 1 Gbps channel, multisite, MPLS, SLA 99.99%, 24/7 NOC support."
+      }
+    }
   },
   "news": {
     "title": "News and Press Center",
@@ -111,10 +177,17 @@
     "errInvalidCreds": "Invalid email or password.",
     "errGeneral":    "Authentication error. Please try again.",
     "errDuplicate":  "A user with this email already exists.",
-    "errWeakPwd":    "Password must be at least 6 characters."
+    "errWeakPwd":    "Password must be at least 6 characters.",
+    "errNetwork":    "Network error. Please check your database connection.",
+    "errRegistration": "Registration error.",
+    "emailPlaceholder": "m@example.com",
+    "fullNamePlaceholder": "John Doe",
+    "phonePlaceholder": "+7 (700) 000-0000",
+    "brandName": "TELECOM"
   },
   "dashboard": {
     "cabinet":       "Dashboard",
+    "loadingData":   "Loading data...",
     "welcome":       "Good day",
     "status":        "Status",
     "active":        "Active",
@@ -139,6 +212,8 @@
     "logout":        "Sign Out",
     "user":          "User",
     "not_specified": "Not specified",
+    "not_assigned":  "Not assigned",
+    "contract_val":  "ЛС-84820129",
     "news_categories": {
       "promo":       "Promos",
       "update":      "Updates"
@@ -167,7 +242,8 @@
       "completed": "Test completed",
       "mbps": "Mbps",
       "ms": "ms",
-      "again": "Repeat"
+      "again": "Repeat",
+      "gemini_recommendation": "Gemini Recommendation"
     },
     "client":        "Client",
     "overview": {
@@ -180,8 +256,12 @@
       "noSubs":        "No active subscriptions.",
       "active":        "Active",
       "pending":       "Pending",
-      "nextBilling":   "Next billing"
-    },
+      "nextBilling": "Next billing",
+      "premium":       "Premium",
+      "working":       "Working",
+      "no_active_services": "No active services",
+      "no_active_services_desc": "Connect internet or TV to start enjoying all the benefits."
+      },
     "payments": {
       "title":      "Payments",
       "subtitle":   "Manage your finances and top-up history.",
@@ -199,10 +279,15 @@
       "amount_min":  "Minimum top-up amount is 100 ₸.",
       "error_save":   "Error saving payment",
       "error_balance": "Payment successful, but balance not updated",
-      "card_number":  "Card number (demo)",
+      "unauthorized": "User is not authorized.",
+      "card_number":  "Card number",
       "expiry":       "MM/YY",
-      "cvc":          "CVC"
-      },
+      "cvc":          "CVC",
+      "card_error":   "Enter 16 digits of card number",
+      "expiry_error": "Specify expiry date (MM/YY)",
+      "cvc_error":    "Specify CVC code (3 digits)",
+      "secure_notice": "Secure payment through a protected gateway. Card data is not saved."
+    },
     "support": {
       "title":       "Support",
       "subtitle":    "Customer care and ticket history.",
@@ -401,5 +486,124 @@
     "callCenter": "Call Center",
     "socials":   "Social Media",
     "packages":  "Service Packages"
-  }
-}
+  },
+  "internet_home": {
+    "meta_title": "Home Internet — TELECOM",
+    "hero_badge": "For Home",
+    "hero_title": "Fiber to the home: speed you can trust",
+    "hero_subtitle": "Connect high-speed home internet from TELECOM. GPON technology ensures seamless connectivity even during peak hours.",
+    "hero_cta_tariffs": "Choose plan",
+    "hero_cta_gpon": "Learn more about GPON",
+    "advantages_title": "Why choose our internet",
+    "advantages_subtitle": "Stability that's impossible to miss.",
+    "adv_speed_title": "Up to 1000 Mbps",
+    "adv_speed_desc": "Instant download of heavy files, smooth video streaming and no freezes.",
+    "adv_security_title": "Security",
+    "adv_security_desc": "Built-in DDoS protection at the provider network level. Your data is protected.",
+    "adv_ping_title": "Low Ping",
+    "adv_ping_desc": "Direct peering connections with major gaming servers. Play without lag.",
+    "router_badge": "Included in plan",
+    "router_title": "Free premium router rental",
+    "router_desc": "When connecting home internet, we provide a modern dual-band Wi-Fi router of the 802.11ac standard completely free of charge.",
+    "router_feature_1": "Coverage up to 100 sq.m.",
+    "router_feature_2": "5GHz support for minimal latency",
+    "router_feature_3": "Free replacement for technical issues",
+    "ont_title": "Premium ONT terminal",
+    "ont_desc": "Optical cable is connected directly to the device (FTTH/GPON)."
+  },
+  "internet_business": {
+    "hero_badge": "For Business",
+    "hero_title": "Corporate internet without compromise",
+    "hero_subtitle": "Leased lines, 99.9% SLA and personal manager 24/7. Build a reliable IT infrastructure with TELECOM.",
+    "hero_cta_tariffs": "Choose B2B plan",
+    "hero_cta_request": "Submit request",
+    "advantages_title": "Corporate advantages",
+    "advantages_subtitle": "Solutions that help business grow.",
+    "adv_ip_title": "Static IP addresses",
+    "adv_ip_desc": "Providing a block of static IP addresses for your servers and video surveillance systems.",
+    "adv_sla_title": "99.9% SLA",
+    "adv_sla_desc": "Financial responsibility for channel availability. Priority communication recovery.",
+    "adv_manager_title": "Personal manager",
+    "adv_manager_desc": "A dedicated specialist to solve any technical and financial issues of your business.",
+    "form_title": "Submit a business request",
+    "form_subtitle": "Fill out the form below, and our personal manager will contact you within 15 minutes to select an individual solution.",
+    "form_name": "Contact person (Full Name)",
+    "form_company": "Company name (BIN)",
+    "form_phone": "Phone number",
+    "form_email": "Email",
+    "form_submit": "Send request",
+    "form_success": "Request sent! A manager will contact you."
+  },
+  "tv_digital": {
+    "meta_title": "Digital TV — TELECOM",
+    "hero_badge": "Television",
+    "hero_title": "World of entertainment in 4K quality",
+    "hero_subtitle": "Over 170 channels, pause and archive function. Enjoy flawless image quality with Digital TV from TELECOM.",
+    "hero_cta_tariffs": "TV Plans",
+    "hero_cta_channels": "Channel list",
+    "adv_content_title": "HD and 4K Content",
+    "adv_content_desc": "Best movies, sports and educational programs in incredible clarity.",
+    "adv_archive_title": "Pause and archive",
+    "adv_archive_desc": "Missed your favorite show? Watch it recorded at any convenient time for up to 7 days.",
+    "adv_multi_title": "Multiscreen",
+    "adv_multi_desc": "Watch TV on your TV, smartphone or tablet simultaneously from one account.",
+    "popular_title": "Popular TV channels in HD",
+    "popular_subtitle": "The basic TV package includes major national and world news and entertainment channels.",
+    "more_channels": "And over 150 more TV channels for every taste..."
+  },
+  "combo": {
+    "meta_title": "Service packages (Combo)",
+    "meta_desc": "Combine internet, TV and mobile communications into one package.",
+    "hero_badge": "Service packages",
+    "hero_title": "More services — more value",
+    "hero_subtitle": "Combine home internet, digital TV and mobile communications into one package. One bill, maximum convenience and savings of up to 40%.",
+    "hero_cta_select": "Choose Combo",
+    "hero_cta_calc": "Calculate value",
+    "adv_saving_title": "Super savings",
+    "adv_saving_desc": "By connecting services together, you pay significantly less than for each service separately.",
+    "adv_bill_title": "Single bill",
+    "adv_bill_desc": "All services are paid with one payment once a month. Ideal budget control.",
+    "adv_status_title": "Premium status",
+    "adv_status_desc": "Combo subscribers receive priority 24/7 customer support service."
+  },
+  "shop_page": {
+    "meta_title": "Tariff Shop",
+    "meta_desc": "Choose the best package of internet, TV or mobile communications.",
+    "badge": "All tariffs and packages",
+    "title": "Service Shop",
+    "subtitle": "FTTH technology (fiber to the home) — stable speed without drops during peak hours. Pick a suitable package for home or business."
+    },
+    "chatbot": {
+    "ariaOpen": "Open chat with AI assistant",
+    "title": "TELECOM Assistant",
+    "subtitle": "Will answer any questions",
+    "welcome1": "Hello! I am your AI assistant.",
+    "welcome2": "I will help you pick the best tariff.",
+    "errorText": "An error occurred while getting a response. Please try again.",
+    "retry": "Retry request",
+    "placeholder": "Type your message...",
+    "configError": "AI configuration is not complete. Please try again later.",
+    "serviceUnavailable": "Sorry, the service is temporarily unavailable. We are already working on it."
+    },
+    "ai_prompt": {
+    "role": "You are a polite AI assistant for the provider 'TELECOM'. Your task is to help customers choose an internet tariff or service package (TV+). Answer concisely and friendly.",
+    "language_rule": "LANGUAGE RULE:\nYou must detect the user's request language. If the user writes in Kazakh, you must answer exclusively in Kazakh. If in Russian — in Russian. If in English — in English.\nCurrent user interface language: {lang}. Use it as priority if the request language cannot be determined.",
+    "tariffs_header": "Current tariffs for consultation:",
+    "tariffs_unavailable": "Tariff data is temporarily unavailable.",
+    "instructions": "INSTRUCTIONS:\n1. If asked about something unrelated to internet or provider, politely decline the topic.\n2. Always try to suggest a specific tariff based on client needs (gaming, work, movies).\n3. If a client asks to connect a service, explain that this can be done in the personal cabinet.",
+    "lang_name": "English"
+    },
+    "ai_recommendation": {
+    "role": "You are a 'TELECOM' expert. Your task is to analyze the user's speedtest results and recommend a suitable tariff from the list.",
+    "language_rule": "Answer exclusively in English.",
+    "user_results": "User test results:",
+    "download": "Download",
+    "upload": "Upload",
+    "ping": "Ping",
+    "tariffs_header": "Available tariffs:",
+    "instructions": "INSTRUCTIONS:\n1. Analyze if the current speed is sufficient for comfortable work.\n2. If the current speed is lower than in the proposed tariffs, recommend a faster tariff.\n3. If the speed is good, praise the user's choice or offer a tariff with additional bonuses (TV+).\n4. Answer concisely (2-3 sentences), friendly and professionally.\n5. Do NOT use Markdown, plain text only.",
+    "prompt_base": "Give a recommendation based on my results: {download} Mbps.",
+    "mbps": "Mbps",
+    "ms": "ms"
+    }
+    }

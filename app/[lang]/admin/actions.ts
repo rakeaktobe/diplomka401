@@ -124,21 +124,21 @@ export async function cancelSubscription(subscriptionId: string) {
 // --- TARIFF ACTIONS ---
 
 interface TariffFormData {
-  name: string;
+  name_ru: string;
   price: number;
   speed_mbps: number;
-  description: string;
+  description_ru: string;
   category: string;
 }
 
 export async function saveTariff(formData: TariffFormData, tariffId?: string) {
   const supabase = await createClient();
   
-  const payload: Database['public']['Tables']['tariffs']['Insert'] = {
-    name: formData.name,
+  const payload: any = {
+    name_ru: formData.name_ru,
     price: Number(formData.price),
     speed_mbps: Number(formData.speed_mbps),
-    description: formData.description,
+    description_ru: formData.description_ru,
     category: formData.category,
   };
 

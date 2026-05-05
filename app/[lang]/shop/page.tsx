@@ -5,10 +5,14 @@ import { AddressChecker } from "@/components/AddressChecker";
 import { TechnologyTabs } from "@/components/TechnologyTabs";
 import { Bell, Filter } from "lucide-react";
 
-export const metadata = {
-  title: "Магазин тарифов",
-  description: "Выберите лучший пакет интернета, ТВ или мобильной связи.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang as Locale);
+  return {
+    title: dict.shop_page.meta_title,
+    description: dict.shop_page.meta_desc,
+  };
+}
 
 export default async function ShopPage({
   params,
@@ -18,6 +22,7 @@ export default async function ShopPage({
   const { lang } = await params;
   const locale = (lang as any) || "ru";
   const dict   = await getDictionary(locale);
+  const t      = dict.shop_page;
 
   const supabase = await createClient();
   const { data: tariffs } = await supabase
@@ -34,14 +39,13 @@ export default async function ShopPage({
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <p className="text-sm text-kt-blue font-semibold uppercase tracking-wide mb-1">
-                Все тарифы и пакеты
+                {t.badge}
               </p>
               <h1 className="text-4xl font-black text-slate-900 dark:text-white">
-                Магазин услуг
+                {t.title}
               </h1>
               <p className="mt-2 text-slate-500 dark:text-slate-400 max-w-lg">
-                Технология FTTH (оптика до квартиры) — стабильная скорость без
-                падений в пиковые часы. Выберите подходящий пакет для дома или бизнеса.
+                {t.subtitle}
               </p>
             </div>
 
@@ -59,10 +63,10 @@ export default async function ShopPage({
           </div>
           <div>
             <p className="font-bold text-base leading-tight">
-              Для новых абонентов — 50% скидка на первый месяц
+              {dict.home.promoBannerTitle}
             </p>
             <p className="text-sm text-white/80 mt-0.5">
-              Акция действует при подключении любого тарифа FTTH до конца месяца
+              {dict.home.promoBannerDesc}
             </p>
           </div>
         </div>

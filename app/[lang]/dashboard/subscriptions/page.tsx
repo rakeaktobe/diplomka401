@@ -28,11 +28,13 @@ type Category = "internet" | "tv" | "mobile" | "combo" | "b2b";
 interface Tariff {
   id: string;
   name: string;
+  name_ru?: string | null;
   name_kk: string | null;
   name_en: string | null;
   speed_mbps: number | null;
   price: number;
   description: string;
+  description_ru?: string | null;
   category: Category;
 }
 
@@ -70,7 +72,7 @@ export default async function SubscriptionsPage({
       id,
       status,
       next_billing_date,
-      tariffs ( id, name, name_kk, name_en, speed_mbps, price, description, category )
+      tariffs ( id, name, name_ru, name_kk, name_en, speed_mbps, price, description, description_ru, category )
     `)
     .eq("user_id", user?.id ?? "");
 
@@ -107,7 +109,10 @@ export default async function SubscriptionsPage({
             const cat    = (tariff.category as Category) ?? "internet";
             const meta   = CATEGORY_STYLE[cat] ?? CATEGORY_STYLE.internet;
             const Icon   = meta.icon;
-            const tariffName = tariff[`name_${locale}`] || tariff.name;
+            
+            // Use dictionary translation if available, otherwise fallback to DB locale, then fallback to base name
+            const tDict = (fullDict.catalog as any).tariffs?.[tariff.name_ru || tariff.name];
+            const tariffName = tDict?.name || tariff[`name_${locale}`] || tariff.name_ru || tariff.name;
 
             return (
               <Card

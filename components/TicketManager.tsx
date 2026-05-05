@@ -69,7 +69,7 @@ export function TicketManager({ dict }: TicketManagerProps) {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user?.id) {
-      alert(dict.unauthorized || "Пользователь не авторизован.");
+      alert(dict.unauthorized);
       setLoading(false);
       return;
     }
@@ -82,7 +82,7 @@ export function TicketManager({ dict }: TicketManagerProps) {
     });
 
     if (error) {
-      alert((dict.error_create || "Произошла ошибка при создании обращения") + ": " + error.message);
+      alert(dict.error_create + ": " + error.message);
     } else {
       setSubject("");
       setDescription("");
@@ -94,9 +94,9 @@ export function TicketManager({ dict }: TicketManagerProps) {
   const locale = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'ru') as 'ru' | 'kk' | 'en';
 
   const STATUS_LABEL: Record<Ticket["status"], string> = {
-    open:        dict.open || "Открыто",
-    in_progress: dict.inProgress || "В работе",
-    closed:      dict.closed || "Закрыто",
+    open:        dict.open,
+    in_progress: dict.inProgress,
+    closed:      dict.closed,
   };
   const STATUS_VARIANT: Record<
     Ticket["status"],
@@ -128,7 +128,7 @@ export function TicketManager({ dict }: TicketManagerProps) {
               </label>
               <Input
                 type="text"
-                placeholder={dict.subject_placeholder || "Укажите тему"}
+                placeholder={dict.subject_placeholder}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
@@ -141,7 +141,7 @@ export function TicketManager({ dict }: TicketManagerProps) {
               </label>
               <textarea
                 className="flex min-h-[120px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
-                placeholder={dict.desc_placeholder || "Подробно опишите, что случилось..."}
+                placeholder={dict.desc_placeholder}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -210,5 +210,8 @@ export function TicketManager({ dict }: TicketManagerProps) {
         </CardContent>
       </Card>
     </div>
+  );
+}
+  </div>
   );
 }
