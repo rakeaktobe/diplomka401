@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, use } from "react";
+import { useEffect, useRef, useState, use, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,8 +28,7 @@ export default function MonitoringPage({
   const [networkNodes, setNetworkNodes] = useState<NetworkNode[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     async function getInitialNodes() {

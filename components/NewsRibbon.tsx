@@ -34,7 +34,7 @@ export function NewsRibbon({ news, dict, locale }: NewsRibbonProps) {
               {dict.promosSubtitle}
             </p>
           </div>
-          <Link href="/news" className="hidden md:flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+          <Link href={`/${locale}/news`} className="hidden md:flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
             {dict.allPromos} <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </div>
@@ -80,7 +80,7 @@ export function NewsRibbon({ news, dict, locale }: NewsRibbonProps) {
         </div>
         
         <div className="mt-4 text-center md:hidden">
-          <Link href="/news" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+          <Link href={`/${locale}/news`} className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
             {dict.allPromos} <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </div>

@@ -136,7 +136,7 @@ export default async function Home({
           </div>
 
           {/* Promo Banner */}
-          <div className="flex items-center gap-4 bg-kt-purple text-white rounded-2xl px-6 py-4 mb-8 shadow-lg shadow-kt-purple/20">
+          <div className="flex items-center gap-4 bg-kt-purple text-white rounded-md px-6 py-4 mb-8 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
               <Bell className="w-5 h-5 text-white" />
             </div>

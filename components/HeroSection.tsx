@@ -89,7 +89,7 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
                   src={slide.image_url || '/favicon.svg'}
                   alt={title || ''}
                   fill
-                  priority={index === 0}
+                  priority
                   className="object-cover object-center"
                   quality={100}
                 />
@@ -113,7 +113,7 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
             animate={{ opacity: 1, y: 0 }}
             className="flex"
           >
-            <span className="inline-flex items-center gap-2 bg-blue-600/20 backdrop-blur-md text-blue-400 text-xs font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase tracking-widest">
+            <span className="inline-flex items-center gap-2 bg-blue-600/20 text-blue-400 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
               <Zap className="w-3 h-3" />
               {badge}
             </span>
@@ -151,14 +151,14 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
           >
             <Link
               href={`/${locale}${currentSlide.cta_href}`}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white font-black px-10 py-5 rounded-2xl hover:bg-blue-700 transition-all duration-300 shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-1"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white font-bold px-10 py-5 rounded-md hover:bg-blue-700 transition-colors duration-200"
             >
               {cta}
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               href={`/${locale}/dashboard`}
-              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white font-bold px-10 py-5 rounded-2xl hover:bg-white/20 backdrop-blur-md transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white font-bold px-10 py-5 rounded-md hover:bg-white/20 transition-colors duration-200"
             >
               {dict.ctaDash}
             </Link>

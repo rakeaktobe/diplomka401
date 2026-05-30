@@ -114,7 +114,7 @@ export default function TicketList({ initialTickets }: TicketListProps) {
                       <td className="px-8 py-6">
                         <div className="text-sm font-bold text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 transition-colors">{ticket.subject}</div>
                         <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 font-medium italic">
-                          "{ticket.description}"
+                          &quot;{ticket.description}&quot;
                         </div>
                         <div className="text-[10px] text-slate-400 mt-2 font-black uppercase tracking-widest flex items-center gap-1">
                            <Clock className="w-3 h-3" />

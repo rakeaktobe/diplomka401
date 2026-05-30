@@ -94,7 +94,7 @@ export default async function SubscriptionsPage({
         <p className="text-slate-500 dark:text-slate-400">{dict.subtitle}</p>
       </div>
 
-      {error && (
+      {error !== null && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md flex items-center gap-2">
           <AlertTriangle className="w-5 h-5" />
           {dict.error}
@@ -177,15 +177,17 @@ export default async function SubscriptionsPage({
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       {sub.next_billing_date
                         ? new Date(sub.next_billing_date).toLocaleDateString(locale === 'kk' ? 'kk-KZ' : locale === 'ru' ? 'ru-RU' : 'en-US')
-                        : dict.not_assigned}
+                        : dict.notAssigned}
                     </span>
                   </div>
                 </CardContent>
 
                 <CardFooter className="bg-slate-50 dark:bg-slate-800/50 pt-4">
-                  <Button variant="outline" className="w-full border-slate-300 dark:border-slate-600">
-                    {dict.changeBtn}
-                  </Button>
+                  <Link href={`/${locale}/shop`} className="w-full">
+                    <Button variant="outline" className="w-full border-slate-300 dark:border-slate-600">
+                      {dict.changeBtn}
+                    </Button>
+                  </Link>
                 </CardFooter>
               </Card>
             );

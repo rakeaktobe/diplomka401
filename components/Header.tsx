@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   MapPin, Search, User, Menu, X,
-  ChevronDown, Smartphone,
+  ChevronDown,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -85,11 +85,6 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
 
           {/* Right: app + city + language */}
           <div className="flex items-center gap-4">
-            <Link href={getHref("/")} className="flex items-center gap-1.5 hover:text-white transition-colors duration-300">
-              <Smartphone className="w-3.5 h-3.5" />
-              {dict.mobileApp}
-            </Link>
-            
             <div className="relative group/city">
               <button className="flex items-center gap-1 hover:text-white transition-colors duration-300 py-2">
                 <MapPin className="w-3.5 h-3.5 text-kt-blue" />
@@ -127,7 +122,7 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
 
           {/* Logo with striking branding + hover effects */}
           <Link href={getHref("/")} className="flex items-center gap-3 shrink-0 group">
-            <div className="group-hover:scale-110 transition-transform duration-300 drop-shadow-md">
+            <div className="transition-transform duration-200">
               <TelecomLogo size={44} />
             </div>
             <div className="flex flex-col justify-center">
@@ -199,11 +194,11 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
               {dict.pay}
             </Link>
             <Link
-              href={getHref("/login")}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-kt-blue rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-sm shadow-kt-blue/20"
+              href={getHref("/dashboard")}
+              className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-kt-blue rounded-md hover:bg-blue-700 transition-colors duration-200"
             >
               <User className="w-4 h-4" />
-              {dict.login}
+              {dict.cabinet}
             </Link>
             <ThemeToggle />
           </div>
@@ -322,18 +317,18 @@ export function Header({ dict, locale, isAdmin }: HeaderProps) {
               {isAdmin && (
                 <Link
                   href={getHref("/admin")}
-                  className="w-full text-center py-3 text-base font-bold text-white bg-red-500 rounded-xl shadow-md"
+                  className="w-full text-center py-3 text-base font-bold text-white bg-red-500 rounded-xl"
                   onClick={closeMobile}
                 >
                   {dict.adminPanel}
                 </Link>
               )}
               <Link
-                href={getHref("/login")}
-                className="w-full text-center py-3 text-base font-semibold text-white bg-kt-blue rounded-xl shadow-md"
+                href={getHref("/dashboard")}
+                className="w-full text-center py-3 text-base font-semibold text-white bg-kt-blue rounded-xl"
                 onClick={closeMobile}
               >
-                {dict.login}
+                {dict.cabinet}
               </Link>
               <Link
                 href={getHref("/dashboard/payments")}

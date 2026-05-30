@@ -445,12 +445,40 @@
     "accessDenied": "Доступ запрещен",
     "accessDeniedDesc": "Этот раздел доступен только авторизованным администраторам системы.",
     "backToCabinet": "Вернуться в кабинет",
-    "operations": "Operations",
+    "operations": "Операции",
     "userCabinet": "Кабинет пользователя",
-    "systemRole": "System Role",
-    "rootAdmin": "Root Administrator",
-    "loggedInAs": "Logged in as",
-    "logout": "Выйти"
+    "systemRole": "Роль в системе",
+    "rootAdmin": "Супер-Администратор",
+    "loggedInAs": "Вошел как",
+    "logout": "Выйти",
+    "dashboard": {
+      "title": "Обзор платформы",
+      "subtitle": "Мониторинг ключевых показателей системы в реальном времени.",
+      "totalUsers": "Всего пользователей",
+      "activeSubscriptions": "Активные подписки",
+      "openTickets": "Открытые тикеты",
+      "userGrowth": "+12% с прошлого месяца",
+      "conversion": "98.5% конверсия",
+      "responseTime": "Среднее время ответа: 2ч",
+      "systemActivity": "Активность системы",
+      "quickAccess": "Быстрый доступ",
+      "quickAccessDesc": "Используйте эти ярлыки для быстрого перехода к важным разделам управления.",
+      "users": "Пользователи",
+      "tariffs": "Тарифы",
+      "tickets": "Тикеты",
+      "payments": "Платежи",
+      "dbUpdate": "Обновление базы данных тарифов",
+      "system": "Система",
+      "timeAgo": "5 минут назад",
+      "success": "Успешно",
+      "liveStatus": "Статус системы: Live",
+      "up": "ВВЕРХ",
+      "completed": "Завершено",
+      "nav": {
+        "home": "Главная",
+        "payments": "Платежи"
+      }
+    }
   },
   "footer": {
     "services":  "Услуги",
@@ -599,31 +627,5 @@
     "prompt_base": "Дай рекомендацию на основе моих результатов: {download} Мбит/с.",
     "mbps": "Мбит/с",
     "ms": "мс"
-  },
-  "admin": {
-    "dashboard": {
-      "title": "Обзор платформы",
-      "subtitle": "Мониторинг ключевых показателей системы в реальном времени.",
-      "totalUsers": "Всего пользователей",
-      "activeSubscriptions": "Активные подписки",
-      "openTickets": "Открытые тикеты",
-      "userGrowth": "+12% с прошлого месяца",
-      "conversion": "98.5% конверсия",
-      "responseTime": "Среднее время ответа: 2ч",
-      "systemActivity": "Активность системы",
-      "quickAccess": "Быстрый доступ",
-      "quickAccessDesc": "Используйте эти ярлыки для быстрого перехода к важным разделам управления.",
-      "users": "Пользователи",
-      "tariffs": "Тарифы",
-      "tickets": "Тикеты",
-      "payments": "Платежи",
-      "dbUpdate": "Обновление базы данных тарифов",
-      "system": "Система",
-      "timeAgo": "5 минут назад",
-      "success": "Успешно",
-      "liveStatus": "Статус системы: Live",
-      "up": "ВВЕРХ",
-      "completed": "Завершено"
-    }
   }
 }

@@ -23,7 +23,7 @@ export function getLocalizedHref(href: string, locale: Locale): string {
   return `/${locale}${cleanHref}`;
 }
 
-import type ruDict from "@/dictionaries/ru.json";
+import ruDict from "@/dictionaries/ru.json";
 import kkDict from "@/dictionaries/kk.json";
 import enDict from "@/dictionaries/en.json";
 
@@ -40,6 +40,6 @@ export function getDictionaryClient(locale: Locale): Dictionary {
       return enDict as unknown as Dictionary;
     case "ru":
     default:
-      return (require("@/dictionaries/ru.json")) as Dictionary;
+      return ruDict as Dictionary;
   }
 }

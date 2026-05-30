@@ -65,7 +65,7 @@ export default async function PaymentsPage({
              </CardHeader>
              <CardContent>
                 {error ? (
-                  <div className="text-red-500 py-6 text-sm">{dict.error}</div>
+                  <div className="text-red-500 py-6 text-sm">{(dict as any).error_save || "Error"}</div>
                 ) : !payments || payments.length === 0 ? (
                   <div className="text-center py-12 text-slate-500 text-sm">
                     {dict.empty}

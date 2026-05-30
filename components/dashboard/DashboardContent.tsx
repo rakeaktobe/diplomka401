@@ -235,14 +235,14 @@ export function DashboardContent({ profile, subscriptions, user, dict }: Dashboa
                <CardTitle className="text-sm">{dict.news}</CardTitle>
              </CardHeader>
              <CardContent className="space-y-3">
-                <div className="group cursor-pointer">
+                <Link href={`/${locale}/news`} className="group cursor-pointer block">
                    <div className="text-[10px] font-bold text-blue-500 uppercase">{dict.news_categories.promo}</div>
                    <div className="text-xs font-bold dark:text-white group-hover:underline">{dict.news_items.cashback}</div>
-                </div>
-                <div className="group cursor-pointer">
+                </Link>
+                <Link href={`/${locale}/news`} className="group cursor-pointer block">
                    <div className="text-[10px] font-bold text-emerald-500 uppercase">{dict.news_categories.update}</div>
                    <div className="text-xs font-bold dark:text-white group-hover:underline">{dict.news_items.channels}</div>
-                </div>
+                </Link>
              </CardContent>
            </Card>
         </motion.div>

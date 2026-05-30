@@ -11,9 +11,9 @@
    ===================================================== */
 @theme {
   --color-kt-blue:       #008df2;
-  --color-kt-dark:       #262626;
-  --color-kt-gray-light: #f4f6f9;
-  --color-kt-purple:     #7b51aa;
+  --color-kt-dark:       #111827;
+  --color-kt-gray-light: #f9fafb;
+  --color-kt-purple:     #6366f1;
 }
 
 /* =====================================================
@@ -21,29 +21,29 @@
    ===================================================== */
 :root {
   --background: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #111827;
 
   --card-bg:       #ffffff;
-  --card-border:   #e2e8f0;
-  --muted:         #f4f6f9;
-  --muted-fg:      #64748b;
+  --card-border:   #e5e7eb;
+  --muted:         #f9fafb;
+  --muted-fg:      #6b7280;
   --primary:       #008df2;
-  --primary-hover: #0078d4;
+  --primary-hover: #0072c6;
 }
 
 /* =====================================================
    Dark mode token overrides
    ===================================================== */
 html.dark {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
+  --background: #0f172a; /* Slightly lighter than pure black, flat */
+  --foreground: #f8fafc;
 
   --card-bg:       #1e293b;
   --card-border:   #334155;
   --muted:         #1e293b;
   --muted-fg:      #94a3b8;
   --primary:       #008df2;
-  --primary-hover: #0078d4;
+  --primary-hover: #3b82f6;
 }
 
 body {
@@ -54,20 +54,20 @@ body {
 
 /* Smooth transitions on all interactive elements */
 a, button, [role="button"] {
-  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
-  transition-duration: 300ms;
+  transition-property: color, background-color, border-color, box-shadow, opacity;
+  transition-duration: 200ms;
   transition-timing-function: ease-in-out;
 }
 
-/* Glassmorphism utility */
+/* Solid corporate backgrounds for 'glass' classes to replace blur effects */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
 }
 
 html.dark .glass {
-  background: rgba(15, 23, 42, 0.7);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
 }
 
 /* Carousel dots */
@@ -75,12 +75,12 @@ html.dark .glass {
   width: 8px;
   height: 8px;
   border-radius: 9999px;
-  background: rgba(255,255,255,0.4);
-  transition: all 300ms ease-in-out;
+  background: rgba(156, 163, 175, 0.5); /* Flat gray */
+  transition: all 200ms ease-in-out;
 }
 .carousel-dot.active {
   width: 24px;
-  background: #ffffff;
+  background: var(--primary);
 }
 
 /* =====================================================

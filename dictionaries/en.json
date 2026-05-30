@@ -456,7 +456,35 @@
     "systemRole": "System Role",
     "rootAdmin": "Root Administrator",
     "loggedInAs": "Logged in as",
-    "logout": "Logout"
+    "logout": "Logout",
+    "dashboard": {
+      "title": "Platform Overview",
+      "subtitle": "Real-time monitoring of key system metrics.",
+      "totalUsers": "Total Users",
+      "activeSubscriptions": "Active Subscriptions",
+      "openTickets": "Open Tickets",
+      "userGrowth": "+12% since last month",
+      "conversion": "98.5% conversion",
+      "responseTime": "Average response time: 2h",
+      "systemActivity": "System Activity",
+      "quickAccess": "Quick Access",
+      "quickAccessDesc": "Use these shortcuts to quickly navigate to important management sections.",
+      "users": "Users",
+      "tariffs": "Tariffs",
+      "tickets": "Tickets",
+      "payments": "Payments",
+      "dbUpdate": "Tariff Database Update",
+      "system": "System",
+      "timeAgo": "5 mins ago",
+      "success": "Success",
+      "liveStatus": "System Status: Live",
+      "up": "UP",
+      "completed": "Completed",
+      "nav": {
+        "home": "Home",
+        "payments": "Payments"
+      }
+    }
   },
   "footer": {
     "services":  "Services",

@@ -69,10 +69,10 @@ export function Footer({ dict, locale }: FooterProps) {
   ];
 
   const SOCIALS = [
-    { icon: Instagram, label: "Instagram", href: "/",   hover: "hover:bg-pink-600" },
-    { icon: Facebook,  label: "Facebook",  href: "/",   hover: "hover:bg-blue-600" },
-    { icon: Youtube,   label: "YouTube",   href: "/",   hover: "hover:bg-red-600"  },
-    { icon: Twitter,   label: "Twitter",   href: "/",   hover: "hover:bg-sky-500"  },
+    { icon: Instagram, label: "Instagram", href: "https://instagram.com/telecomkz",   hover: "hover:bg-pink-600" },
+    { icon: Facebook,  label: "Facebook",  href: "https://facebook.com/telecomkz",  hover: "hover:bg-blue-600" },
+    { icon: Youtube,   label: "YouTube",   href: "https://youtube.com/telecomkz",   hover: "hover:bg-red-600"  },
+    { icon: Twitter,   label: "Twitter",   href: "https://twitter.com/telecomkz",   hover: "hover:bg-sky-500"  },
   ];
 
   return (

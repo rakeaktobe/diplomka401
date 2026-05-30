@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const dict = await getDictionary(lang as Locale);
   return {
     title: dict.internet_home.meta_title,
-    description: dict.internet_home.meta_desc || dict.metadata.description,
+    description: (dict.internet_home as any).meta_desc || dict.internet_home.hero_subtitle || dict.metadata.description,
   };
 }
 

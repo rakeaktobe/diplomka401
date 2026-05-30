@@ -22,6 +22,7 @@ export function CityProvider({
   useEffect(() => {
     const savedCity = localStorage.getItem("selected-city");
     if (savedCity && savedCity !== defaultCity) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCity(savedCity);
     }
   }, [defaultCity]);

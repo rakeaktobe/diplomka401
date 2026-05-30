@@ -13,6 +13,7 @@ export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   // Only render after hydration to prevent SSR mismatch
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
   if (!mounted) {
     return <div className="h-8 w-8" />;

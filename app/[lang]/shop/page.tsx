@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { getDictionary, getLocaleFromCookie } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 import { TariffCatalog } from "@/components/TariffCatalog";
 import { AddressChecker } from "@/components/AddressChecker";
 import { TechnologyTabs } from "@/components/TechnologyTabs";

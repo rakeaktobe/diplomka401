@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import type { Locale, Dictionary } from "@/lib/i18n";
-import { getDictionary } from "@/lib/i18n";
+import { getDictionaryClient as getDictionary } from "@/lib/i18n";
 
 type CheckResult = "available" | "unavailable" | null;
 

@@ -38,7 +38,7 @@ export function NewsSection({ news, dict, locale }: NewsSectionProps) {
               {dict.subtitle}
             </p>
           </div>
-          <Link href="/news" className="hidden md:flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+          <Link href={`/${locale}/news`} className="hidden md:flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
             {dict.allNews} <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </div>
@@ -50,7 +50,7 @@ export function NewsSection({ news, dict, locale }: NewsSectionProps) {
             const date = (item as any)[`date_${locale}`] || item.date_ru;
 
             return (
-              <Link key={item.id} href={`/news/${item.id}`} className="group block">
+              <Link key={item.id} href={`/${locale}/news/${item.id}`} className="group block">
                 <article className="h-full flex flex-col bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   {/* Abstract image placeholder */}
                   <div className={`w-full h-48 bg-gradient-to-br ${item.gradient || 'from-blue-600 to-cyan-500'} opacity-90 group-hover:opacity-100 transition-opacity relative`}>
@@ -80,7 +80,7 @@ export function NewsSection({ news, dict, locale }: NewsSectionProps) {
         </div>
         
         <div className="mt-8 text-center md:hidden">
-          <Link href="/news" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+          <Link href={`/${locale}/news`} className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
             {dict.allNews} <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </div>

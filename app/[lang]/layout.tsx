@@ -77,7 +77,7 @@ export default async function RootLayout({
         .eq("id", user.id)
         .single();
       // Grant admin access if role is admin OR email is admin@telecom.kz
-      isAdmin = profile?.role === "admin" || user.email?.toLowerCase() === "admin@telecom.kz";
+      isAdmin = (profile as any)?.role === "admin" || user.email?.toLowerCase() === "admin@telecom.kz";
     }
   } catch {
     // Not authenticated or DB unavailable — isAdmin stays false

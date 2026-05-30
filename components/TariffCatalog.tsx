@@ -84,7 +84,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
 
   // ── Deduplication safety net (in case DB has duplicates) ─────
   const uniqueTariffs = useMemo(
-    () => Array.from(new Map(tariffs.map((t) => [t.name_ru || t.name, t])).values()),
+    () => Array.from(new Map(tariffs.map((t) => [(t.name_ru || t.name) as string, t])).values()),
     [tariffs]
   );
 
@@ -165,7 +165,7 @@ export function TariffCatalog({ tariffs, dict }: TariffCatalogProps) {
                   const isB2B   = tariff.category === "b2b";
                   
                   // Use dictionary translation if available, otherwise fallback to DB locale, then fallback to base name
-                  const tDict = (dict as any).tariffs?.[tariff.name_ru || tariff.name];
+                  const tDict = (dict as any).tariffs?.[(tariff.name_ru || tariff.name) as string];
                   const displayName = tDict?.name || (tariff as any)[`name_${locale}`] || tariff.name_ru || tariff.name;
                   const displayDesc = tDict?.description || (tariff as any)[`description_${locale}`] || tariff.description_ru || tariff.description;
 
