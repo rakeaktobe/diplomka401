@@ -47,7 +47,7 @@ export function HomeSpeedTest({ dict, locale }: HomeSpeedTestProps) {
             </p>
             <div className="flex flex-wrap gap-4 mt-2">
               <Link href={`/${locale}/dashboard/speedtest`}>
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-blue-600/20">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-14 px-10 rounded-full shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300">
                   {dict.btn} <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>

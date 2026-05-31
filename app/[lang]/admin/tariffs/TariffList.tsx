@@ -33,6 +33,7 @@ const CATEGORY_ICON: Record<string, any> = {
 };
 
 export default function TariffList({ initialTariffs, dict }: TariffListProps) {
+  const t = dict.admin.tariffs;
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTariff, setEditingTariff] = useState<Tariff | null>(null);
@@ -99,25 +100,25 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Управление тарифами
+            {t.title}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 font-medium">
-            Создание и редактирование тарифных планов для клиентов.
+            {t.subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">
            <div className="relative group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Поиск тарифов..." 
+              <input
+                type="text"
+                placeholder={t.search_placeholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="h-11 pl-10 pr-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all w-full md:w-64"
               />
            </div>
            <Button onClick={() => handleOpenModal()} className="rounded-2xl h-11 px-6 bg-blue-600 hover:bg-blue-700">
-             <Plus className="w-5 h-5 mr-2" /> Добавить тариф
+             <Plus className="w-5 h-5 mr-2" /> {t.add_btn}
            </Button>
         </div>
       </div>
@@ -127,11 +128,11 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.admin?.dashboard?.tariffs || "Тариф"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{dict?.admin?.dashboard?.system || "Категория"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.overview?.balance || "Цена"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.active_services || "Характеристики"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{dict?.dashboard?.manage_services || "Действие"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.col_tariff}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{t.col_category}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.col_price}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.col_features}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{t.col_actions}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -155,7 +156,7 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                             {tariff.name_ru}
                           </span>
                           <span className="text-[10px] text-slate-400 font-medium line-clamp-1 max-w-[200px]">
-                            {tariff.description_ru || "Нет описания"}
+                            {tariff.description_ru || t.no_description}
                           </span>
                         </div>
                       </div>
@@ -169,7 +170,7 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                        <div className="text-sm font-black text-slate-900 dark:text-white">
                          {tariff.price.toLocaleString()} ₸
                        </div>
-                       <div className="text-[10px] text-slate-400 font-bold">в месяц</div>
+                       <div className="text-[10px] text-slate-400 font-bold">{t.per_month}</div>
                     </td>
                     <td className="px-8 py-6">
                        {tariff.speed_mbps ? (
@@ -180,7 +181,7 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                            </span>
                          </div>
                        ) : (
-                         <span className="text-xs text-slate-400 italic">Специальное предложение</span>
+                         <span className="text-xs text-slate-400 italic">{t.special_offer}</span>
                        )}
                     </td>
                     <td className="px-8 py-6 text-right">
@@ -238,25 +239,25 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                 </div>
 
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8 tracking-tight">
-                   {editingTariff ? "Редактирование тарифа" : "Создание нового тарифа"}
+                   {editingTariff ? t.modal_edit_title : t.modal_create_title}
                 </h2>
 
                 <form onSubmit={onSave} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2 md:col-span-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Название тарифа</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.label_name}</label>
                        <Input
                          required
                          type="text"
                          value={formData.name_ru}
                          onChange={(e) => setFormData({ ...formData, name_ru: e.target.value })}
                          className="h-14 font-bold rounded-2xl bg-slate-50 dark:bg-slate-950 border-none px-6"
-                         placeholder="Введите название..."
+                         placeholder={t.placeholder_name}
                        />
                     </div>
                     
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Цена (₸)</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.label_price}</label>
                        <Input
                          required
                          type="number"
@@ -268,7 +269,7 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                     </div>
 
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Скорость (Mbps)</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.label_speed}</label>
                        <Input
                          type="number"
                          value={formData.speed_mbps}
@@ -279,7 +280,7 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Категория услуг</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.label_category}</label>
                        <div className="relative">
                           <select
                             required
@@ -287,31 +288,31 @@ export default function TariffList({ initialTariffs, dict }: TariffListProps) {
                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                             className="w-full h-14 px-6 bg-slate-50 dark:bg-slate-950 border-none rounded-2xl appearance-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all"
                           >
-                             <option value="internet">Интернет</option>
-                             <option value="tv">Телевидение</option>
-                             <option value="mobile">Мобильная связь</option>
-                             <option value="combo">Комбо</option>
-                             <option value="b2b">Бизнес</option>
+                             <option value="internet">{t.cat_internet}</option>
+                             <option value="tv">{t.cat_tv}</option>
+                             <option value="mobile">{t.cat_mobile}</option>
+                             <option value="combo">{t.cat_combo}</option>
+                             <option value="b2b">{t.cat_b2b}</option>
                           </select>
                           <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                        </div>
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Описание тарифа</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.label_description}</label>
                        <textarea
                          value={formData.description_ru}
                          onChange={(e) => setFormData({ ...formData, description_ru: e.target.value })}
                          className="w-full h-32 p-6 rounded-3xl bg-slate-50 dark:bg-slate-950 border-none font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all resize-none"
-                         placeholder="Кратко опишите преимущества..."
+                         placeholder={t.placeholder_description}
                        />
                     </div>
                   </div>
 
                   <div className="flex gap-4 pt-4">
-                    <Button type="button" variant="ghost" onClick={handleCloseModal} className="flex-1 h-14 rounded-2xl font-bold">Отмена</Button>
+                    <Button type="button" variant="ghost" onClick={handleCloseModal} className="flex-1 h-14 rounded-2xl font-bold">{t.cancel}</Button>
                     <Button type="submit" isLoading={isPending} className="flex-1 h-14 rounded-2xl font-bold bg-blue-600 hover:bg-blue-700">
-                       {editingTariff ? "Обновить тариф" : "Создать тариф"}
+                       {editingTariff ? t.save_btn : t.create_btn}
                     </Button>
                   </div>
                 </form>

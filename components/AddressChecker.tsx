@@ -78,7 +78,7 @@ export function AddressChecker({ dict, locale }: AddressCheckerProps) {
                 placeholder={dict.placeholder}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="pl-9"
+                className="pl-9 rounded-full h-11"
                 required
                 disabled={loading}
               />
@@ -86,7 +86,7 @@ export function AddressChecker({ dict, locale }: AddressCheckerProps) {
             <Button
               type="submit"
               disabled={loading || !address.trim()}
-              className="shrink-0 min-w-[140px]"
+              className="shrink-0 min-w-[140px] rounded-full h-11 bg-blue-600 hover:bg-blue-500 shadow-md hover:shadow-blue-500/30 transition-all"
             >
               {loading ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{dict.checking}</>
@@ -137,12 +137,12 @@ export function AddressChecker({ dict, locale }: AddressCheckerProps) {
               {result === "available" && (
                 <Link
                   href={`/${locale}/shop`}
-                  className="inline-flex items-center justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2 text-sm font-bold text-white shadow-md hover:bg-blue-500 hover:shadow-blue-500/30 transition-all"
                 >
                   {dict.selectTariff}
                 </Link>
               )}
-              <Button size="sm" variant="outline" onClick={handleReset}>
+              <Button size="sm" variant="outline" onClick={handleReset} className="rounded-full px-5">
                 {dict.reset}
               </Button>
             </div>

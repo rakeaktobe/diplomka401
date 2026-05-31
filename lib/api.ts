@@ -104,7 +104,7 @@ const MOCK_TARIFFS: Tariff[] = [
   },
 ];
 
-let MOCK_SUBSCRIPTIONS: Subscription[] = [
+const MOCK_SUBSCRIPTIONS: Subscription[] = [
   {
     id: "sub-1",
     user_id: MOCK_USER_ID,
@@ -143,7 +143,7 @@ let MOCK_TICKETS: Ticket[] = [
   },
 ];
 
-let MOCK_NETWORK_STATUS: NetworkStatusItem[] = [
+const MOCK_NETWORK_STATUS: NetworkStatusItem[] = [
   { id: "ns-1", region: "Алматы", status: "online", updated_at: new Date().toISOString() },
   { id: "ns-2", region: "Астана", status: "online", updated_at: new Date().toISOString() },
   { id: "ns-3", region: "Шымкент", status: "degraded", updated_at: new Date().toISOString() },

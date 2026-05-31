@@ -1,5 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import TicketList from "./TicketList";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 import { Database } from "@/lib/database.types";
 
 /**
@@ -12,7 +14,8 @@ export default async function AdminTicketsPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = lang || "ru";
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
   const supabase = await createClient();
 
   // Fetch all tickets with author names from the profiles table.
@@ -32,6 +35,6 @@ export default async function AdminTicketsPage({
   }
 
   return (
-    <TicketList initialTickets={(tickets as any) || []} />
+    <TicketList initialTickets={(tickets as any) || []} dict={dict} locale={locale} />
   );
 }

@@ -113,8 +113,8 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
             animate={{ opacity: 1, y: 0 }}
             className="flex"
           >
-            <span className="inline-flex items-center gap-2 bg-blue-600/20 text-blue-400 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
-              <Zap className="w-3 h-3" />
+            <span className="inline-flex items-center gap-2 bg-blue-600/30 backdrop-blur-md border border-blue-400/30 text-blue-300 text-xs font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-[0_0_30px_rgba(37,99,235,0.4)]">
+              <Zap className="w-3.5 h-3.5 text-blue-400" />
               {badge}
             </span>
           </motion.div>
@@ -151,14 +151,14 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
           >
             <Link
               href={`/${locale}${currentSlide.cta_href}`}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white font-bold px-10 py-5 rounded-md hover:bg-blue-700 transition-colors duration-200"
+              className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-10 py-4 lg:py-5 rounded-full transition-all duration-300 shadow-[0_8px_30px_rgba(37,99,235,0.5)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.7)] hover:-translate-y-1"
             >
               {cta}
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               href={`/${locale}/dashboard`}
-              className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white font-bold px-10 py-5 rounded-md hover:bg-white/20 transition-colors duration-200"
+              className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 text-white font-bold px-10 py-4 lg:py-5 rounded-full transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_40px_rgba(255,255,255,0.1)] hover:-translate-y-1"
             >
               {dict.ctaDash}
             </Link>
@@ -186,14 +186,14 @@ export function HeroSection({ slides, dict, locale }: HeroSectionProps) {
         <div className="flex gap-2">
           <button
             onClick={prevSlide}
-            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 backdrop-blur-sm transition-all"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-110 backdrop-blur-md transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={nextSlide}
-            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 backdrop-blur-sm transition-all"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-110 backdrop-blur-md transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             aria-label="Next slide"
           >
             <ChevronRight className="w-6 h-6" />

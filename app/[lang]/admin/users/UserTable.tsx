@@ -103,18 +103,23 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
     });
   };
 
+  const t = dict.admin.users;
+
   return (
     <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{t.title}</h1>
+      </div>
       <Card glass className="overflow-hidden border-none shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.user || "Пользователь"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{dict?.dashboard?.status || "Роль"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.balance || "Баланс"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{dict?.dashboard?.active_services || "Активный тариф"}</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{dict?.dashboard?.manage_services || "Управление"}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.col_user}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{t.col_role}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.col_balance}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.col_tariff}</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">{t.col_actions}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -135,7 +140,7 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-slate-900 dark:text-white">
-                            {user.full_name || "Без имени"}
+                            {user.full_name || t.no_name}
                           </span>
                           <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
                             ID: {user.id.substring(0, 8)}
@@ -153,7 +158,7 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                            variant={user.role === 'admin' ? 'blue' : 'secondary'} 
                            className={user.role === 'admin' ? "bg-red-500/10 text-red-500 border-red-500/20" : ""}
                          >
-                           {user.role === 'admin' ? 'Администратор' : 'Клиент'}
+                           {user.role === 'admin' ? t.role_admin : t.role_client}
                          </Badge>
                        </button>
                     </td>
@@ -169,19 +174,19 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                             <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                               {activeSub.tariffs?.name}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-medium">Активен до 15.05</span>
+                            <span className="text-[10px] text-slate-400 font-medium">{activeSub.tariffs?.name}</span>
                           </div>
-                          <button 
+                          <button
                             onClick={() => onCancelSub(activeSub.id)}
                             disabled={isPending}
                             className="p-1.5 opacity-0 group-hover/sub:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
-                            title="Отменить подписку"
+                            title={t.cancel_sub}
                           >
                             <Ban className="w-4 h-4" />
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs text-slate-400 font-medium italic">Нет активных услуг</span>
+                        <span className="text-xs text-slate-400 font-medium italic">{t.no_services}</span>
                       )}
                     </td>
                     <td className="px-8 py-6 text-right">
@@ -242,16 +247,16 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                 </div>
 
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
-                   {modalType === "balance" ? "Пополнение баланса" : "Управление услугой"}
+                   {modalType === "balance" ? t.modal_balance_title : t.modal_sub_title}
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-8">
-                   Пользователь: <span className="text-slate-900 dark:text-white font-bold">{selectedUser.full_name || "Без имени"}</span>
+                   {t.modal_user_label}: <span className="text-slate-900 dark:text-white font-bold">{selectedUser.full_name || t.no_name}</span>
                 </p>
 
                 {modalType === "balance" ? (
                   <form onSubmit={onUpdateBalance} className="space-y-6">
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Сумма зачисления (₸)</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.amount_label}</label>
                        <Input
                          required
                          type="number"
@@ -263,16 +268,16 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                        />
                     </div>
                     <div className="flex gap-3">
-                      <Button type="button" variant="ghost" onClick={handleCloseModal} className="flex-1 h-14 rounded-2xl font-bold">Отмена</Button>
+                      <Button type="button" variant="ghost" onClick={handleCloseModal} className="flex-1 h-14 rounded-2xl font-bold">{t.cancel}</Button>
                       <Button type="submit" isLoading={isPending} className="flex-1 h-14 rounded-2xl font-bold bg-blue-600 hover:bg-blue-700">
-                        Зачислить
+                        {t.add_funds}
                       </Button>
                     </div>
                   </form>
                 ) : (
                   <form onSubmit={onUpdateSubscription} className="space-y-6">
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Выберите новый тариф</label>
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">{t.new_tariff_label}</label>
                        <div className="relative">
                           <select
                             required
@@ -280,7 +285,7 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                             onChange={(e) => setSelectedTariffId(e.target.value)}
                             className="w-full h-14 px-6 bg-slate-50 dark:bg-slate-950 border-none rounded-3xl appearance-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all"
                           >
-                            <option value="">Выберите из списка...</option>
+                            <option value="">{t.select_placeholder}</option>
                             {tariffs.map(t => (
                               <option key={t.id} value={t.id}>{t.name} — {t.price} ₸</option>
                             ))}
@@ -289,9 +294,9 @@ export default function UserTable({ users, tariffs, dict }: UserTableProps) {
                        </div>
                     </div>
                     <div className="flex gap-3 pt-4">
-                      <Button type="button" variant="ghost" onClick={handleCloseModal} className="flex-1 h-14 rounded-2xl font-bold">Отмена</Button>
+                      <Button type="button" variant="ghost" onClick={handleCloseModal} className="flex-1 h-14 rounded-2xl font-bold">{t.cancel}</Button>
                       <Button type="submit" isLoading={isPending} className="flex-1 h-14 rounded-2xl font-bold bg-emerald-600 hover:bg-emerald-700">
-                        Обновить
+                        {t.update}
                       </Button>
                     </div>
                   </form>

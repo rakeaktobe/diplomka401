@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { streamText } from "ai";
+import { streamText, convertToModelMessages } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { type Locale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/i18n-server";
@@ -67,7 +67,7 @@ ${dict.ai_prompt.instructions}`;
     const result = streamText({
       model: google(DEFAULT_MODEL),
       system: systemPrompt,
-      messages: messages,
+      messages: await convertToModelMessages(messages),
     });
 
     return result.toUIMessageStreamResponse();

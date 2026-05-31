@@ -1,5 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import PaymentList from "./PaymentList";
+import { getDictionary } from "@/lib/i18n-server";
+import { type Locale } from "@/lib/i18n";
 
 export default async function AdminPaymentsPage({
   params,
@@ -7,7 +9,8 @@ export default async function AdminPaymentsPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const locale = (lang as any) || "ru";
+  const locale = (lang as Locale) || "ru";
+  const dict = await getDictionary(locale);
   const supabase = await createClient();
 
   const { data: payments, error } = await supabase
@@ -20,6 +23,6 @@ export default async function AdminPaymentsPage({
   }
 
   return (
-    <PaymentList initialPayments={(payments as any) || []} />
+    <PaymentList initialPayments={(payments as any) || []} dict={dict} locale={locale} />
   );
 }

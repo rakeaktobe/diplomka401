@@ -32,7 +32,7 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
     setRecommendation(null);
   };
 
-  const fetchRecommendation = async (dl: number, ul: number, p: number) => {
+  const fetchRecommendation = React.useCallback(async (dl: number, ul: number, p: number) => {
     setLoadingAi(true);
     try {
       const res = await fetch("/api/recommendation", {
@@ -54,7 +54,7 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
     } finally {
       setLoadingAi(false);
     }
-  };
+  }, [locale]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -117,7 +117,7 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [phase, download, upload, ping]);
+  }, [phase, download, upload, ping, fetchRecommendation]);
 
   const getGaugeValue = () => {
     if (phase === "download") return download;

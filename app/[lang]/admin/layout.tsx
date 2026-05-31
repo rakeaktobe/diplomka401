@@ -69,9 +69,9 @@ export default async function AdminLayout({
 
   const navItems = [
     { name: dict.dashboard.nav.home, href: `/${locale}/admin`, icon: LayoutDashboard },
-    { name: dict.catalog.internet || "Тарифы", href: `/${locale}/admin/tariffs`, icon: CreditCard },
-    { name: locale === 'ru' ? "Пользователи" : locale === 'kk' ? "Пайдаланушылар" : "Users", href: `/${locale}/admin/users`, icon: Users },
-    { name: locale === 'ru' ? "Тикеты" : locale === 'kk' ? "Билеттер" : "Tickets", href: `/${locale}/admin/tickets`, icon: Ticket },
+    { name: dict.admin.dashboard.tariffs, href: `/${locale}/admin/tariffs`, icon: CreditCard },
+    { name: dict.admin.dashboard.users, href: `/${locale}/admin/users`, icon: Users },
+    { name: dict.admin.dashboard.tickets, href: `/${locale}/admin/tickets`, icon: Ticket },
     { name: dict.dashboard.nav.payments, href: `/${locale}/admin/payments`, icon: Banknote },
   ];
 

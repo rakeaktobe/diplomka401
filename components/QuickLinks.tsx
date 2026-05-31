@@ -22,35 +22,35 @@ export function QuickLinks({ locale, dict }: QuickLinksProps) {
       icon: Phone,
       label: "160",
       sublabel: dict.callCenter,
-      bg: "bg-kt-blue",
+      bg: "bg-gradient-to-br from-blue-500 to-blue-700 shadow-blue-500/30",
       href: "tel:160",
     },
     {
       icon: MessageCircle,
       label: "WhatsApp",
       sublabel: dict.messageUs,
-      bg: "bg-[#25D366]",
+      bg: "bg-gradient-to-br from-[#25D366] to-[#128C7E] shadow-[#25D366]/30",
       href: "https://wa.me/77771234567",
     },
     {
       icon: Send,
       label: "Telegram",
       sublabel: dict.ourBot,
-      bg: "bg-[#229ED9]",
+      bg: "bg-gradient-to-br from-[#229ED9] to-[#0088CC] shadow-[#229ED9]/30",
       href: "https://t.me/telecom_kz_bot",
     },
     {
       icon: Briefcase,
       label: dict.business,
       sublabel: dict.corpClients,
-      bg: "bg-slate-800",
+      bg: "bg-gradient-to-br from-slate-700 to-slate-900 shadow-slate-700/30",
       href: "/internet/business",
     },
     {
       icon: Search,
       label: dict.check,
       sublabel: dict.orderStatus,
-      bg: "bg-kt-blue",
+      bg: "bg-gradient-to-br from-indigo-500 to-blue-600 shadow-indigo-500/30",
       href: "/dashboard",
     },
   ];
@@ -75,9 +75,9 @@ export function QuickLinks({ locale, dict }: QuickLinksProps) {
             >
               {/* Circle icon */}
               <div
-                className={`w-16 h-16 ${bg} rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300`}
+                className={`w-16 h-16 sm:w-20 sm:h-20 ${bg} rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-white/10`}
               >
-                <Icon className="w-7 h-7 text-white" />
+                <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-md" />
               </div>
               {/* Text */}
               <div className="text-center">
