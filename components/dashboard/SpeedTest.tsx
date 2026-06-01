@@ -15,7 +15,18 @@ interface SpeedTestProps {
 type TestPhase = "idle" | "ping" | "download" | "upload" | "completed";
 type FeedbackLevel = "excellent" | "good" | "ok" | "poor";
 
-const DOWNLOAD_BYTES = 4 * 1024 * 1024; // must match route
+// Real measurement against Cloudflare's global edge (speed.cloudflare.com).
+const CF_DOWN = "https://speed.cloudflare.com/__down";
+const CF_UP = "https://speed.cloudflare.com/__up";
+const DOWNLOAD_BYTES = 25 * 1024 * 1024; // 25 MB
+const UPLOAD_BYTES = 8 * 1024 * 1024;    // 8 MB
+const PING_SAMPLES = 5;
+
+function parseServerTiming(header: string | null): number {
+  if (!header) return 0;
+  const m = header.match(/cfRequestDuration;dur=([\d.]+)/);
+  return m ? parseFloat(m[1]) : 0;
+}
 
 function getSpeedFeedback(mbps: number, locale: string) {
   const level: FeedbackLevel =
@@ -70,30 +81,36 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
     setPing(0); setDownload(0); setUpload(0);
     setProgress(0); setRecommendation(null);
 
-    // ── 1. Ping ──────────────────────────────────────────────────
-    const PING_N = 3;
-    let totalPing = 0;
-    for (let i = 0; i < PING_N; i++) {
-      const t = performance.now();
-      try { await fetch("/api/speedtest/ping", { cache: "no-store" }); } catch {}
-      totalPing += performance.now() - t;
-      setPing(Math.round(totalPing / (i + 1)));
-      setProgress(((i + 1) / PING_N) * 100);
+    // ── 1. Ping — network RTT excluding CF server processing ────
+    const samples: number[] = [];
+    for (let i = 0; i < PING_SAMPLES; i++) {
+      try {
+        const t = performance.now();
+        const res = await fetch(`${CF_DOWN}?bytes=0&r=${Math.random()}`, { cache: "no-store" });
+        await res.arrayBuffer();
+        const total = performance.now() - t;
+        const serverMs = parseServerTiming(res.headers.get("server-timing"));
+        samples.push(Math.max(total - serverMs, 0));
+      } catch {}
+      // running median of collected samples
+      if (samples.length) {
+        const sorted = [...samples].sort((a, b) => a - b);
+        setPing(Math.round(sorted[Math.floor(sorted.length / 2)]));
+      }
+      setProgress(((i + 1) / PING_SAMPLES) * 100);
     }
 
-    // ── 2. Download — stream, timer starts after first byte ──────
+    // ── 2. Download — stream from Cloudflare edge ───────────────
     setPhase("download");
     setProgress(0);
     try {
-      const res = await fetch("/api/speedtest/download", { cache: "no-store" });
+      const res = await fetch(`${CF_DOWN}?bytes=${DOWNLOAD_BYTES}&r=${Math.random()}`, { cache: "no-store" });
       const reader = res.body!.getReader();
       let dlBytes = 0;
       let dlStart = -1;
-
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        // Exclude server gen latency — start clock on first received byte
         if (dlStart < 0) dlStart = performance.now();
         dlBytes += value.length;
         const sec = (performance.now() - dlStart) / 1000;
@@ -107,18 +124,28 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
       console.error("Download error", e);
     }
 
-    // ── 3. Upload — single 1 MB request ─────────────────────────
+    // ── 3. Upload — POST random bytes to Cloudflare ─────────────
     setPhase("upload");
     setProgress(0);
     try {
-      const buf = new Uint8Array(1024 * 1024);
+      const buf = new Uint8Array(UPLOAD_BYTES);
       for (let i = 0; i < buf.length; i += 65536) {
         crypto.getRandomValues(buf.subarray(i, Math.min(i + 65536, buf.length)));
       }
       const t = performance.now();
-      await fetch("/api/speedtest/upload", { method: "POST", body: buf, cache: "no-store" });
-      const sec = (performance.now() - t) / 1000;
+      const res = await fetch(CF_UP, {
+        method: "POST",
+        body: buf,
+        cache: "no-store",
+        headers: { "Content-Type": "application/octet-stream" },
+      });
+      await res.arrayBuffer();
+      const total = performance.now() - t;
+      // Subtract CF server processing so we measure transport time only.
+      const serverMs = parseServerTiming(res.headers.get("server-timing"));
+      const sec = Math.max(total - serverMs, 1) / 1000;
       setUpload((buf.length * 8) / sec / 1e6);
+      setProgress(100);
     } catch (e) {
       console.error("Upload error", e);
     }
@@ -322,6 +349,10 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
             dict?.start || "Начать тест"
           )}
         </Button>
+
+        <p className="text-[9px] text-slate-400 dark:text-slate-500 tracking-wide">
+          Powered by Cloudflare speed.cloudflare.com
+        </p>
 
       </CardContent>
     </Card>

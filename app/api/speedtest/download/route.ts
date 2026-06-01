@@ -1,32 +1,20 @@
 import { NextResponse } from 'next/server';
+import { randomBytes } from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-const TOTAL = 4 * 1024 * 1024; // 4 MB
-const CHUNK = 65536;            // 64 KB per chunk
-
 export async function GET() {
-  let sent = 0;
+  // Use Node's native crypto.randomBytes — generates 2MB in microseconds
+  // Random data prevents CDN/gzip compression from skewing results
+  const buffer = randomBytes(2 * 1024 * 1024);
 
-  // Streams fresh random 64 KB chunks — incompressible, no buffering delay
-  const stream = new ReadableStream({
-    async pull(controller) {
-      if (sent >= TOTAL) { controller.close(); return; }
-      const size = Math.min(CHUNK, TOTAL - sent);
-      const buf = new Uint8Array(size);
-      crypto.getRandomValues(buf);
-      controller.enqueue(buf);
-      sent += size;
-    },
-  });
-
-  return new Response(stream, {
+  return new NextResponse(buffer, {
     headers: {
       'Content-Type': 'application/octet-stream',
-      'Content-Length': String(TOTAL),
+      'Content-Length': String(buffer.length),
       'Cache-Control': 'no-store, no-cache, must-revalidate',
       'Pragma': 'no-cache',
       'Expires': '0',
-    },
+    }
   });
 }

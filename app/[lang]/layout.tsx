@@ -23,8 +23,12 @@ export async function generateMetadata(
   const dict = await getDictionary(locale);
   const t = dict.metadata;
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
   return {
-    metadataBase: new URL("https://telecom.kz"),
+    metadataBase: new URL(siteUrl),
     title: {
       default: t.title,
       template: `%s | ${t.siteName}`,
@@ -33,17 +37,15 @@ export async function generateMetadata(
     openGraph: {
       title: t.title,
       description: t.description,
-      url: `https://telecom.kz/${locale}`,
+      url: `${siteUrl}/${locale}`,
       siteName: t.siteName,
-      images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
       locale: locale === 'kk' ? 'kk_KZ' : locale === 'ru' ? 'ru_RU' : 'en_US',
       type: "website",
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title: t.title,
       description: t.description,
-      images: ["/og-image.jpg"],
     },
     icons: {
       icon: [

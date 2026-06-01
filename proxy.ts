@@ -126,7 +126,7 @@ export default async function proxy(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    if (profile?.role !== "admin" && user.email !== 'admin@telecom.kz') {
+    if (profile?.role !== "admin" && user.email?.toLowerCase().trim() !== 'admin@telecom.kz') {
       const url = request.nextUrl.clone();
       const locale = segments[1];
       url.pathname = `/${locale}/dashboard`;
