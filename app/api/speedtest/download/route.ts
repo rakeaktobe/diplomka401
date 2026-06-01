@@ -2,22 +2,31 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  // Generate a random payload of 1MB
-  // Using random bytes ensures compression doesn't skew results
-  const size = 1024 * 1024; 
-  const buffer = new Uint8Array(size);
-  // Fill the buffer with random data
-  for (let i = 0; i < size; i++) {
-    buffer[i] = Math.floor(Math.random() * 256);
-  }
+const TOTAL = 4 * 1024 * 1024; // 4 MB
+const CHUNK = 65536;            // 64 KB per chunk
 
-  return new NextResponse(buffer, {
+export async function GET() {
+  let sent = 0;
+
+  // Streams fresh random 64 KB chunks — incompressible, no buffering delay
+  const stream = new ReadableStream({
+    async pull(controller) {
+      if (sent >= TOTAL) { controller.close(); return; }
+      const size = Math.min(CHUNK, TOTAL - sent);
+      const buf = new Uint8Array(size);
+      crypto.getRandomValues(buf);
+      controller.enqueue(buf);
+      sent += size;
+    },
+  });
+
+  return new Response(stream, {
     headers: {
       'Content-Type': 'application/octet-stream',
-      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Content-Length': String(TOTAL),
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
       'Pragma': 'no-cache',
       'Expires': '0',
-    }
+    },
   });
 }

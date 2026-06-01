@@ -36,21 +36,21 @@ export async function POST(req: Request) {
     
     // Fetch live tariffs from DB
     const supabase = await createClient();
+    const nameCol = locale === "kk" ? "name_kk" : locale === "en" ? "name_en" : "name_ru";
+    const descCol = locale === "kk" ? "description_kk" : locale === "en" ? "description_en" : "description_ru";
+
     const { data, error: dbError } = await supabase
       .from("tariffs")
-      .select("name, speed_mbps, price, category, description");
-
-    const tariffs = data as Tariff[] | null;
+      .select(`${nameCol}, ${descCol}, speed_mbps, price, category`);
 
     let tariffsDataText = dict.ai_prompt.tariffs_unavailable;
-    if (!dbError && tariffs && tariffs.length > 0) {
-      tariffsDataText = tariffs
-        .map(
-          (t) =>
-            `- ${t.name}: ${t.speed_mbps} ${dict.ai_recommendation.mbps}, ${t.price} ₸. (${t.category})${
-              t.description ? ". " + t.description : ""
-            }`
-        )
+    if (!dbError && data && data.length > 0) {
+      tariffsDataText = (data as any[])
+        .map((t) => {
+          const name = t[nameCol] || t.name_ru;
+          const desc = t[descCol] || t.description_ru;
+          return `- ${name}: ${t.speed_mbps} ${dict.ai_recommendation.mbps}, ${t.price} ₸. (${t.category})${desc ? ". " + desc : ""}`;
+        })
         .join("\n");
     }
 

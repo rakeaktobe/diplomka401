@@ -34,10 +34,13 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: "No messages provided" }), { status: 400 });
     }
 
-    // Fetch live tariffs from DB with strict typing
+    // Fetch live tariffs from DB
+    const nameCol = locale === "kk" ? "name_kk" : locale === "en" ? "name_en" : "name_ru";
+    const descCol = locale === "kk" ? "description_kk" : locale === "en" ? "description_en" : "description_ru";
+
     const supabase = await createClient();
     const { data: tariffs, error: dbError } = await (supabase.from("tariffs") as any)
-      .select("name, speed_mbps, price, category, description");
+      .select(`${nameCol}, ${descCol}, speed_mbps, price, category`);
 
     if (dbError) {
       console.error("[AI Chat] Supabase error:", dbError);
@@ -45,14 +48,13 @@ export async function POST(req: Request) {
 
     let tariffsDataText = dict.ai_prompt.tariffs_unavailable;
     if (!dbError && tariffs && tariffs.length > 0) {
-      tariffsDataText = (tariffs as any[])
-        .map(
-          (t: any) =>
-            `- ${t.name}: ${t.speed_mbps} Mbps, ${t.price} ₸. (${t.category})${
-              t.description ? ". " + t.description : ""
-            }`
-        )
-        .join("\n");
+      const lines = (tariffs as any[]).map((t: any, i: number) => {
+        const name = t[nameCol] || t.name_ru;
+        const desc = t[descCol] || t.description_ru;
+        const speed = t.speed_mbps ? `${t.speed_mbps} Mbps` : "—";
+        return `${i + 1}. ${name} | ${speed} | ${t.price} ₸/мес | ${t.category}${desc ? ` | ${desc}` : ""}`;
+      });
+      tariffsDataText = lines.join("\n");
     }
 
     const systemPrompt = `${dict.ai_prompt.role}
@@ -62,7 +64,9 @@ ${dict.ai_prompt.language_rule.replace("{lang}", dict.ai_prompt.lang_name)}
 ${dict.ai_prompt.tariffs_header}
 ${tariffsDataText}
 
-${dict.ai_prompt.instructions}`;
+${dict.ai_prompt.instructions}
+
+FINAL RULE: The numbered list above is the COMPLETE and ONLY list of tariffs. Do not mention any tariff name, price, or speed that is not explicitly listed above.`;
 
     const result = streamText({
       model: google(DEFAULT_MODEL),
