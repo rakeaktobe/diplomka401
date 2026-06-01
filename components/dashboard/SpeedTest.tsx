@@ -23,13 +23,96 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
 
-  const startTest = () => {
+  const startTest = async () => {
+    if (phase === "ping" || phase === "download" || phase === "upload") return; // prevent multiple clicks
+    
     setPhase("ping");
     setPing(0);
     setDownload(0);
     setUpload(0);
     setProgress(0);
     setRecommendation(null);
+
+    // 1. Ping Test
+    let totalPing = 0;
+    const pingIterations = 5;
+    for (let i = 0; i < pingIterations; i++) {
+      const start = performance.now();
+      try {
+        await fetch("/api/speedtest/ping", { cache: "no-store" });
+      } catch (e) {
+        console.error("Ping error", e);
+      }
+      const end = performance.now();
+      totalPing += (end - start);
+      setPing(Math.round(totalPing / (i + 1)));
+      setProgress(((i + 1) / pingIterations) * 100);
+    }
+    
+    setPhase("download");
+    setProgress(0);
+
+    // 2. Download Test
+    let totalDlBits = 0;
+    let totalDlTimeMs = 0;
+    const dlIterations = 4; // 4 MB total payload (4x 1MB)
+    for (let i = 0; i < dlIterations; i++) {
+      const start = performance.now();
+      try {
+        const res = await fetch("/api/speedtest/download", { cache: "no-store" });
+        const blob = await res.blob();
+        totalDlBits += blob.size * 8;
+      } catch (e) {
+        console.error("Download error", e);
+      }
+      const end = performance.now();
+      totalDlTimeMs += (end - start);
+      
+      const speedBps = (totalDlBits / (totalDlTimeMs / 1000));
+      const speedMbps = speedBps / 1000000;
+      
+      setDownload(speedMbps);
+      setProgress(((i + 1) / dlIterations) * 100);
+    }
+
+    setPhase("upload");
+    setProgress(0);
+
+    // 3. Upload Test
+    let totalUlBits = 0;
+    let totalUlTimeMs = 0;
+    const ulIterations = 4; // 4 MB total payload (4x 1MB)
+    
+    // Create a 1MB blob once
+    const size = 1024 * 1024;
+    const buffer = new Uint8Array(size);
+    crypto.getRandomValues(buffer);
+    const uploadBlob = new Blob([buffer]);
+
+    for (let i = 0; i < ulIterations; i++) {
+      const start = performance.now();
+      try {
+        await fetch("/api/speedtest/upload", {
+          method: "POST",
+          body: uploadBlob,
+          cache: "no-store"
+        });
+        totalUlBits += uploadBlob.size * 8;
+      } catch (e) {
+        console.error("Upload error", e);
+      }
+      const end = performance.now();
+      totalUlTimeMs += (end - start);
+      
+      const speedBps = (totalUlBits / (totalUlTimeMs / 1000));
+      const speedMbps = speedBps / 1000000;
+      
+      setUpload(speedMbps);
+      setProgress(((i + 1) / ulIterations) * 100);
+    }
+
+    setPhase("completed");
+    setProgress(100);
   };
 
   const fetchRecommendation = React.useCallback(async (dl: number, ul: number, p: number) => {
@@ -55,58 +138,6 @@ export default function SpeedTest({ dict, locale = "ru" }: SpeedTestProps) {
       setLoadingAi(false);
     }
   }, [locale]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (phase === "ping") {
-      let count = 0;
-      interval = setInterval(() => {
-        setPing(Math.floor(Math.random() * 5) + 5); // 5-10ms
-        setProgress((prev) => Math.min(prev + 10, 100));
-        count++;
-        if (count > 10) {
-          clearInterval(interval);
-          setPhase("download");
-          setProgress(0);
-        }
-      }, 100);
-    } else if (phase === "download") {
-      interval = setInterval(() => {
-        setDownload((prev) => {
-          const next = prev + (Math.random() * 50);
-          return next > 450 ? 450 + (Math.random() * 10 - 5) : next;
-        });
-        setProgress((prev) => {
-          const next = prev + 2;
-          if (next >= 100) {
-            clearInterval(interval);
-            setPhase("upload");
-            return 0;
-          }
-          return next;
-        });
-      }, 50);
-    } else if (phase === "upload") {
-      interval = setInterval(() => {
-        setUpload((prev) => {
-          const next = prev + (Math.random() * 30);
-          return next > 180 ? 180 + (Math.random() * 10 - 5) : next;
-        });
-        setProgress((prev) => {
-          const next = prev + 3;
-          if (next >= 100) {
-            clearInterval(interval);
-            setPhase("completed");
-            return 100;
-          }
-          return next;
-        });
-      }, 50);
-    }
-
-    return () => clearInterval(interval);
-  }, [phase]);
 
   // Effect to trigger AI recommendation when completed
   useEffect(() => {

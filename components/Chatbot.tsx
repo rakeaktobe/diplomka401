@@ -40,7 +40,7 @@ export function Chatbot() {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
     
-    await sendMessage({ role: 'user', content: trimmed });
+    await sendMessage({ text: trimmed });
     setInput("");
   };
 
